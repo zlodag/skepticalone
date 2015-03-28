@@ -1,0 +1,272 @@
+Assignments for 3-28-15     (as of Mar 28 6:45 2015 eastern time)
+
+Field  1    : Division (in quotes)
+Field  2 - 4: Staff name, unique ID, backup ID
+Field  5 - 7: Assignment name (in quotes), unique ID, backup ID
+Field  8 - 9: Date and time of assignment (GMTO=12 2)
+
+"Anaesthesia","SMITHELLS John",13883,255,"CARDIAC CALL",456,82,3-28-15,1800,0800
+"Anaesthesia","BUCHANAN Cam",4856,30,"PAEDS CALL",506,96,3-28-15,1800,0800
+"Anaesthesia","MANIKKAM Brendon",15164,202,"PM MAIN 1",664,99,3-28-15,0800,2100
+"Anaesthesia","PHIPPS Sarah",19961,263,"NIGHTS MAIN OT",662,100,3-28-15,2300,0800
+"Anaesthesia","GOLDSTONE Kate",18995,47,"NIGHTS OBS",665,101,3-28-15,2300,0800
+"Anaesthesia","WU Henry",16367,261,"PM MAIN 2",667,102,3-28-15,0800,2100
+"Anaesthesia","BROWN Duncan",21141,188,"PM OBS",669,104,3-28-15,0800,2100
+"Anaesthesia","BUCHANAN Cam",4856,30,"SENIOR CALL 1",675,105,3-28-15,2100,0800
+"Anaesthesia","CLARK James",12919,75,"SENIOR CALL 2",677,106,3-28-15,2100,0800
+"Anaesthesia","MOSTERT Nico",8054,20,"SENIOR NIGHT CALL",1681,107,3-28-15,2100,0800
+"Anaesthesia","WILLIAMS David",4691,83,"WKEND ACUTE 1",951,113,3-28-15,0800,1600
+"Cardiology","SEBASTIAN Cherian",4859,41,"On Call - Cardiologist",748,37,3-28-15,0800,0800
+"Cardiology","SEBASTIAN Cherian",4859,41,"Waikato PAMI Cover",777,38,3-28-15,0800,0800
+"Cardiology","SEBASTIAN Cherian",4859,41,"CPU PM - Cardiologist",769,40,3-28-15,1600,0800
+"Cardiology","SPARKS Chris (Reg)",1756,317,"WE AM - Registrar",850,43,3-28-15,0800,1300
+"Cardiology","JADEER Assad",1714,302,"WE PM - Registrar",880,45,3-28-15,1300,2230
+"Cardiology","KHAN Wafa (Reg)",1668,257,"Nights - Registrar",774,46,3-28-15,2200,0800
+"Cardiology","REBELLO Roshan",678,24,"Nights - Registrar",776,47,3-28-15,2200,0800
+"Cardiology","LOW Andrew",1608,230,"WE - House Surgeon",849,50,3-28-15,0800,2230
+"Cardiology","MOHD ADNAN Hani",1610,232,"Nights - House Surgeon",775,51,3-28-15,2200,0800
+"Medicine","911BL (Blue)",713,89,"Admitting Code",709,52,3-28-15,0800,0800
+"Medicine","BROOKLYN Trevor",22859,391,"On Call - Cons",612,53,3-28-15,0800,0800
+"Medicine","BROOKLYN Trevor",22859,391,"GM Post Acute",931,54,3-28-15,0800,1630
+"Medicine","SEBASTIAN Cherian",674,41,"CPU On Call - Cons",725,58,3-28-15,1600,0800
+"Medicine","Blue",640,23,"On Call Team - Cons",639,68,3-28-15,0800,0800
+"Medicine","DOUBE Alan",4793,49,"On Call - Specialist",683,84,3-28-15,0800,0800
+"Medicine","BROOKLYN Trevor",22859,391,"Endoscopy On Call - Cons",697,88,3-28-15,1600,0800
+"Medicine","REEVE Paul",4822,13,"Purple Team - Cons",1037,129,3-28-15,0800,1700
+"Medicine","REEVE Paul",4822,13,"Purple Ward AM",1056,136,3-28-15,0800,1230
+"Medicine","SPARKS Chris (Reg)",1756,317,"WE AM - Registrar",971,152,3-28-15,0800,1300
+"Medicine","CAMPLING James (Reg)",1704,292,"WE PM - Registrar Sat",1043,154,3-28-15,1300,2230
+"Medicine","SPARKS Chris (Reg)",1756,317,"Support - Registrar",973,156,3-28-15,1300,1600
+"Medicine","ALAIS Khairul",1642,239,"General Medical (incl AMU) AM - HO",817,164,3-28-15,0800,1600
+"Medicine","ALAIS Khairul",1642,239,"General Medical (incl AMU-HDU) PM - HO",819,165,3-28-15,1600,2230
+"Medicine","ISDALE Eryn",1691,280,"Wards to call - HO",874,167,3-28-15,0800,1600
+"Medicine","ZHOU Su",1697,286,"Wards to call - HO",875,168,3-28-15,1600,2230
+"Medicine","KHAN Wafa (Reg)",1668,257,"Nights - Reg",824,169,3-28-15,2200,0800
+"Medicine","REBELLO Roshan",678,24,"Nights - Reg",825,170,3-28-15,2200,0800
+"Medicine","MOHD ADNAN Hani",1610,232,"Nights - HO",826,171,3-28-15,2200,0800
+"Obs and Gynae","ROHLANDT Deirdre",8056,1,"Admitting Consultant",1155,51,3-28-15,0800,0800
+"Obs and Gynae","ROHLANDT Deirdre",8056,1,"On Duty: WE - On Site Consultant",909,60,3-28-15,0800,1200
+"Obs and Gynae","ROHLANDT Deirdre",8056,1,"On Call : WE - Consultant",581,61,3-28-15,1200,0800
+"Obs and Gynae","KAMDAR Toral",16492,220,"Weekend Short Day - Reg",536,98,3-28-15,0800,1300
+"Obs and Gynae","HANNA Adelle",1128,402,"Weekend Long day - Reg",1032,100,3-28-15,0800,2130
+"Obs and Gynae","NIELSEN Kamilla",1139,403,"Weekend Night - Reg",1034,101,3-28-15,2100,0830
+"Obs and Gynae","ZHANG Teng",1255,109,"Long Day - HO (WEEKEND)",754,109,3-28-15,0800,2100
+"Obs and Gynae","SLIM Atif",1254,108,"Night - HO (WEEKEND)",761,110,3-28-15,2100,0800
+"Obs and Gynae","Week 3",570,217,"Schedule Week",543,391,3-28-15,0800,0800
+"Neurology","SCHEPEL Jan",19447,3,"On Duty: Neurologist",778,41,3-28-15,0800,1630
+"Neurology","SCHEPEL Jan",19447,3,"On Call: Neurologist",840,42,3-28-15,1630,0800
+"Renal","TAN Eddie",20707,13,"On Call - WE",839,40,3-28-15,0800,0800
+"Renal","GREEN Elliott",1563,204,"On Duty WE - RMO",940,45,3-28-15,0800,1600
+"Renal","GREEN Elliott",1563,204,"On Call WE - RMO",941,46,3-28-15,1600,2000
+"Renal","KHAN Wafa (Reg)",1668,257,"On Duty Nights - Registrar",909,47,3-28-15,2200,0800
+"Renal","REBELLO Roshan",678,24,"On Duty Nights - Registrar",910,48,3-28-15,2200,0800
+"Renal","MOHD ADNAN Hani",1610,232,"On Duty Nights - House Officer",911,49,3-28-15,2200,0800
+"Mental Health","CARILLO Doris",#18845,1536,"On-duty Registrar AM WE-Pub-hol",2068,37,3-28-15,0830,2030
+"Mental Health","SHAH Syed",#21157,1939,"On-call Registrar AM WE-Pub-hol",2070,38,3-28-15,0830,2300
+"Mental Health","STEVENS Adam",19449,1532,"On-duty Registrar Night WE-Pub-hol",2069,39,3-28-15,2030,0830
+"Mental Health","SIDDIQUI Mo",2435,2387,"On-call Consultant W-E 2",2244,51,3-28-15,0800,0800
+"Vascular","HOLDAWAY Chris",4840,161,"On Call - Vascular Surgeon",748,42,3-28-15,0800,0800
+"Vascular","ULOOM Amin",935,273,"On Duty WE - Registrar",952,48,3-28-15,0800,1200
+"Vascular","ULOOM Amin",935,273,"On Call WE - Registrar",953,49,3-28-15,1200,0800
+"Vascular","TAN Ruth",1248,163,"WE- Wards.HDU to call HO",874,54,3-28-15,0800,2230
+"Vascular","WILSON Vindhya",1330,239,"WE- ED to call HO",873,55,3-28-15,0800,1600
+"Vascular","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU to call HO",869,57,3-28-15,2200,0800
+"Vascular","SABIH Ayan",1305,215,"Nights - Wards to call HO",870,58,3-28-15,2200,0800
+"Vascular","Week 3",908,218,"Schedule Week",905,97,3-28-15,0800,0800
+"Cardio Thoracic","LIN Zaw",4617,174,"On Call - Surgeon",748,42,3-28-15,0800,0800
+"Cardio Thoracic","LEE Mei Sze",21369,256,"On Call - Registrar",777,43,3-28-15,0730,1700
+"Cardio Thoracic","LEE Mei Sze",21369,256,"On Call - Registrar",882,44,3-28-15,1700,0730
+"Cardio Thoracic","TAN Ruth",1248,163,"WE - Wards.HDU to call HO",893,49,3-28-15,0800,2230
+"Cardio Thoracic","WILSON Vindhya",1330,239,"WE - ED to call HO",896,50,3-28-15,0800,1600
+"Cardio Thoracic","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU to call HO",859,52,3-28-15,2200,0800
+"Cardio Thoracic","SABIH Ayan",1305,215,"Nights - Wards to call HO",860,53,3-28-15,2200,0800
+"Paediatrics","DE ALMEIDA Tilak",4566,26,"On Call: Paediatric SMO - Weekend",1248,75,3-28-15,0800,0800
+"Paediatrics","POTTER Ruth",17961,11,"Registrar - Weekend",999,84,3-28-15,0800,2130
+"Paediatrics","CORTESI Robert",22218,94,"Registrar - Weekend Night",1001,87,3-28-15,2100,0830
+"Paediatrics","CONNOLLY Denise",21740,500,"SHO Weekend - Acutes",983,150,3-28-15,0800,2230
+"Paediatrics","LIM Kee Ping",20336,15,"SHO Weekend - Ward-Del Suite",984,151,3-28-15,0800,2230
+"Paediatrics","See Paed Medical Acute SHO",1160,123,"On Duty Paeds Surg SHO",990,176,3-28-15,0800,1200
+"Paediatrics","See Paed Medical Acute SHO",1160,123,"On Call PM - Paeds Surg SHO",1157,177,3-28-15,1600,2230
+"Paediatrics","SAMARAKKODY Udaya",4878,29,"On Call: Paediatric Surgeon",994,179,3-28-15,0800,0800
+"Paediatrics","Week 4",1012,43,"Admin",1024,185,3-28-15,0800,1800
+"Paediatrics","Week 3",1011,42,"Reg Roster Week",1025,186,3-28-15,0800,0800
+"Paediatrics","Week 5",1013,44,"SHO Roster Week",1077,187,3-28-15,0800,0800
+"Paediatrics","BOURCHIER David",4767,34,"NICU: L3 AM - Consultant",1102,247,3-28-15,0800,1700
+"Paediatrics","BOURCHIER David",4767,34,"NICU: L3 PM - Consultant",1101,248,3-28-15,1700,0800
+"Paediatrics","CARPENTER Lee",1092,71,"NICU: L3 AM - Reg-NNP",1110,251,3-28-15,0800,2100
+"Paediatrics","OVERINGTON Sally",1090,69,"NICU: L3 AM - Reg-NNP",1164,252,3-28-15,0800,2100
+"Paediatrics","BOURCHIER David",4767,34,"NICU: L2 PM - Consultant",1112,254,3-28-15,1700,0800
+"Paediatrics","RAINBOW Maggie",1226,114,"NICU: Night",1117,258,3-28-15,2000,0900
+"Paediatrics","JAYARATNAM Sridharan",16775,122,"On Call - Paed Surgical Reg - Weekend",1237,267,3-28-15,0730,0730
+"Clinic and OT Schedule","LEE Mei Sze",960,256,"Cardiac-Thoracic Registrar (No Team)",1342,40,3-28-15,0730,1700
+"Clinic and OT Schedule","BHIKOO Riyaz",1647,745,"Ophthalmology Reg (No Team)",1597,70,3-28-15,0800,1200
+"Clinic and OT Schedule","SALUJA Manmeet",1690,819,"Urology Registrar (No Team)",1594,106,3-28-15,0730,2230
+"Clinic and OT Schedule","Week 3",1822,5,"Theatre Schedule Week",1397,122,3-28-15,0800,0800
+"Clinic and OT Schedule","LIN Zaw",864,174,"Cardio Thoracic",1525,123,3-28-15,0800,0800
+"Clinic and OT Schedule","SEBASTIAN Cherian",674,41,"Cardiology",1524,124,3-28-15,0800,0800
+"Clinic and OT Schedule","MEYER-ROCHOW Win",1498,459,"General Surgery AM",1527,126,3-28-15,0000,1600
+"Clinic and OT Schedule","MEYER-ROCHOW Win",1498,459,"General Surgery PM",1523,127,3-28-15,1600,0000
+"Clinic and OT Schedule","Rakesh Jattan",1677,698,"MaxFac",1529,128,3-28-15,0800,0800
+"Clinic and OT Schedule","911BL (Blue)",713,89,"General Medicine Admitting Code",1530,129,3-28-15,0800,0800
+"Clinic and OT Schedule","BROOKLYN Trevor",1108,391,"Endoscopy",1531,130,3-28-15,1600,0800
+"Clinic and OT Schedule","DOUBE Alan",686,49,"Rheumatology",1532,131,3-28-15,0800,0800
+"Clinic and OT Schedule","MUTHU Thirayan",1101,78,"Neurosurgery",1534,133,3-28-15,1630,0800
+"Clinic and OT Schedule","ROHLANDT Deirdre",10,1,"Obs and Gynae WE",1550,137,3-28-15,1200,0800
+"Clinic and OT Schedule","KENNEDY Ian",1271,27,"Oncology: Medical",1537,139,3-28-15,0800,0800
+"Clinic and OT Schedule","SEEL Matthew",1283,39,"Oncology: Radiation",1538,140,3-28-15,0800,0800
+"Clinic and OT Schedule","GIDDINGS Gordon",1776,425,"Oncology: Palliative Care",1539,141,3-28-15,1700,0800
+"Clinic and OT Schedule","MERRIMAN Michael",1043,50,"Ophthalmology",1540,142,3-28-15,0800,0800
+"Clinic and OT Schedule","MCCHESNEY Steve",1444,376,"Orthopaedics AM",1541,143,3-28-15,0800,0800
+"Clinic and OT Schedule","MCCHESNEY Steve",1444,376,"Orthopaedics PM",1551,144,3-28-15,0800,0800
+"Clinic and OT Schedule","SAMARAKKODY Udaya",963,29,"Paediatric: Surgical",1543,146,3-28-15,0800,0800
+"Clinic and OT Schedule","WOODFIELD Mike",1149,91,"Plastics",1544,147,3-28-15,0800,0800
+"Clinic and OT Schedule","KAPLAN Michael",910,220,"Rehabilitation",1552,148,3-28-15,0800,0800
+"Clinic and OT Schedule","WONG Janice",657,31,"Respiratory",1546,150,3-28-15,0800,0800
+"Clinic and OT Schedule","CASEY Richard",1585,543,"Urology",1526,151,3-28-15,0945,0800
+"Clinic and OT Schedule","QWERTY HJKLY",1369,1,"Urology",1526,151,3-28-15,0800,0800
+"Clinic and OT Schedule","HOLDAWAY Chris",845,161,"Vascular",1547,152,3-28-15,0800,0800
+"Oncology","ISLAM Shahidul",18361,26,"On Call: Haematology WE - Consultant",1831,53,3-28-15,0800,0800
+"Oncology","KENNEDY Ian",4844,27,"On Call: Medical Oncology - Consultant",1301,56,3-28-15,0800,0800
+"Oncology","SEEL Matthew",17623,39,"On Call: Radiation Oncology - Consultant",1303,59,3-28-15,0800,0800
+"Oncology","CHIN John",15165,10,"Long Duty: Radiation Oncology - Registrar",1782,61,3-28-15,0800,1200
+"Oncology","CHIN John",15165,10,"On Call: Radiation Oncology - Registrar",1783,62,3-28-15,1200,2200
+"Oncology","GIDDINGS Gordon",22986,425,"On Call: Palliative Care - Consultant",1302,64,3-28-15,0800,1700
+"Oncology","GIDDINGS Gordon",22986,425,"On Call: Palliative Care - Consultant",1467,66,3-28-15,1700,0800
+"Oncology","FERGUSON James",1792,595,"On Call: Onc-Haem WE (o-d) - Registrar",1313,121,3-28-15,0800,1200
+"Oncology","FERGUSON James",1792,595,"On Call: Onc-Haem WE (o-c) - Registrar",1314,122,3-28-15,1200,2230
+"Oncology","KHAN Wafa (Reg)",20857,590,"Nights - Registrar",1454,127,3-28-15,2200,0800
+"Oncology","RANASINGHE Indika",21673,606,"On Duty: Onc-Haem-Pall Care WE - HO",1516,157,3-28-15,0800,1600
+"Oncology","RANASINGHE Indika",21673,606,"On Call: Onc-Haem-Pall Care WE - HO",1518,158,3-28-15,1600,2230
+"General Surgery","MEYER-ROCHOW Win",1498,459,"On Call",1536,58,3-28-15,0000,1600
+"General Surgery","MEYER-ROCHOW Win",1498,459,"On Call",1085,59,3-28-15,1600,0000
+"General Surgery","TRIMBER Mary Anne",1749,1285,"On Duty: Night",1072,61,3-28-15,2200,0800
+"General Surgery","TAN Jeff",1723,943,"On Duty: ED Junior Registrar",1070,62,3-28-15,0730,1600
+"General Surgery","SMITH Nicholas",1724,985,"On Duty: Snr Registrar",1071,63,3-28-15,1600,2230
+"General Surgery","HE Michael",1331,240,"On Duty: WE - Wards.HDU to call HO",1529,70,3-28-15,0800,2230
+"General Surgery","WILSON Vindhya",1330,239,"On Duty: WE - ED to call HO",1530,71,3-28-15,0800,1600
+"General Surgery","SABIH Ayan",1305,215,"Nights - Wards only to call",1073,72,3-28-15,2200,0800
+"General Surgery","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU only to call",1074,73,3-28-15,2200,0800
+"General Surgery","Week 3",960,22,"Schedule Week",1470,77,3-28-15,0800,0800
+"General Surgery","SALUJA Manmeet",1690,819,"Urology On Duty: Registrar",1604,149,3-28-15,0730,2230
+"Emergency Department","Week 15",1645,98,"Roster Week",1659,29,3-28-15,0800,0800
+"Emergency Department","LEVY David",20745,47,"AM EPIC",1756,31,3-28-15,0800,1800
+"Emergency Department","WALLACE Muir",7337,114,"AM 1 - EP Triage",1753,33,3-28-15,0800,1800
+"Emergency Department","SANDFORD Kelly",1925,58,"Kids Emerg (KE) WE AM",1727,51,3-28-15,0800,1800
+"Emergency Department","TURNER Daniel",2007,11,"Resus (RR) WE AM",1732,52,3-28-15,0800,1800
+"Emergency Department","SWEENEY Laura",2036,516,"Assessment WE AM",1734,53,3-28-15,0800,1800
+"Emergency Department","QWAH Kai ",10698,135,"AM",1744,55,3-28-15,1000,2000
+"Emergency Department","GAP",1900,65,"Assessment WE mid",1728,62,3-28-15,1200,2200
+"Emergency Department","LUCKIE Rachel",1920,62,"Resus (RR) WE Mid",1733,63,3-28-15,1230,2230
+"Emergency Department","MARCHANT George",1999,17,"Kids Emerg (KE) WE PM",1748,77,3-28-15,1400,0000
+"Emergency Department","LARGE Ruth",14075,118,"PM EPIC",1757,80,3-28-15,1600,0100
+"Emergency Department","STEVENS Greg",2000,16,"PM - EP Triage",1907,82,3-28-15,1600,0100
+"Emergency Department","GONISZEWSKI Mark",1876,74,"Night - Registrar",1741,89,3-28-15,2230,0830
+"Emergency Department","CHANNAPPA Dev",1912,63,"Night - Registrar",1742,90,3-28-15,2230,0830
+"Emergency Department","JOHNSTON Robyn (RMO)",2033,395,"Night - Registrar",1743,91,3-28-15,2230,0830
+"Rehabilitation","KAPLAN Michael",19447,220,"On Call - Consultant",920,49,3-28-15,0800,0800
+"Rehabilitation","SPARKS Chris (Reg)",1756,317,"On Duty: WE AM - Registrar",871,53,3-28-15,0800,1300
+"Rehabilitation","WALLAND Katherine",1718,306,"On Duty: WE PM - Registrar",983,55,3-28-15,1300,2230
+"Rehabilitation","REBELLO Roshan",678,24,"On Duty: Nights - Registrar",932,56,3-28-15,2200,0800
+"Rehabilitation","KHAN Wafa (Reg)",1668,257,"On Duty: Nights - Registrar",873,57,3-28-15,2200,0800
+"Rehabilitation","ISDALE Eryn",1691,280,"On Duty: WE AM - HO",934,59,3-28-15,0800,1600
+"Rehabilitation","ZHOU Su",1697,286,"On Duty: WE PM - HO",933,60,3-28-15,1600,2230
+"Rehabilitation","MOHD ADNAN Hani",1610,232,"On Duty: Nights - HO",872,62,3-28-15,2200,0800
+"ENT","Week 3",960,22,"Schedule Week",929,42,3-28-15,0800,0800
+"ENT","CLARKSON John",4549,14,"ENT Consultant on call",1508,43,3-28-15,0800,0800
+"ENT","CHAN Benjimen",1577,628,"On Duty: AM - Registrar",964,45,3-28-15,0730,0945
+"ENT","DULKU Kiren",1578,629,"On Duty: AM - Registrar",964,45,3-28-15,0945,2230
+"ENT","CHAN Benjimen",1577,628,"On Call: Night - Registrar",965,46,3-28-15,2230,2230
+"ENT","DULKU Kiren",1578,629,"On Call: Night - Registrar",965,46,3-28-15,2230,0730
+"ENT","TAN Ruth",1248,163,"On Duty: WE AM - Ward.HDU to call HO",1476,51,3-28-15,0800,2230
+"ENT","WILSON Vindhya",1330,239,"On Duty: WE AM - ED to call HO",1477,52,3-28-15,0800,1600
+"ENT","SABIH Ayan",1305,215,"Nights - Wards to call HO",1474,53,3-28-15,2200,0800
+"ENT","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU to call HO",1475,54,3-28-15,2200,0800
+"Ophthalmology","MERRIMAN Michael",6631,50,"On Call -Surgeon",1036,36,3-28-15,0800,0800
+"Ophthalmology","BHIKOO Riyaz",1647,745,"On Duty: AM - Registrar",1037,37,3-28-15,0800,1200
+"Ophthalmology","BHIKOO Riyaz",1647,745,"On Duty: PM - Registrar",1038,38,3-28-15,1200,1600
+"Ophthalmology","BHIKOO Riyaz",1647,745,"On Call: Nights - Registrar",1039,39,3-28-15,1600,0800
+"Ophthalmology","TAN Ruth",1248,163,"WE - Wards.HDU to call HO",1486,43,3-28-15,0800,2230
+"Ophthalmology","WILSON Vindhya",1330,239,"WE - ED to call HO",1479,44,3-28-15,0800,1600
+"Ophthalmology","SABIH Ayan",1305,215,"Nights - Wards to call HO",1478,45,3-28-15,2200,0800
+"Ophthalmology","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU to call HO",1472,46,3-28-15,2200,0800
+"Ophthalmology","Week 3",960,22,"Schedule Week",1475,126,3-28-15,0800,0800
+"Orthopaedics","MCCHESNEY Steve",6287,376,"On Call: Ward - Surgeon",1596,48,3-28-15,0800,0800
+"Orthopaedics","Via Pager",1133,87,"On Duty: AM - Registrar",1120,49,3-28-15,0800,1600
+"Orthopaedics","CALDERA Kal",1668,1106,"On Duty: PM - Registrar",1495,50,3-28-15,1600,2200
+"Orthopaedics","HOGAN Yeung",1663,1101,"On Duty: PM - Senior Registrar",1121,51,3-28-15,1600,2200
+"Orthopaedics","MALIK Nazeef",1669,1107,"On Call: Night - Registrar",1122,52,3-28-15,2200,0800
+"Orthopaedics","KANDUKURI Sharmila",1337,245,"On Duty: WE - HO",1484,56,3-28-15,0800,2230
+"Orthopaedics","SABIH Ayan",1305,215,"Night - Wards to call HO",1123,57,3-28-15,2200,0800
+"Orthopaedics","YEE Mei Shing (Sharon)",1304,214,"Night - ED.HDU to call HO",1126,58,3-28-15,2200,0800
+"Orthopaedics","Week 3",960,22,"Schedule Week",1470,109,3-28-15,0800,0800
+"*ICU","O'ROURKE Tom",8519,25,"ICU - Consultant",1546,30,3-28-15,0800,1600
+"*ICU","O'ROURKE Tom",8519,25,"HDU - Consultant",1601,31,3-28-15,0800,1700
+"*ICU","O'ROURKE Tom",8519,25,"On Call - Consultant",1547,33,3-28-15,1600,0800
+"*ICU","SUTTON James",22137,580,"Main Unit Reg LD",1625,43,3-28-15,0800,2100
+"*ICU","COBBETT Joanne",23160,581,"Main Unit Reg WE",1853,44,3-28-15,0800,2100
+"*ICU","REID Katie",22103,243,"Night - Main",1850,53,3-28-15,2000,0900
+"*ICU","JOHNSTONE Lucy",23462,586,"Night - Cardiac",1851,54,3-28-15,2000,0900
+"*ICU","STINTON Emily",21084,590,"SHO - HDU Weekend AM",1874,58,3-28-15,0800,1600
+"*ICU","OWEN Adrian",19060,577,"Transport cover",1843,66,3-28-15,1700,0500
+"Maxillo-Facial and Oral","Rakesh Jattan",1677,698,"On Call - Surgeon",1092,40,3-28-15,0800,0800
+"Maxillo-Facial and Oral","LOCKYEAR Jamie",1664,652,"On Duty: AM - HO",1096,47,3-28-15,0800,1600
+"Maxillo-Facial and Oral","LOCKYEAR Jamie",1664,652,"On Call: Night - HO",1095,48,3-28-15,1600,0800
+"Maxillo-Facial and Oral","Week 3",1545,488,"Schedule Week",1542,80,3-28-15,0800,0800
+"Neurosurgery","MUTHU Thirayan",13436,78,"On Duty - Surgeon",1104,41,3-28-15,0800,1630
+"Neurosurgery","MUTHU Thirayan",13436,78,"On Call - Surgeon",1106,42,3-28-15,1630,0800
+"Neurosurgery","HEANEY Jonathon",1669,713,"On Call - Registrar",1108,44,3-28-15,0800,0800
+"Neurosurgery","TAN Ruth",1248,163,"On Duty: WE - HO",1558,48,3-28-15,0800,2230
+"Neurosurgery","YEE Mei Shing (Sharon)",1304,214,"Nights - ED.HDU to call HO",1661,50,3-28-15,2200,0800
+"Neurosurgery","SABIH Ayan",1305,215,"Nights - Wards to call HO",1662,51,3-28-15,2200,0800
+"Neurosurgery","Week 3",1563,540,"Schedule Week",1470,68,3-28-15,0800,0800
+"Plastics","WOODFIELD Mike",10808,91,"On Call - Surgeon",1142,43,3-28-15,0800,0800
+"Plastics","AHMED Zeeshan",1586,585,"On Call: Night - Registrar",1144,46,3-28-15,1600,0800
+"Plastics","TAN Ruth",1248,163,"On Duty: WE - Wards.HDU to call HO",1558,53,3-28-15,0800,2230
+"Plastics","WILSON Vindhya",1330,239,"On Duty: WE - ED to call HO",1531,54,3-28-15,0800,1600
+"Plastics","SABIH Ayan",1305,215,"On Duty: Night - HO Wards to call",1147,55,3-28-15,2200,0800
+"Plastics","YEE Mei Shing (Sharon)",1304,214,"On Duty: Night - HO ED-HDU to call",1148,56,3-28-15,2200,0800
+"Plastics","Week 3",1687,867,"Theatre Week",1597,109,3-28-15,0800,0800
+"Urology","DAVIES Adam",926,8,"On Call - Consultant",876,39,3-28-15,0800,0945
+"Urology","CASEY Richard",1585,543,"On Call - Consultant",876,39,3-28-15,0945,0800
+"Urology","SALUJA Manmeet",1690,819,"On Duty: Registrar",918,40,3-28-15,0730,2230
+"Urology","TRIMBER Mary Anne",1749,1285,"On Call: Night - Reg",1528,43,3-28-15,2200,0800
+"Urology","HE Michael",1331,240,"On Duty: WE AM - Wards.HDU to call HO",1533,46,3-28-15,0800,2230
+"Urology","WILSON Vindhya",1330,239,"On Duty: WE AM - ED to call HO",1534,47,3-28-15,0800,1600
+"Urology","SABIH Ayan",1305,215,"Nights Wards to call - HO",1529,48,3-28-15,2200,0800
+"Urology","YEE Mei Shing (Sharon)",1304,214,"Nights ED.HDU to call - HO",1530,49,3-28-15,2200,0800
+"Urology","Week 3",960,22,"Schedule Week",1470,81,3-28-15,0800,0800
+"Respiratory","WONG Janice",4625,31,"On Call - Consultant",671,38,3-28-15,0800,0800
+"Respiratory","SPARKS Chris (Reg)",1756,317,"On Duty: WE AM - Registrar",979,42,3-28-15,0800,1300
+"Respiratory","WALLAND Katherine",1718,306,"On Duty: WE PM - Registrar",1054,44,3-28-15,1300,2230
+"Respiratory","KHAN Wafa (Reg)",1668,257,"On Duty: Nights - Registrar",871,45,3-28-15,2200,0800
+"Respiratory","REBELLO Roshan",678,24,"On Duty: Nights - Registrar",873,46,3-28-15,2200,0800
+"Respiratory","ZHOU Su",1697,286,"On Duty: WE AM - House Officer",977,49,3-28-15,0800,1600
+"Respiratory","ZHOU Su",1697,286,"On Duty: WE PM - House Officer",978,50,3-28-15,1600,2230
+"Respiratory","MOHD ADNAN Hani",1610,232,"On Duty: Nights - House Officer",872,51,3-28-15,2200,0800
+"Z Hospital Management","POUTAPU S",1725,503,"Duty Chaplain",1562,30,3-28-15,0800,0800
+"Z Hospital Management","BOYCE G Fr",1559,10,"Catholic Priest",1560,34,3-28-15,0800,0800
+"Z Hospital Management","SHELLEY Ginny",1596,52,"AM - Clinical Resource Nurse - 021.658.694",1610,36,3-28-15,0700,1730
+"Z Hospital Management","PALLISER Taua",1569,14,"PM - Clinical Resource Nurse - 021.791.118",1670,40,3-28-15,1400,0030
+"Z Hospital Management","O'HARA Keith",1619,144,"Night - Clinical Resource Nurse - 021.658.694",1627,47,3-28-15,2200,0730
+"Z Hospital Management","Bed Manager",99999,16,"Bed Manager",1573,50,3-28-15,0800,0800
+"Z Hospital Management","IHT",778899,327,"IHT Coordinator",1709,51,3-28-15,0800,0800
+"Z Hospital Management","Duty Manager",1579,17,"Duty Manager",1574,52,3-28-15,1430,0800
+"Z Hospital Management","MITCHELL Melody",1707,298,"Nurse Manager",1575,53,3-28-15,0800,0800
+"Z Hospital Management","LAWES Suzanne",1636,179,"Hospital Manager",1576,54,3-28-15,1700,0800
+"Z Hospital Management","COWAN Rachael",1661,251,"SNR - Medical Registrar",1630,55,3-28-15,0800,0800
+"Z Hospital Management","YAPP Carley",1736,40,"SNR - Medical House Officer",1631,56,3-28-15,0800,0800
+"Z Hospital Management","O'HEA Eimear",1327,236,"SNR - Surgical House Officer",1632,57,3-28-15,0730,0730
+"Thames","McCLAIN Erik",22721,690,"Admitting - Physician",1445,45,3-28-15,0800,1630
+"Thames","McCLAIN Erik",22721,690,"On Call  - Physician",1295,46,3-28-15,1630,0800
+"Thames","CARGILL John",1268,96,"GP in ED",1480,99,3-28-15,1000,1600
+"Thames","KANAN Faiz",6488,75,"ED  AM  Weekend - Med-Spec",1275,100,3-28-15,0800,1830
+"Thames","SINGH Harpal",1270,98,"ED  AM  Weekend - Med-Spec",1276,103,3-28-15,1030,2230
+"Thames","TWINEM Gillian",19873,79,"ED Weekend  Night - Med-Spec",1277,105,3-28-15,2200,0830
+"Thames","LARGE Ruth",14075,73,"ED in Waikato   WK",1351,125,3-28-15,0800,1800
+"Thames","ELLIS Verity",22958,1092,"IPU AM SHO weekend and pub hol",1318,134,3-28-15,0800,1630
+"Thames","Week 8",1497,342,"Schedule week",1381,206,3-28-15,0800,0800
+"Radiology","GILBERT Kevin",6981,88,"On Call Weekend Radiologists",1393,185,3-28-15,0800,0800
+"Radiology","SIMCOX Kim",1359,116,"On Duty WE - Registrar",1377,188,3-28-15,0800,2200
+"Radiology","FORD Christopher",1334,110,"On Call Night - Registrar",1465,195,3-28-15,2200,0800
+"Tokoroa","Week 3",1405,465,"Schedule Week",1363,31,3-28-15,0800,1630
+"Tokoroa","LOCUM",1401,453,"ED WE Swing",1377,35,3-28-15,1200,2230
