@@ -1,0 +1,429 @@
+<?php
+class Sidebar {
+    public function __toString() {
+        global $mysqli;
+        global $key;
+        $stmt = $mysqli->prepare("SELECT i, name from lab_panels ORDER BY i");
+        $stmt->execute();
+        $stmt->bind_result($i, $name);
+        $s = '<div id="left"><ul id="sidebar">';
+        while ($stmt->fetch()) {
+            $s .= sprintf('<li><a class="side p%d" href=?key=%s&amp;panel=%d>%s</a></li>', $i,$key, $i, $name);
+        }
+        $s .= "</ul></div>";
+        return $s;
+    }
+}
+class SpecList {
+    private $specs;
+    function __construct() {
+        $this->specs = array();
+    }
+    private function getCurrentSpec() {
+        $last = end($this->specs);
+        return $last;
+    }
+    public function addLab($name,$spec,$panel,$dcol,$drec,$dack) {
+        $last = $this->getCurrentSpec();
+        if (!$last OR ($last->id != $spec)) {
+            $this->specs[] = new SpecOld($spec,$dcol,$drec,$dack);
+        }
+        $last = $this->getCurrentSpec();
+        $last->addLab($name,$panel);
+    }
+    public function printAll() {
+        foreach($this->specs as $spec) {
+            $spec->printAll();
+        }
+    }
+}
+class Series {
+    public $panel;
+    public $panel_i;
+    public $labname;
+    private $values;
+    private $type;
+    private $units;
+    private $lln;
+    private $uln;
+    private $range;
+    private function setRange() {
+
+        if (!is_null($this->lln) AND !is_null($this->uln)) {$this->range = sprintf("%g - %g", $this->lln, $this->uln);}
+        elseif (!is_null($this->lln) AND is_null($this->uln)) {$this->range = sprintf("&gt; %g", $this->lln);}
+        elseif (is_null($this->lln) AND !is_null($this->uln)) {$this->range = sprintf("&lt; %g", $this->uln);}
+        else {$this->range = '';}
+    }
+    public function addResult($spec,$value) {
+        $this->values[$spec] = $value;
+    }
+    private function printResult($spec) {
+        if (isset($this->values[$spec])) {
+            $value = $this->values[$spec];
+            print('<td>');
+            if ($value < $this->lln OR $value > $this->uln) {
+                printf('<em>%g</em>', $value);
+            } else {
+                printf('%g', $value);
+            }
+            print('</td>');
+        } else {
+            print('<td></td>');
+        }
+    }
+    private function printRange() {
+        printf('<td>%s</td>', $this->range);
+    }
+    private function printUnits() {
+        printf('<td>%s</td>', $this->units);
+    }
+    public function printRow($specs) {
+        print('<tr>');
+        printf('<td>%s</td>', $this->labname);
+        foreach ($specs as $spec) {
+            $this->printResult($spec->id);
+        }
+        $this->printRange();
+        $this->printUnits();
+        print('</tr>');
+    }
+    function __construct($panel,$panel_i,$labname,$type,$units,$lln,$uln,$lln_f,$uln_f) {
+        global $person;
+        if ($person->sex=='f') {
+            if (!is_null($lln_f)) {$lln = $lln_f;}
+            if (!is_null($uln_f)) {$uln = $uln_f;}
+        }
+        $this->panel = $panel;
+        $this->panel_i = $panel_i;
+        $this->labname = $labname;
+        $this->values = array();
+        $this->type = $type;
+        $this->units = $units;
+        $this->lln = $lln;
+        $this->uln = $uln;
+        $this->setRange();
+    }
+}
+class LabList {
+    private $labs;
+    private $specs;
+
+    function __construct() {
+        $this->labs = array();
+        $this->specs = array();
+    }
+    public function addLab(
+            $panel,
+            $panel_i,
+            $name,
+            $spec,
+            $value,
+            $type,
+            $units,
+            $lln,
+            $uln,
+            $lln_f,
+            $uln_f,
+            $dcol,
+            $drec,
+            $dack,
+            $coll,
+            $pack) {
+        $series = $this->getSeries($panel,$panel_i,$name,$type,$units,$lln,$uln,$lln_f,$uln_f);
+        $series->addResult($spec,$value);
+        //$series->addResult($spec,$value);
+        $this->updateSpecs($spec,$dcol,$drec,$dack,$coll,$pack);
+    }
+    private function getSeries($panel,$panel_i,$key,$type,$units,$lln,$uln,$lln_f,$uln_f) {
+        if (!isset($this->labs[$key])) {
+            $this->labs[$key] = new Series($panel,$panel_i,$key,$type,$units,$lln,$uln,$lln_f,$uln_f);
+        }
+        return $this->labs[$key];
+    }
+    private function updateSpecs($spec,$dcol,$drec,$dack,$coll, $pack) {
+        if (!isset($this->specs[$spec])) {
+            $this->specs[] = new Spec($spec,$dcol,$drec,$dack, $coll, $pack);
+        }
+    }
+    public function printAll() {
+        global $person;
+        printf('%s', $person);
+        $i = new Sidebar();
+        printf('<div id="page">%s<div id="right">', $i);
+        $panel = '';
+        foreach($this->labs as $lab) {
+            if ($panel != $lab->panel) {
+                if ($panel != '') {
+                    print('</tbody></table>');
+                }
+                $panel = $lab->panel;
+                printf('<table><caption class="p%d">%s</caption><colgroup><col span="2"><col span="%d" class="old"></colgroup><thead><tr><th>Test</th>', $lab->panel_i, $panel, count($this->specs)+1);
+                foreach($this->specs as $spec) {
+                    $spec->printSpec();
+                }
+                print('<th>Range</th><th>Units</th></tr>
+                    </thead><tbody>');
+            }
+            $lab->printRow($this->specs);
+        }
+        if ($panel != '') {
+            print('</tbody></table>');
+        }
+        print('</div>');
+        print('</div>');
+    }
+}
+class Spec {
+    public $id;
+    private $dcol;
+    private $drec;
+    private $dack;
+    private $coll;
+    private $pack;
+
+    public function printSpec() {
+        $format = 'd/m/y\<\b\r\>H:i';
+        /*
+        printf('<th>Collected %s by %s<br />Received: %s',
+            $this->dcol->format($format),
+            $this->coll,
+            $this->drec->format($format)
+        );
+        */
+        print('<th>');
+        if ($this->dack) {
+            /*
+            printf('<br />Acknowledged %s by %s',
+                $this->dack->format($format),
+                $this->pack
+            );
+            */
+            printf('<input type="checkbox"><br>');
+        }
+        print($this->dcol->format($format));
+        print('</th>');
+    }
+    function __construct($spec,$dcol,$drec,$dack, $coll, $pack) {
+        $this->id=$spec;
+        $this->dcol=$dcol;
+        $this->drec=$drec;
+        $this->dack=$dack;
+        $this->coll=$coll;
+        $this->pack=$pack;
+    }
+}
+
+class Person {
+    public $name;
+    public $nhi;
+    public $dob;
+    public $age;
+    public $sex;
+    function __construct($name,$nhi,$dob,$sex) {
+        $this->name = $name;
+        $this->nhi = $nhi;
+        $this->dob = new DateTime($dob);
+        $this->age = $this->dob->diff(new DateTime("now"));
+        $this->sex = $sex;
+    }
+    public function __toString() {
+        return sprintf('<header id="toplink"><a href="?key=%s"><span id="nhi">%s</span><span id="name">%s</span><span id="age">%d%s</span></a></header>', 
+            $this->nhi,
+            strtoupper($this->nhi),
+            $this->name,
+            $this->age->format("%y"),
+            strtoupper($this->sex)
+            //$this->dob->format("d/m/Y"),
+        );
+    }
+}
+
+/*
+class SpecOld {
+    public $id;
+    public $dcol;
+    public $drec;
+    public $dack;
+    private $panels;
+
+    function __construct($id,$dcol,$drec,$dack) {
+        $this->panels = array();
+        $this->id=$id;
+        $this->dcol=$dcol;
+        $this->drec=$drec;
+        $this->dack=$dack;
+        //printf('%s, %s, %s, %s', $this->id, $this->dcol, $this->drec, $this
+    }
+    private function getlastPanel() {
+        return end($this->panels);
+    }
+    public function addLab($name, $panel) {
+        $last = $this->getlastPanel();
+        if (!$last OR $last->panel != $panel) {
+            $this->panels[] = new Panel($panel);
+        }
+        $last = $this->getlastPanel();
+        $last->addLab($name);
+
+    }
+    public function printAll() {
+        global $key;
+        foreach ($this->panels as $panel) {
+            printf(
+                '<tr>
+                <td>%s</td>
+                <td><a href="?key=%s&amp;panel=%s">%s</a></td>
+                <td>%s</td>
+                <td>%s</td>
+                <td>%s</td>
+                </tr>
+                ',
+                $panel->panel,
+                $key,
+                $panel->panel,
+                $panel->strLabs(),
+                $this->dcol,
+                $this->drec,
+                $this->dack
+            );
+        }
+    }
+}
+ */
+
+class Panel {
+    public $panel;
+    private $labs;
+    function __construct($panel) {
+        $this->panel = $panel;
+        $this->labs = array();
+    }
+    public function addLab($name) {
+        $this->labs[] = $name;
+    }
+    public function strLabs() {
+        $str = '';
+        foreach ($this->labs as $lab) {
+            $str .= sprintf("%s ", $lab);
+        }
+        return $str;
+    }
+}
+
+
+/*
+    $stmt = $mysqli->prepare(
+        "SELECT v.name,specimen,t.panel,collected,received,acknowledged FROM `lab_values` as v JOIN `lab_tests` as t using (name) JOIN `lab_specs` as s on s.i=v.specimen JOIN lab_panels as ps on t.panel=ps.name WHERE patient=? ORDER BY collected,ps.i,t.i"
+    );
+    $stmt->bind_param('s',$key);
+    $stmt->execute();
+    $stmt->bind_result(
+        $name,
+        $spec,
+        $panel,
+        $dcol,
+        $drec,
+        $dack
+    );
+?>
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Labs</th>
+<th>Collected</th>
+<th>Received</th>
+<th>Acknowledged</th>
+</tr></thead>
+<tbody>
+<?php
+    $stack = new SpecList();
+    while ($stmt->fetch()) {
+        $stack->addLab($name,$spec,$panel,$dcol,$drec,$dack);
+    }
+    $stmt->close();
+    $stack->printAll();
+?>
+</tbody>
+</table>
+<?php
+ */
+$prepare = "SELECT
+    panel.name,
+    panel.i,
+    test.name,
+    spec.i,
+    patient.name,
+    patient.nhi,
+    patient.dob,
+    patient.sex,
+    value_float,type,units,lln,uln,lln_f,uln_f,collected,received,acknowledged,collector,acknowledger
+    FROM `lab_values` as value
+    JOIN lab_tests as test using (name)
+    JOIN lab_panels as panel on panel.name=test.panel
+    JOIN lab_specs as spec on spec.i=value.specimen
+    JOIN lab_patients as patient on patient.nhi=spec.patient
+    WHERE patient=? %s
+    ORDER BY panel.i, collected DESC, test.i";
+if (array_key_exists('panel', $_GET)) {
+    $where = 'AND panel.i=?';
+    $stmt = $mysqli->prepare(sprintf($prepare, $where));
+    $stmt->bind_param('si',  $key, $_GET['panel']);
+} else {
+    $where = '';
+    $stmt = $mysqli->prepare(sprintf($prepare, $where));
+    $stmt->bind_param('s', $key);
+}
+$stmt->execute();
+$stmt->bind_result(
+    $panel,
+    $panel_i,
+    $name,
+    $spec,
+    $pname,
+    $nhi,
+    $dob,
+    $sex,
+    $value,
+    $type,
+    $units,
+    $lln,
+    $uln,
+    $lln_f,
+    $uln_f,
+    $dcol,
+    $drec,
+    $dack,
+    $coll,
+    $pack
+);
+$stack = new LabList();
+$c = true;
+while ($stmt->fetch()) {
+    if ($c == true) {
+        $person = new Person($pname,$nhi,$dob,$sex);
+        $c = false;
+    }
+    $dcol = new DateTime($dcol);
+    $drec = new DateTime($drec);
+    if ($dack) {$dack = new DateTime($dack);}
+    $stack->addLab(
+        $panel,
+        $panel_i,
+        $name,
+        $spec,
+        $value,
+        $type,
+        $units,
+        $lln,
+        $uln,
+        $lln_f,
+        $uln_f,
+        $dcol,
+        $drec,
+        $dack,
+        $coll,
+        $pack
+    );
+}
+$stmt->close();
+$stack->printAll();

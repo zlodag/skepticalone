@@ -1,0 +1,55 @@
+div {
+    clear: both;
+    margin: 10px 0;
+}
+fieldset {
+    margin-bottom: 10px;
+    border: none;
+}
+.right {
+    float: right;
+    clear: right;
+        text-align: right;
+}
+.left {
+    float: left;
+    clear: left;
+}
+textarea {
+    width: 100%;
+    min-height: 100px;
+}
+#diagnoses button {
+    margin-left: 5px;
+}
+input.diagnosis {
+    width: 20em;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 5px;
+}
+th {
+    border: 1px solid black;
+}
+:required,td>input {
+    background-color: lightyellow;
+}
+.cont .sig2, .stop .sig2, .stop .include, .stop .mitte, .new .sig1, .hidden {
+    visibility: hidden;
+    border: none;
+}
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+li {
+    margin: 10px 0;
+}
+#replace {
+    max-width: 30em;
+    background-color: #BAFEFF;
+    padding: 10px;
+    display: none;
+}

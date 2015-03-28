@@ -1,0 +1,162 @@
+body {
+    font-family:sans-serif;
+    margin: 0;
+}
+#page {
+    position: relative;
+}
+#nhi {
+    font-weight: bold;
+}
+#toplink {
+    background-color: #a3f1ff;
+}
+.side, #toplink {
+    cursor: pointer;
+}
+#left {
+    width: 200px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+#sidebar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    display: block;
+}
+.side {
+    /* margin: 5px 0; */
+    margin-left: 0;
+    color: black;
+}
+.side, #toplink,div.caption {
+    text-align:left;
+    display: block;
+    text-decoration: none;
+    line-height:25px;
+}
+#toplink>span, .side, div.caption {
+    padding-left: 20px;
+}
+.side:hover, #toplink:hover {
+    background-color: black;
+    color: white;
+}
+#right {
+    margin-left: 200px;
+    padding: 5px 5px 0 5px;
+    float: left;
+}
+table.panel {
+    border-collapse: collapse;
+    margin-bottom: 25px;
+}
+table.panel td, table.panel th {
+    padding: 2px 0;
+    min-width: 80px;
+    max-width: 80px;
+    text-align: center;
+    overflow: scroll;
+    border: solid black;
+    border-width: 0;
+}
+table.panel td {
+    height: 1.2em
+}
+table.panel thead {
+    vertical-align: bottom;
+}
+em {
+    font-style: normal;
+    color: red;
+    font-weight: 700;
+}
+.p1 {
+    background-color: #ff6666;
+}
+.p2 {
+    background-color: #b5ffb5;
+}
+.p3 {
+    background-color: #c2c2ff;
+}
+.p4 {
+    background-color: #d6d6d6;
+}
+.p5 {
+    background-color: #ff7f00;
+}
+.p6 {
+    background-color: #ff9efd;
+}
+tbody>tr:nth-child(odd)>td {
+    background-color: #dae5f4;
+}
+#loadimg {
+    position: absolute;
+    top: 86px;
+    left: 514px;
+    display: none;
+}
+div.contain {
+    position: relative;
+}
+div.scroll {
+    width:400px;
+    margin-left: 161px;
+    overflow-x: scroll;
+}
+div.scroll>table {
+    background: linear-gradient(to right, #FBFFD3, white 200px);
+}
+.blank, .test, .range, .units {
+    position: absolute;
+}
+table.panel th.test, table.panel th.range, table.panel th.units {
+    padding-top: 36px;
+}
+table.panel .blank {
+    left: 0px;
+    min-width: 641px;
+    z-index: -1;
+}
+table.panel .test {
+    left:0px;
+}
+table.panel .range {
+    left: 560px;
+}
+table.panel .units {
+    left: 641px;
+}
+table.panel>tbody>tr:last-child>td {
+    border-bottom-width: 1px;
+}
+table.panel>tbody>tr:first-child>td {
+    border-top-width:1px;
+}
+table.panel td.test,table.panel th.test {
+    border-right-width: 1px;
+    border-left-width:1px;
+    min-width: 160px;
+}
+table.panel td.range,table.panel th.range {
+    border-left-width:1px;
+}
+table.panel td.units,table.panel th.units {
+    border-right-width: 1px;
+}
+div.caption {
+    width: 700px;
+    border: 1px solid black;
+}
+#left>a {
+    display: block;
+    width: 200px;
+    line-height: 25px;
+    text-align: center;
+}
