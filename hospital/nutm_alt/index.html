@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Non-Urgent Task Manager</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/nutm.css" />
+    <!-- <script src="js/jquery.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="js/jquery.timeago.js"></script>
+    <script src="js/chance.min.js"></script>
+    <script src="js/nutm.js"></script>
+  </head>
+<body>
+    <select id="user" class="block button" required>
+        <option value="">Sign in</option>
+    </select>
+<table id="jobs">
+    <thead>
+        <tr>
+            <th class="added">Added</th>
+            <th class="nhi">NHI</th>
+            <th class="p_name">Patient name</th>
+            <th class="location">Location</th>
+            <th class="specialty">Specialty</th>
+            <th class="urgency">Urgency</th>
+            <th class="details">Details</th>
+            <th class="accepted">Accepted</th>
+            <th class="completed">Completed</th>
+        </tr>
+    </thead>
+    <tbody />
+</table>
+<div id="addrandom" class="button">Add new random task</div>
+<form id="taskform" action="#" method="get">
+    <ul>
+        <li>
+            <input id="p_name" class="top left half block" name="p_name" placeholder="Patient Name" required />
+        </li>
+        <li>
+            <input id="nhi" class="top right half block" name="nhi" placeholder="NHI" pattern="[A-Za-z]{3}[0-9]{4}" maxlength="7" size="7" required />
+        </li>
+        <li>
+            <select id="ward" class="left half block" name="ward" required>
+                <option value="">Ward</option>
+                <option>AMU</option>
+                <option>A2</option>
+                <option>A3</option>
+                <option>A4</option>
+                <option>CCU</option>
+                <option>CC2</option>
+                <option>CC3</option>
+                <option>M2</option>
+                <option>M12</option>
+                <option>M3</option>
+                <option>M4</option>
+                <option>M14</option>
+                <option>M5</option>
+                <option>M6</option>
+                <option>M16</option>
+                <option>M7</option>
+                <option>M17</option>
+                <option>M8</option>
+                <option>E1</option>
+                <option>E2</option>
+                <option>E7</option>
+                <option>HBC34</option>
+                <option>HBC35</option>
+                <option>HBC36</option>
+            </select>
+        </li>
+        <li>
+            <input id="bed" class="right half block" name="bed" placeholder="Bed" size="3" maxlength="3" required />
+        </li>
+        <li>
+            <select id="specialty" class="left half block" name="specialty" required>
+                <option value="">Select a Specialty</option>
+                <option>Cardiology</option>
+                <option>Cardiothoracic Surgery</option>
+                <option>Dermatology</option>
+                <option>Endocrinology</option>
+                <option>Gastroenterology</option>
+                <option>General Medicine</option>
+                <option>General Surgery</option>
+                <option>Gynaecology</option>
+                <option>Haematology</option>
+                <option>Maxillofacial Surgery</option>
+                <option>Mental Health</option>
+                <option>Neurology</option>
+                <option>Neurosurgery</option>
+                <option>Oncology</option>
+                <option>Ophthalmology</option>
+                <option>O&amp;G</option>
+                <option>Orthopaedic Surgery</option>
+                <option>ENT</option>
+                <option>Paediatric Medicine</option>
+                <option>Paediatric Surgery</option>
+                <option>Palliative Care</option>
+                <option>Plastic Surgery</option>
+                <option>Renal Medicine</option>
+                <option>Respiratory Medicine</option>
+                <option>Rheumatology</option>
+                <option>Urology</option>
+                <option>Vascular Surgery</option>
+            </select>
+        </li>
+        <li>
+            <select id="urgency" class="right half block" name="urgency" required>
+                <option value="">Urgency</option>
+                <option>8 hours</option>
+                <option>4 hours</option>
+                <option>2 hours</option>
+                <option>1 hour</option>
+                <option>30 mins</option>
+            </select>
+        </li>
+        <li>
+            <input id="details" class="whole block" name="details" placeholder="Details" required />        </li>
+        <li>
+            <input id="addthis" class="bottom whole block" type="submit" value="Add this task" disabled />
+        </li>
+    </ul>
+</form>
+<!-- <pre id="formoutput" /> -->
+</body>
+</html>
