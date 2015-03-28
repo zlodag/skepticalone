@@ -1,0 +1,40 @@
+.inactive {
+    text-decoration: line-through;
+}
+.answer {
+    display: none;
+    font-size:smaller;
+}
+dl {
+    float: left;
+    border: 4px solid #32A1CC;
+    background-color: #000C94;
+    padding: 5px;
+    width: 250px;
+    margin: 10px;
+    border-radius: 10px;
+}
+.dose {
+    color:yellow;
+}
+.analgesics {
+    border-color: green;
+}
+.emergency {
+    border-color: red;
+}
+.anti-emetics {
+    border-color: lightgreen;
+}
+.laxatives {
+    border-color: brown;
+}
+.antibiotics {
+    border-color: white;
+}
+.psychiatric {
+    border-color: yellow;
+}
+#tail {
+    clear: both;
+}

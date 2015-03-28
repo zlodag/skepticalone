@@ -1,0 +1,14 @@
+table {
+    background-color: #fff2cc;
+    color: black;
+}
+table td {
+    padding: 0 5px;
+}
+tbody>tr:last-child {
+    background-color: yellow;
+}
+.red {
+    color: red;
+    border-color:black;
+}

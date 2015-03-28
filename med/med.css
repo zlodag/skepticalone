@@ -1,0 +1,11 @@
+tr:hover {
+background-color: #30810B;
+}
+#searchstrbutton {
+}
+#searchstr {
+    display: none;
+    background-color: gray;
+    padding: 10px;
+}
+

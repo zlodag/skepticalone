@@ -1,0 +1,25 @@
+body
+{
+    color: white;
+    margin: 0;
+    background-color: #000861;
+}
+a:link, a:visited {
+    color: white;
+    font: 14px arial,sans-serif;
+}
+table {
+    border-collapse:collapse;
+}
+table,th,td {
+    border:1px solid;
+}
+#main
+{
+    margin: 10px;
+}
+#valid
+{
+    padding: 10px;
+    clear: both;
+}

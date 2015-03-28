@@ -1,0 +1,43 @@
+#searchstr {
+    display: none;
+    background-color: gray;
+    padding: 10px;
+}
+tr:hover {
+    background-color: #30810B;
+}
+td {
+    border-color: white;
+}
+#task {
+    width: 100%;
+}
+#due {
+    min-width: 150px;
+}
+.active {
+    visibility:visible;
+}
+tr.a0 {
+    display:none;
+}
+tr.c1 {
+    text-decoration: line-through;
+    display:none;
+}
+tr.p1 {
+    background-color: red;
+}
+tr.p2 {
+    background-color: darkorange;
+}
+tr.p3 {
+    background-color: olive;
+}
+tr.p4 {
+    background-color: blue;
+}
+tr.p5 {
+    background-color: gray;
+}
+

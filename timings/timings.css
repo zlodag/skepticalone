@@ -1,0 +1,22 @@
+table {
+    float:left;
+    margin: 0 10px 10px 0;
+}
+
+.number {
+    width: 30px;
+}
+td.left {
+    text-align: left;
+}
+td.left::first-letter {
+    text-transform: capitalize;
+}
+th,td {
+    text-align: center;
+}
+.set {
+    height: 80px;
+    font-family: monospace;
+    font-size:60px;
+}

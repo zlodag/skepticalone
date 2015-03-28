@@ -1,0 +1,26 @@
+h2 {
+    font-size: 1em;
+    margin: 10px;
+}
+#pwgen {
+    background-color: black;
+    margin: 10px 0;
+    padding: 10px;
+    border: solid white;
+    display: inline-block;
+}
+#reset, #generatebutton {
+    margin: 10px;
+}
+textarea {
+    height: 5em;
+}
+#password {
+    font-family: "courier";
+}
+div.pw {
+    display:none;
+}
+td:hover div.pw {
+    display:block;
+}

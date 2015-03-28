@@ -1,0 +1,27 @@
+p {
+    clear: left;
+}
+table {
+    float: left;
+    margin: 5px;
+}
+table.info td {
+    text-align:right;
+    font-family: monospace;
+}
+table.info td.text{
+    text-align: left;
+    font-family: serif;
+}
+td > input,select {
+    width: 100%;
+}
+td,th{
+    padding: 0 5px;
+}
+tr:hover {
+    background-color: blue;
+}
+#add {
+    clear: both;
+}

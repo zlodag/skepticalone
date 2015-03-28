@@ -1,0 +1,79 @@
+#forms {
+}
+#forms form {
+    padding: 5px;
+    display: block;
+    margin: 10px 0;
+}
+#forms p {
+    margin: 0;
+}
+#dbtable {
+    width: 100%;
+}
+#dbtable th {
+    height: 35px;
+    padding: 0 10px;
+}
+#forms form, #dbtable th {
+    background-color: #4098B4;
+}
+
+#dbtable td {
+    vertical-align: top;
+    text-align: center;
+    padding: 5px 10px;
+}
+#dbtable .title {
+    text-align: left;
+}
+#dbtable .summary {
+    width: 40%;
+}
+#dbtable .summary .summarytxt  {
+    font-weight:normal;
+    text-align: justify;
+    display: none;
+}
+#dbtable .added {
+    width: 15%;
+}
+#searchstrbutton {
+    float: left;
+}
+#searchstr {
+    display: none;
+    background-color: gray;
+    padding: 10px;
+}
+.pages {
+    float: right;
+    margin: 5px 0;
+}
+.pages a {
+    text-decoration: none;
+    text-align: center;
+    display: inline-block;
+    padding: 3px 3px 6px;
+    width: 1.5em;
+    background-color: #000;
+    border-radius: 15px;
+}
+.seen, .flagged, .owned, .delete {
+    background-color: #4098B4;
+color: #FFF;
+font-size: 17px;
+border-radius: 16px;
+border: none;
+width: 40px;
+text-align: center;
+padding: 7px 0px;
+margin: 0px;
+}
+tr:hover {
+    background-color: black;
+}
+.seen:hover, .flagged:hover, .owned:hover, .delete:hover {
+    background-color: inherit;
+}
+

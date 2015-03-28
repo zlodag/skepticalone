@@ -1,0 +1,46 @@
+#main {
+    overflow-x: scroll
+}
+p {
+    clear: left;
+}
+table {
+    float: left;
+    overflow-x: scroll;
+    margin: 5px;
+}
+table.info td {
+    text-align:right;
+    font-family: monospace;
+}
+table.info td.text{
+    text-align: left;
+    font-family: serif;
+}
+td > input,select {
+    margin: 5px 0;
+}
+td,th{
+    padding: 0 5px;
+}
+tr.break {
+    height: 10px;
+}
+tr:hover {
+    background-color: blue;
+}
+#add {
+    clear: both;
+}
+#details,#net,#gross,#ytd {
+    background-color: black;
+}
+td.required {
+    background-color: seagreen;
+}
+caption {
+    text-align: left;
+}
+#finalrow>td {
+    text-align:center;
+}

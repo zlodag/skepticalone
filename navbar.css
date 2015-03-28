@@ -1,0 +1,35 @@
+#navbar
+{
+    z-index:99999;
+    width: 100%;
+    top: 0;
+    left: 0;
+    color: white;
+    list-style-type: none;
+    background-color: #A3C7D5;
+    margin: 0;
+    padding: 0;
+}
+#navbar li
+{
+    display: inline-block;
+}
+#navbar a
+{
+    display: block;
+    background-color: #000861;
+    border-radius:10px;
+    padding: 5px 10px;
+    margin: 10px 3px;
+    text-decoration: none;
+    -webkit-transition: background 0.5s;
+}
+#navbar a:link, #navbar a:visited
+{
+    color: white;
+    font: 14px arial,sans-serif;
+}
+#navbar a:hover, #navbar a:active
+{
+    background: none;
+}
