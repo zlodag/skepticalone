@@ -1,4 +1,5 @@
 function updatePeople() {
+/*
     $("#user>optgroup>option").each(
         function() {
             var x = $(this);
@@ -7,6 +8,7 @@ function updatePeople() {
             );
         }
     );
+*/
 }
 
 function getTime(d) {
