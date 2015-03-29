@@ -8,7 +8,9 @@
     <body>
 <?php
 date_default_timezone_set("Pacific/Auckland");
+
 $time = new DateTime();
+$timestr = $time->format('Hi');
 echo '<p>' . $time->format(DATE_RSS) . '</p>';
 
 $database = [];
@@ -19,36 +21,44 @@ while(! feof($file)) {
     if (count($r) == 10) {
         $specialty = $r[0];
         if (!array_key_exists($specialty, $database)) {$database[$specialty] = [];}
-        $database[$specialty][$r[4]] = [$r[1],$r[8],$r[9]];
+        if (
+                ($r[8] < $r[9] && $timestr >= $r[8] && $timestr <= $r[9])
+                || ($r[8] > $r[9] && ($timestr >= $r[8] || $timestr <= $r[9]))
+                || ($r[8] == $r[9])
+
+        ) {
+            $database[$specialty][$r[4]] = [$r[1],$r[8],$r[9]];
+        }
     }
 }
 fclose($file);
 
 function print_database() {
     global $database;
-    global $time;
-    $timestr = $time->format('Hi');
     foreach($database as $specialty => $rows) {
         printf('<table><caption>%s</caption>', $specialty);
         echo '<thead><th>Role</th><th>Person</th><th>Time</th></thead><tbody>';
         foreach($rows as $role => $person_time) {
-            $person = $person_time[0];
-            if (
-                ($person_time[1] < $person_time[2] && $timestr >= $person_time[1] && $timestr <= $person_time[2])
-                || ($person_time[1] > $person_time[2] && ($timestr >= $person_time[1] || $timestr <= $person_time[2]))
-                || ($person_time[1] == $person_time[2])
-
-            ) {
-                $time = $person_time[1] . ' - ' . $person_time[2];
-                echo '<tr><td>' . $role . '</td><td>' . $person . '</td><td>' . $time . '</td></tr>';
-            }
+            printf('<tr><td>%s</td><td>%s</td><td>%s - %s</td></tr>', $role, $person_time[0], $person_time[1], $person_time[2]);
         }
         echo '</tbody></table>';
     }
 }
+function print_select() {
+    global $database;
+    echo '<select>';
+    foreach($database as $specialty => $rows) {
+        printf('<optgroup label="%s">', $specialty);
+        foreach($rows as $role => $person_time) {
+            printf('<option value="%s">%s (%s - %s)</option>', $role, $person_time[0], $person_time[1], $person_time[2]);
+        }
+        echo '</optgroup>';
+    }
+    echo '</select>';
+}
 
 
-
+print_select();
 print_database();
 ?>
     </body>
