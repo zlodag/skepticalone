@@ -1,28 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Amion</title>
-        <link rel="stylesheet" href="css/amion.css" />
-    </head>
-    <body>
 <?php
+
 date_default_timezone_set("Pacific/Auckland");
+$time = new DateTime();
 
 function get_url() {
     $password = 'waikato';
     $params = ['Lo' => $password, 'Rpt' => 619];
     return 'http://www.amion.com/cgi-bin/ocs?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
 }
-
-function get_database() {
-    $database = [];
-    $time = new DateTime();
+function print_time() {
+    global $time;
     echo '<p>' . $time->format(DATE_RSS) . '</p>';
+}
+function get_database() {
+    global $time;
+    $database = [];
     $timestr = $time->format('Hi');
     //$file = fopen('data.csv',"r");
     $file = fopen(get_url(),"r");
-    printf('<p>%s</p>', fgetcsv($file)[0]);
+    $online_stamp = fgetcsv($file)[0];
     while(! feof($file)) {
         $r = fgetcsv($file);
         if (count($r) == 10) {
@@ -39,11 +35,12 @@ function get_database() {
         }
     }
     fclose($file);
-    return $database;
+    return [$database, $online_stamp];
 }
 
 function print_database() {
-    global $database;
+    $database_obj = get_database();
+    $database = $database_obj[0];
     foreach($database as $specialty => $rows) {
         printf('<table><caption>%s</caption>', $specialty);
         echo '<thead><th>Role</th><th>Person</th><th>Time</th></thead><tbody>';
@@ -54,21 +51,15 @@ function print_database() {
     }
 }
 function print_select() {
-    global $database;
-    echo '<select><option selected>Log in</option>';
+    $database_obj = get_database();
+    $database = $database_obj[0];
+    echo '<select id="user" class="form-control" required><option value="">Sign in</option>';
     foreach($database as $specialty => $rows) {
         printf('<optgroup label="%s">', $specialty);
         foreach($rows as $role => $person_time) {
-            printf('<option data-role="%s" data-start="%s" data-end="%s">%s</option>', $role, $person_time[1], $person_time[2], $person_time[0]);
+            printf('<option data-person="%s" data-role="%s" data-start="%s" data-end="%s"></option>', $person_time[0], $role, $person_time[1], $person_time[2]);
         }
         echo '</optgroup>';
     }
-    echo '</select>';
+    printf('</select><p>%s</p>', $database_obj[1]);
 }
-
-$database = get_database();
-//print_select();
-print_database();
-?>
-    </body>
-</html>

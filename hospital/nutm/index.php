@@ -50,10 +50,12 @@
                 </ul>
                 </li>-->
         <li id="user-tab" role="presentation" class="pull-right"> <a href="#user-panel" aria-controls="user" role="tab" data-toggle="tab">
-                    <span id="whoami-icon" class="glyphicon glyphicon-log-in"></span>
-                    <span id="whoami">Sign in</span>
-                    <span id="whatami-icon" class="glyphicon glyphicon-briefcase"></span>
-                    <span id="whatami"></span>
+                    <span id="whoami-icon" class="glyphicon glyphicon-log-in who"></span>
+                    <span id="whoami" class="who">Sign in</span>
+                    <span id="whatami-icon" class="glyphicon glyphicon-briefcase what"></span>
+                    <span id="whatami" class="what"></span>
+                    <span id="whenami-icon" class="glyphicon glyphicon-time when"></span>
+                    <span id="whenami" class="when"></span>
                 </a>
 
         </li>
@@ -212,9 +214,10 @@
             </form>
         </div>
         <div id="user-panel" role="tabpanel" class="tab-pane fade">
-            <select id="user" class="block button form-control" required>
-                <option value="">Sign in</option>
-            </select>
+<?php
+    include('_amion.php');
+    print_select();
+?>
         </div>
     </div>
 </div>

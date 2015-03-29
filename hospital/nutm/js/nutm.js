@@ -1,39 +1,12 @@
 function updatePeople() {
-    var roles = [
-        "Cardiology HO",
-        "Cardiology Reg",
-        "Medical HO (wards)",
-        "Medical HO (AMU)",
-        "Medical Reg",
-        "Respiratory Reg",
-        "Renal RMO",
-        "Onc/Haem/Palliative Reg",
-        "Orthopaedics HO",
-        "General Surgery HO",
-        "Surgical Subspecs HO",
-        "Nights Medical HO",
-        "Nights Medical Reg",
-        "Nights Surgical HO",
-        "Nights Surgical Reg"];
-    var select = $("#user");
-    var loginlist = $("#login-dropdown");
-    for (i = 0; i < roles.length; i++) {
-        var drname = chance.name();
-        var role = roles[i];
-        select.append($("<option>").data({
-            "role": role,
-                "drname": drname
-        }).text(role + ' (' + drname + ')'));
-        /*
-        loginlist.append($("<li>").append(
-        $("<a>").data({
-            "role": role,
-            "drname": drname
-        }).text(role + ' (' + drname + ')')
-        )
-        );
-        */
-    }
+    $("#user>optgroup>option").each(
+        function() {
+            var x = $(this);
+            x.text(
+                x.data('person') + ' (' + x.data('role') + ') [' + x.data('start') + ' - ' + x.data('end') + ']'
+            );
+        }
+    );
 }
 
 function getTime(d) {
@@ -57,9 +30,10 @@ function loginToggle() {
         $("button.accept, button.complete").removeClass("disabled");
         $("#user>option:first-child").text("Sign out");
         $("#whoami").text(user[0]);
-        $("#whoami-icon").attr("class", "glyphicon glyphicon-user");
+        $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
         $("#whatami").text(user[1]);
-        $("#whatami-icon, #new-tab").removeClass("hidden");
+        $("#whenami").text(user[2]);
+        $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
         //$("#signin-tab").addClass("hidden");
         //$("#signout-tab").removeClass("hidden");
         //$("div.jumbotron").removeClass("hidden");
@@ -68,9 +42,9 @@ function loginToggle() {
     $("button.accept, button.complete").addClass("disabled");
     $("#user>option:first-child").text("Sign in");
     $("#whoami").text("Sign in");
-    $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in");
-    $("#whatami").empty();
-    $("#whatami-icon, #new-tab").addClass("hidden");
+    $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
+    $("#whatami, #whenami").empty();
+    $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
     //$("#signin-tab").removeClass("hidden");
     //$("#signout-tab").addClass("hidden");
     //$("div.jumbotron").addClass("hidden");
@@ -79,13 +53,12 @@ function loginToggle() {
 function getUser(random) {
     var user;
     if (random === false) {
-        user = $("#user>option:selected");
-        return [user.data('drname'), user.data('role')];
+        user = $("#user>optgroup>option:selected");
     } else if (random === true) {
-        var list = $("#user>option:not(:first-child)");
+        var list = $("#user>optgroup>option");
         user = list.eq(Math.floor(Math.random() * list.length));
-        return [user.data('drname'), user.data('role')];
     }
+    return [user.data('person'), user.data('role'), user.data('start') + ' - ' + user.data('end')];
 }
 
 function appendLabels(options) {
@@ -210,7 +183,7 @@ function get_random_nhi() {
 }
 
 function get_random_option(id) {
-    list = $("#" + id + ">option:not(:first-child)");
+    list = $("#" + id + " option:not(:first-child)");
     return list.get(Math.floor(Math.random() * list.length)).text;
 }
 
@@ -314,13 +287,13 @@ $(function () {
 
     function () {
         if (loggedOn()) {
-            $("#whoami-icon").attr("class", "glyphicon glyphicon-log-out");
+            $("#whoami-icon").attr("class", "glyphicon glyphicon-log-out who");
         }
     },
 
     function () {
         if (loggedOn()) {
-            $("#whoami-icon").attr("class", "glyphicon glyphicon-user");
+            $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
         }
     });
 
