@@ -1,19 +1,81 @@
-function updatePeople() {
-/*
-    $("#user>optgroup>option").each(
-        function() {
-            var x = $(this);
-            x.text(
-                x.data('person') + ' (' + x.data('role') + ') [' + x.data('start') + ' - ' + x.data('end') + ']'
-            );
+function pad(number) {
+    return ('0' + number).slice(-2);
+}
+
+function get_database(results) {
+    var time = new Date(),
+    timestr = pad(time.getHours()) + pad(time.getMinutes()),
+    onlinestamp = results["data"][0][0],
+    database = {},
+    r;
+    $.each(results["data"], function() {
+        r = $(this);
+        if (r.length === 10) {
+            if (!(r[0] in database)) {
+                database[r[0]] = [];
+            }
+            if (
+                    (r[8] < r[9] && timestr >= r[8] && timestr <= r[9])
+                    || (r[8] > r[9] && (timestr >= r[8] || timestr <= r[9]))
+                    || (r[8] == r[9])
+
+            ) {
+                database[r[0]][r[4]] = [r[1],r[8],r[9]];
+            }
         }
-    );
-*/
+    });
+    return [database,onlinestamp,time];
+}
+
+function get_select(results) {
+    var select = $("<select>")
+        .attr({"id": "user", "class":"form-control"})
+        .prop('required',true)
+        .change(loginToggle)
+        .append(
+            $('<option>')
+            .attr("value", '')
+            .text("Sign in")
+        ),
+    database_obj = get_database(results),
+    database = database_obj[0],
+    onlinestamp = database_obj[1],
+    now = database_obj[2];
+    for(var specialty in database) {
+        if (Object.keys(database[specialty]).length > 0) {
+            var optgroup = $("<optgroup>").attr("label", specialty);
+            for (var role in database[specialty]) {
+                var person_time = database[specialty][role],
+                option = $('<option>')
+                    .data({
+                        'person':person_time[0],
+                        'role':role,
+                        'start':person_time[1],
+                        'end':person_time[2]
+                    })
+                    .text(person_time[0] + ' (' + role + ') [' + person_time[1] + ' - ' + person_time[2] + ']');
+                optgroup.append(option);
+            }
+            select.append(optgroup);
+        }
+    }
+    $("#user-panel").append(select, $('<p>').text('Time generated: ' + now), $('<p>').text(onlinestamp));
+}
+
+function updatePeople(url) {
+    Papa.parse(url, {
+        delimiter: ",",
+        download: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            finish_prepare(results);
+        }
+    });
 }
 
 function getTime(d) {
     return $("<time>").addClass("timeago")
-        .attr("title", d.getDate() + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + (d.getFullYear()).toString().slice(-2) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2))
+        .attr("title", d.getDate() + '/' + pad(d.getMonth()+1) + '/' + (d.getFullYear()).toString().slice(-2) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))
         .attr("datetime", d.toISOString());
 }
 
@@ -72,7 +134,7 @@ function appendLabels(options) {
     };
     var person = $("<span>").addClass("label label-" + options.b_type).text(user[0])
         .attr({
-        "title": user[1]
+        "title": user[1] + ' (' + user[2] + ')'
     })
         .attr(dict)
         .tooltip();
@@ -223,13 +285,20 @@ function updateValidity() {
     }
 }
 
-$(function () {
-    //Update elements:
-    updatePeople();
-    //Add elements:
+function finish_prepare(results) {
+    get_select(results);
     for (i = 0; i < 5; i++) {
         addnew(get_random_rowdata()); //insert 5 random rows
     }
+}
+
+$(function () {
+    var password = 'waikato',
+    url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
+    url = 'data.csv';
+    //Update elements:
+    updatePeople(url);
+    /*
     $.tablesorter.addParser({
         // set a unique id 
         id: 'timestamp',
@@ -274,9 +343,9 @@ $(function () {
             [0, 0]
         ]
     });
-
+    */
     //Add handlers:
-    $("#user").change(loginToggle); //no "accept"/"complete" buttons or "new task" form when not logged in
+    //$("#user").change(loginToggle); //no "accept"/"complete" buttons or "new task" form when not logged in
     //$("#login-dropdown>li").click(loginToggle);
     $("#user-tab>a").click(logOut);
     $("#addrandom").click(function () {
@@ -286,18 +355,15 @@ $(function () {
     $("#taskform input").on("input", updateValidity); //add handler to check form validity and toggle submit button
 
     $("#user-tab>a").hover(
-
     function () {
         if (loggedOn()) {
             $("#whoami-icon").attr("class", "glyphicon glyphicon-log-out who");
         }
     },
-
     function () {
         if (loggedOn()) {
             $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
         }
     });
-
     $("#addthis").click(validateForm); //add form validation
 });

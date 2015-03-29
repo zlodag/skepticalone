@@ -1,4 +1,4 @@
-.label, ul.nav-tabs>li>a, table#jobs>thead>tr>th {
+.label, ul.nav-tabs>li>a {
     cursor: pointer;
 }
 body>div>* {
@@ -15,4 +15,7 @@ body>div>* {
 }
 .when {
     color: #0087DA;
+}
+#user-panel p {
+    margin-top:20px;
 }
