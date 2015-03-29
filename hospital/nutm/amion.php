@@ -9,29 +9,38 @@
 <?php
 date_default_timezone_set("Pacific/Auckland");
 
-$time = new DateTime();
-$timestr = $time->format('Hi');
-echo '<p>' . $time->format(DATE_RSS) . '</p>';
+function get_url() {
+    $password = 'waikato';
+    $params = ['Lo' => $password, 'Rpt' => 619];
+    return 'http://www.amion.com/cgi-bin/ocs?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+}
 
-$database = [];
+function get_database() {
+    $database = [];
+    $time = new DateTime();
+    echo '<p>' . $time->format(DATE_RSS) . '</p>';
+    $timestr = $time->format('Hi');
+    //$file = fopen('data.csv',"r");
+    $file = fopen(get_url(),"r");
+    printf('<p>%s</p>', fgetcsv($file)[0]);
+    while(! feof($file)) {
+        $r = fgetcsv($file);
+        if (count($r) == 10) {
+            $specialty = $r[0];
+            if (!array_key_exists($specialty, $database)) {$database[$specialty] = [];}
+            if (
+                    ($r[8] < $r[9] && $timestr >= $r[8] && $timestr <= $r[9])
+                    || ($r[8] > $r[9] && ($timestr >= $r[8] || $timestr <= $r[9]))
+                    || ($r[8] == $r[9])
 
-$file = fopen("data.csv","r");
-while(! feof($file)) {
-    $r = fgetcsv($file);
-    if (count($r) == 10) {
-        $specialty = $r[0];
-        if (!array_key_exists($specialty, $database)) {$database[$specialty] = [];}
-        if (
-                ($r[8] < $r[9] && $timestr >= $r[8] && $timestr <= $r[9])
-                || ($r[8] > $r[9] && ($timestr >= $r[8] || $timestr <= $r[9]))
-                || ($r[8] == $r[9])
-
-        ) {
-            $database[$specialty][$r[4]] = [$r[1],$r[8],$r[9]];
+            ) {
+                $database[$specialty][$r[4]] = [$r[1],$r[8],$r[9]];
+            }
         }
     }
+    fclose($file);
+    return $database;
 }
-fclose($file);
 
 function print_database() {
     global $database;
@@ -57,8 +66,8 @@ function print_select() {
     echo '</select>';
 }
 
-
-print_select();
+$database = get_database();
+//print_select();
 print_database();
 ?>
     </body>
