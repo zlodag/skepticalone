@@ -46,11 +46,11 @@ function print_database() {
 }
 function print_select() {
     global $database;
-    echo '<select>';
+    echo '<select><option selected>Log in</option>';
     foreach($database as $specialty => $rows) {
         printf('<optgroup label="%s">', $specialty);
         foreach($rows as $role => $person_time) {
-            printf('<option value="%s">%s (%s - %s)</option>', $role, $person_time[0], $person_time[1], $person_time[2]);
+            printf('<option data-role="%s" data-start="%s" data-end="%s">%s</option>', $role, $person_time[1], $person_time[2], $person_time[0]);
         }
         echo '</optgroup>';
     }
