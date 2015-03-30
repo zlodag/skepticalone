@@ -294,7 +294,7 @@ function finish_prepare(results) {
 
 $(function () {
     var password = 'waikato',
-    url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
+    //url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
     url = 'data.csv';
     //Update elements:
     updatePeople(url);
