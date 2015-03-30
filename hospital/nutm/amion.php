@@ -2,6 +2,7 @@
 
 date_default_timezone_set("Pacific/Auckland");
 $time = new DateTime();
+include '_blacklist.php';
 
 function get_url() {
     $password = 'waikato';
@@ -14,6 +15,7 @@ function print_time() {
 }
 function get_database() {
     global $time;
+    global $blacklist;
     $database = [];
     $timestr = $time->format('Hi');
     //$file = fopen('data.csv',"r");
@@ -21,7 +23,8 @@ function get_database() {
     $online_stamp = fgetcsv($file)[0];
     while(! feof($file)) {
         $r = fgetcsv($file);
-        if (count($r) == 10) {
+        //if (!in_array(inval($r[5]), $blacklist)) { echo $r[5];}
+        if (count($r) == 10 && !in_array(intval($r[5]), $blacklist)) {
             $specialty = $r[0];
             if (!array_key_exists($specialty, $database)) {$database[$specialty] = [];}
             if (
