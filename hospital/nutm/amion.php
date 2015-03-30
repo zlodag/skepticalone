@@ -18,7 +18,7 @@ function get_database() {
     $timestr = $time->format('Hi');
     //$file = fopen('data.csv',"r");
     $file = fopen(get_url(),"r");
-    $database['online_stamp'] = fgetcsv($file)[0];
+    $online_stamp = fgetcsv($file)[0];
     while(! feof($file)) {
         $r = fgetcsv($file);
         if (count($r) == 10) {
@@ -35,7 +35,7 @@ function get_database() {
         }
     }
     fclose($file);
-    return $database;
+    return [$database, $online_stamp];
 }
 
 function print_database() {
@@ -63,4 +63,4 @@ function print_select() {
     }
     printf('</select><p>%s</p>', $database_obj[1]);
 }
-echo '<pre>' . json_encode(get_database(), JSON_PRETTY_PRINT) . '</pre>';
+echo json_encode(get_database());

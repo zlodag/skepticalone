@@ -1,10 +1,11 @@
+var time = new Date();
+
 function pad(number) {
     return ('0' + number).slice(-2);
 }
 
 function get_database(results) {
-    var time = new Date(),
-    timestr = pad(time.getHours()) + pad(time.getMinutes()),
+    var timestr = pad(time.getHours()) + pad(time.getMinutes()),
     onlinestamp = results["data"][0][0],
     database = {},
     r;
@@ -24,10 +25,10 @@ function get_database(results) {
             }
         }
     });
-    return [database,onlinestamp,time];
+    return [database,onlinestamp];
 }
 
-function get_select(results) {
+function get_select(database_obj) {
     var select = $("<select>")
         .attr({"id": "user", "class":"form-control"})
         .prop('required',true)
@@ -37,10 +38,8 @@ function get_select(results) {
             .attr("value", '')
             .text("Sign in")
         ),
-    database_obj = get_database(results),
     database = database_obj[0],
-    onlinestamp = database_obj[1],
-    now = database_obj[2];
+    onlinestamp = database_obj[1];
     for(var specialty in database) {
         if (Object.keys(database[specialty]).length > 0) {
             var optgroup = $("<optgroup>").attr("label", specialty);
@@ -59,16 +58,26 @@ function get_select(results) {
             select.append(optgroup);
         }
     }
-    $("#user-panel").append(select, $('<p>').text('Time generated: ' + now), $('<p>').text(onlinestamp));
+    $("#user-panel").append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    for (i = 0; i < 5; i++) {
+        addnew(get_random_rowdata()); //insert 5 random rows
+    }
 }
 
-function updatePeople(url) {
+function updatePeople_dynamic() {
+    $.getJSON("amion.php", function(database_obj) {get_select(database_obj);});
+}
+
+function updatePeople_static() {
+    //var password = 'waikato';
+    //var url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
+    var url = 'data.csv';
     Papa.parse(url, {
         delimiter: ",",
         download: true,
         skipEmptyLines: true,
         complete: function(results) {
-            finish_prepare(results);
+            get_select(get_database(results));
         }
     });
 }
@@ -285,19 +294,11 @@ function updateValidity() {
     }
 }
 
-function finish_prepare(results) {
-    get_select(results);
-    for (i = 0; i < 5; i++) {
-        addnew(get_random_rowdata()); //insert 5 random rows
-    }
-}
 
 $(function () {
-    var password = 'waikato',
-    //url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
-    url = 'data.csv';
     //Update elements:
-    updatePeople(url);
+    //updatePeople_static();
+    updatePeople_dynamic();
     /*
     $.tablesorter.addParser({
         // set a unique id 
