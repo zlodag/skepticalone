@@ -22,7 +22,11 @@ $stmt->bind_result($nhi, $first_names, $last_name, $dob, $sex);
             <td>%s</td>
             <td>',
             strtoupper($nhi));
-        printf ('<a href="?nhi=%s">%s, %s</a>',$nhi,$last_name, $first_names);
+        if ($nhi == 'uvw7654') {
+            printf ('<a href="?nhi=%s">%s, %s</a>',$nhi,$last_name, $first_names);
+        } else {
+            printf ('%s, %s', $last_name, $first_names);
+        }
         printf('</td>
             <td>%s</td>
             <td>%s</td>

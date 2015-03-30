@@ -60,7 +60,6 @@ table.panel td, table.panel th {
     min-width: 80px;
     max-width: 80px;
     text-align: center;
-    overflow: scroll;
     border: solid black;
     border-width: 0;
 }
