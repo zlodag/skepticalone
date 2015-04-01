@@ -16,8 +16,8 @@ function print_list($str) {
     echo '<pre>';
     foreach($lists[$str] as $specialty => $rows) {
         foreach($rows as $r) {
-            printf('    [%d,%d], // %s %s **** %s
-', $r[4][0], $r[4][1], $specialty, $r[1], $r[0]);
+            printf('    [%d,%d], // %s: %s [%s - %s] (%s)
+', $r[4][0], $r[4][1], $specialty, $r[1], $r[2], $r[3], $r[0]);
         }
     }
     echo '</pre>';

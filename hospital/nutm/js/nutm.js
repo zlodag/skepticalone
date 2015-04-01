@@ -65,7 +65,7 @@ function get_select(database_obj) {
             select.append(optgroup);
         }
     }
-    $("#user-panel").empty().append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    $("#user-panel").prepend(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
     loginToggle();
     for (i = 0; i < 5; i++) {
         addnew(get_random_rowdata()); //insert 5 random rows
