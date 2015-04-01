@@ -66,6 +66,7 @@ function get_select(database_obj) {
         }
     }
     $("#user-panel").empty().append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    loginToggle();
     for (i = 0; i < 5; i++) {
         addnew(get_random_rowdata()); //insert 5 random rows
     }
@@ -109,11 +110,11 @@ function loginToggle() {
         $("#tasks-tab>a").tab("show");
         $("button.accept, button.complete").removeClass("disabled");
         $("#user>option:first-child").text("Sign out");
-        $("#whoami").text(user[0]);
         $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
+        $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
+        $("#whoami").text(user[0]);
         $("#whatami").text(user[1]);
         $("#whenami").text(user[2]);
-        $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
         //$("#signin-tab").addClass("hidden");
         //$("#signout-tab").removeClass("hidden");
         //$("div.jumbotron").removeClass("hidden");
@@ -121,10 +122,10 @@ function loginToggle() {
     }
     $("button.accept, button.complete").addClass("disabled");
     $("#user>option:first-child").text("Sign in");
-    $("#whoami").text("Sign in");
     $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
-    $("#whatami, #whenami").empty();
+    $("#whoami").text("Sign in");
     $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
+    $("#whatami, #whenami").empty();
     //$("#signin-tab").removeClass("hidden");
     //$("#signout-tab").addClass("hidden");
     //$("div.jumbotron").addClass("hidden");
