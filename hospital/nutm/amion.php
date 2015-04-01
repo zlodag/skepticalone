@@ -53,7 +53,6 @@ function get_database($good_only) {
     foreach($stack as $specialty => $rows) {
         foreach($rows as $r) {
             if (in_array($specialty, $specialty_blacklist) || in_array($r[4], $blacklist)) {
-                if ($specialty == 'Urology') {echo '<p>' . print_r($r) . 'is ugly</p>';}
                 //Row is ugly!
                 $lists['ugly'][$specialty][] = $r;
             } elseif (

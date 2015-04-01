@@ -1,390 +1,347 @@
 <?php
 $blacklist = [
-    748, // Cardiology On Call - Cardiologist **** PASUPATI Sanjeevan
-    777, // Cardiology Waikato PAMI Cover **** PASUPATI Sanjeevan
-    769, // Cardiology CPU PM - Cardiologist **** PASUPATI Sanjeevan
-    762, // Cardiology CLN PM - Cardiology **** HEALD Spencer
-    764, // Cardiology CLN PM - Cardiology **** FISHER Raewyn
-    763, // Cardiology CLN PM - Cardiology **** MENON Madhav
-    754, // Cardiology Cath Lab 1 AM **** NOCVR
-    759, // Cardiology Cath Lab 2 AM **** DEVLIN Gerry
-    760, // Cardiology Cath Lab 2 PM **** DEVLIN Gerry
-    887, // Cardiology Cath Lab 4 AM **** WADE Clyde
-    888, // Cardiology Cath Lab 4 PM **** WADE Clyde
-    910, // Cardiology Admin-Non Clinical AM **** DAVIS Mark
-    907, // Cardiology Admin-Non Clinical AM **** HEALD Spencer
-    908, // Cardiology Admin-Non Clinical AM **** JOGIA Pranesh
-    912, // Cardiology Admin-Non Clinical AM **** LIEW Tse Vun
-    915, // Cardiology Admin-Non Clinical AM **** MENON Madhav
-    917, // Cardiology Admin-Non Clinical AM **** NAIR Rajesh
-    919, // Cardiology Admin-Non Clinical AM **** NUNN Chris
-    921, // Cardiology Admin-Non Clinical AM **** PASUPATI Sanjeevan
-    922, // Cardiology Admin-Non Clinical AM **** SEBASTIAN Cherian
-    924, // Cardiology Admin-Non Clinical AM **** SWAMPILLAI Janice
-    905, // Cardiology Admin-Non Clinical PM **** DAVIS Mark
-    913, // Cardiology Admin-Non Clinical PM **** JOGIA Pranesh
-    914, // Cardiology Admin-Non Clinical PM **** LIEW Tse Vun
-    918, // Cardiology Admin-Non Clinical PM **** NAIR Rajesh
-    927, // Cardiology Admin-Non Clinical PM **** PASUPATI Sanjeevan
-    930, // Cardiology Admin-Non Clinical PM **** SEBASTIAN Cherian
-    1441, // Medical RMO Respiratory Gen Clinic - Registrar **** FERRY-PARKER Michael
-    1443, // Medical RMO Respiratory Sleep Clinic - Registrar **** MACKENZIE Monique
-    1092, // Medical RMO Renal Acute AM - Registrar **** ALI Alina
-    1364, // Medical RMO Cardiology On-Call Team **** D Team
-    799, // Medical RMO ECHO Protected **** RAMAN Kat
-    800, // Medical RMO Cath Lab **** TUN Rein
-    801, // Medical RMO EP **** JADEER Assad
-    893, // Medical RMO Roster Week **** Week 6
-    1102, // Medical RMO General Medicine Week **** Week 6
-    653, // Medical RMO General Medicine Team **** Gold
-    1739, // Medical RMO GenMed-ID Clinic - Blue Registrar **** LIN Stella
-    1743, // Medical RMO Stroke-TIA Clinic - Silver or Red Registrar **** HERAN Parvinder A
-    876, // Medical RMO General Medicine Extra Help Team **** Silver
-    654, // Medical RMO Interventional Research Fellow **** BHUTTA Usman
-    655, // Medical RMO EP Fellow **** GAROFALO Daniel
-    1737, // Medical RMO EP Fellow **** KHOKHAR Kashif
-    709, // Medicine Admitting Code **** 911GO (Gold)
-    612, // Medicine On Call - Cons **** MILLS Graham
-    931, // Medicine GM Post Acute **** REEVE Paul
-    722, // Medicine CPU On Call - Cons **** STEPHENSON Douglas
-    725, // Medicine CPU On Call - Cons **** PASUPATI Sanjeevan
-    639, // Medicine On Call Team - Cons **** Gold
-    1097, // Medicine Rehabilitation **** MUNTHREE Sumi
-    1101, // Medicine Diabetes **** FISHER Maggie
-    1100, // Medicine Infectious Disease Consults **** HUGGAN Paul
-    1099, // Medicine Clinics ID **** HUGGAN Paul
-    683, // Medicine On Call - Specialist **** SOLANKI Kamal
-    697, // Medicine Endoscopy On Call - Cons **** BROOKER Jim
-    754, // Medicine CLN Gastro AM **** DICKSON Graeme
-    756, // Medicine CLN Gastro AM **** BROOKLYN Trevor
-    766, // Medicine Red Team - Cons **** KHAN Asad
-    767, // Medicine Blue Team - Cons **** BROOKLYN Trevor
-    768, // Medicine Gold Team - Cons **** MILLS Graham
-    771, // Medicine Green Team - Cons **** QUINCEY Vicki
-    770, // Medicine Silver Team - Cons **** STEPHENSON Douglas
-    769, // Medicine Orange Team - Cons **** GRAY Erana
-    1037, // Medicine Purple Team - Cons **** REEVE Paul
-    932, // Medicine Red Ward  AM **** KHAN Asad
-    933, // Medicine Blue Ward AM **** BROOKLYN Trevor
-    935, // Medicine Green Ward AM **** QUINCEY Vicki
-    936, // Medicine Silver Ward AM **** STEPHENSON Douglas
-    937, // Medicine Orange Ward AM **** GRAY Erana
-    1056, // Medicine Purple Ward AM **** REEVE Paul
-    1066, // Medicine General Medicine Admin-Non Clinical PM **** STEPHENSON Douglas
-    1067, // Medicine General Medicine Admin-Non Clinical PM **** REEVE Paul
-    1069, // Medicine General Medicine Admin-Non Clinical PM **** KHAN Asad
-    1074, // Medicine General Medicine Admin-Non Clinical PM **** GRAY Erana
-    1076, // Medicine General Medicine Admin-Non Clinical PM **** HUGGAN Paul
-    1064, // Medicine General Medicine Admin-Non Clinical AM & PM **** RATNAWEERA Manjula
-    1004, // Medicine ENDO 1 AM **** BROOKER Jim
-    1008, // Medicine ENDO 1 PM **** GenSurg
-    1013, // Medicine ENDO 2 AM **** GenSurg
-    1005, // Medicine ENDO 2 PM **** GenSurg
-    1014, // Medicine ENDO 3 AM **** Vacant
-    1006, // Medicine ENDO 3 PM **** PHILLIPS Elizabeth
-    1009, // Medicine ENDO 4 AM **** GenSurg
-    1007, // Medicine ENDO 4 PM **** Vacant
-    968, // Medicine Gastro Referrer 1st **** BROOKER Jim
-    987, // Medicine Gastro Admin-NonClinical PM **** DICKSON Graeme
-    989, // Medicine Gastro Admin-NonClinical PM **** BROOKER Jim
-    1104, // Medicine On Call - Infectious Diseases **** HUGGAN Paul
-    1155, // Obs and Gynae Admitting Consultant **** MAKEPEACE Penelope
-    27, // Obs and Gynae On Duty: AM - Consultant **** MAKEPEACE Penelope
-    1154, // Obs and Gynae On Duty: AM - Consultant **** HASTIE Stewart
-    580, // Obs and Gynae On Duty : PM - Consultant **** MAKEPEACE Penelope
-    1161, // Obs and Gynae On Duty : PM - Consultant **** HASTIE Stewart
-    910, // Obs and Gynae On Duty: Evening - Consultant **** MAKEPEACE Penelope
-    500, // Obs and Gynae On Call: Night - Consultant **** MAKEPEACE Penelope
-    177, // Obs and Gynae Thames **** DUDLEY Narena
-    1029, // Obs and Gynae Thames Reg **** HANNA Adelle
-    182, // Obs and Gynae Tokoroa Reg **** CAMANO Isabel
-    465, // Obs and Gynae Antenatal CLN 1 AM SMO **** LIN Sylvia
-    480, // Obs and Gynae Antenatal CLN 1 AM - Reg **** SALEH Tarek
-    479, // Obs and Gynae Antenatal CLN 1 PM SMO **** LIN Sylvia
-    1045, // Obs and Gynae Antenatal CLN 1 PM - Reg **** SALEH Tarek
-    469, // Obs and Gynae Colposcopy CLN 1 AM SMO **** VANT Mary
-    595, // Obs and Gynae Colposcopy CLN 1 AM - Reg **** Cancel
-    470, // Obs and Gynae Gynae CLN 1 AM SMO **** McCONNELL Sean
-    475, // Obs and Gynae Colposcopy CLN 1 PM SMO **** Cancel
-    970, // Obs and Gynae Gynae CLN 1 PM SMO **** VANT Mary
-    1057, // Obs and Gynae Gynae CLN 1 PM Reg **** Cancel
-    1004, // Obs and Gynae ANC Grading AM **** MAKEPEACE Penelope
-    688, // Obs and Gynae Bedside Teaching **** McCONNELL Sean
-    510, // Obs and Gynae Non Clinical PM **** McCONNELL Sean
-    1021, // Obs and Gynae Ward Round SMO AM **** LIN Sylvia
-    1022, // Obs and Gynae Ward Round SMO AM **** VANT Mary
-    1023, // Obs and Gynae Ward Round SMO AM **** McCONNELL Sean
-    543, // Obs and Gynae Schedule Week **** Week 4
-    1064, // Obs and Gynae Rostered Day Off - REG **** NIELSEN Kamilla
-    925, // Obs and Gynae MCC20 - Surgeon 1 **** RAMAN Kannan
-    938, // Obs and Gynae MCC20 - Registrar 1 **** BURLING Michael
-    778, // Neurology On Duty: Neurologist **** WRIGHT Peter
-    840, // Neurology On Call: Neurologist **** GRENHOLM Peter 
-    837, // Neurology Ward: Neurologist **** WRIGHT Peter
-    903, // Neurology CLN PT AM **** TIMMINGS Paul
-    904, // Neurology CLN PT PM **** TIMMINGS Paul
-    798, // Neurology CLN CL AM **** LYNCH Chris
-    906, // Neurology CLN CL PM **** LYNCH Chris
-    779, // Neurology CLN JS AM **** SCHEPEL Jan
-    797, // Neurology CLN JS PM **** SCHEPEL Jan
-    934, // Neurology CLN PG AM **** GRENHOLM Peter 
-    935, // Neurology CLN PG PM **** GRENHOLM Peter 
-    895, // Neurology CLN TIA PM **** Ward Doc
-    830, // Neurology Clinic Reg Supv AM **** LYNCH Chris
-    831, // Neurology Clinic Reg Supv PM **** TIMMINGS Paul
-    912, // Renal On Call - AM **** PANDEY Rakesh
-    833, // Renal On Call - PM **** PANDEY Rakesh
-    834, // Renal Ward Physician **** TAN Eddie
-    835, // Renal Transplant Physician **** PANDEY Rakesh
-    836, // Renal Hospital Outliers Physician **** RABINDRANATH Kannaiyan
-    837, // Renal HHD Physician **** SIZELAND Peter
-    928, // Renal CAPD Physician **** SIZELAND Peter
-    845, // Renal Transplant Clinic **** PANDEY Rakesh
-    2218, // Mental Health Call Consultant Night 2 **** GILOOLY Mary
-    748, // Vascular On Call - Vascular Surgeon **** FERRAR David
-    752, // Vascular CLN AM Vascular **** FERRAR David
-    778, // Vascular CLN AM Vascular - Reg 1 **** CHANDRA Abe
-    957, // Vascular Angio PM - Registrar 1 **** ULOOM Amin
-    920, // Vascular Interventional Radiology **** FERRAR David
-    900, // Vascular MCC02 - Vascular Surgeon **** HAGGART Paul
-    954, // Vascular MCC02 - Registrar 1 **** RAYNER Charles
-    905, // Vascular Schedule Week **** Week 4
-    929, // Vascular Clinical Admin AM **** HOLDAWAY Chris
-    926, // Vascular Clinical Admin AM **** VASUDEVAN Vasu
-    748, // Cardio Thoracic On Call - Surgeon **** PARKINSON Grant
-    971, // Cardio Thoracic Clinical Admin AM **** LIN Zaw
-    978, // Cardio Thoracic Clinical Admin AM **** PARKINSON Grant
-    974, // Cardio Thoracic Clinical Admin PM **** LIN Zaw
-    976, // Cardio Thoracic Clinical Admin PM **** PARKINSON Grant
-    961, // Cardio Thoracic MCC03 - Cardiothoracic Surgeon **** ODOM Nick
-    962, // Cardio Thoracic MCC03 - Cardiothoracic Registrar 1 **** RADHAKRISHNAN Kamaraj
-    1238, // O & G HO Schedule Week **** Week 6
-    1076, // Paediatrics Theatre Week **** Week 4
-    958, // Paediatrics On Duty: Paediatric SMO **** DE ALMEIDA Tilak
-    959, // Paediatrics On Call: After-hours Paediatric SMO **** NEWMAN David
-    1247, // Paediatrics Admitting Paediatric SMO **** NEWMAN David
-    1564, // Paediatrics CLINIC Paeds Med - Reg **** LUNN Mark
-    1590, // Paediatrics CLINIC Paeds Med - Reg **** MUSSA Maryam
-    935, // Paediatrics Community & CPASS Registrar **** AIRD Carolyn
-    937, // Paediatrics CDC & CPASS Registrar **** ADAMU Zayna
-    994, // Paediatrics On Call: Paediatric Surgeon **** SAMARAKKODY Udaya
-    1024, // Paediatrics Admin **** Week 5
-    1025, // Paediatrics Reg Roster Week **** Week 4
-    1077, // Paediatrics SHO Roster Week **** Week 6
-    1141, // Paediatrics CLN Paeds Medical AM - SMO **** McCAY Hamish
-    1298, // Paediatrics CLN Paeds Medical AM - SMO **** SADANI Sneha
-    1300, // Paediatrics CLN Paeds Medical PM - SMO **** SINGH Deepika
-    1302, // Paediatrics CLN Paeds Medical PM - SMO **** NEWMAN David
-    1301, // Paediatrics CLN Paeds Medical PM - SMO **** CARMICHAEL Eleanor
-    1505, // Paediatrics CLN Paeds Medical PM - SMO **** GOLDSMITH John
-    1533, // Paediatrics CUL Paeds Med **** GRAHAM David
-    1029, // Paediatrics Paeds Med Admin AM **** NEWMAN David
-    1528, // Paediatrics Paeds Med Admin AM **** SINGH Deepika
-    1529, // Paediatrics Paeds Med Admin AM **** CARMICHAEL Eleanor
-    1536, // Paediatrics Paeds Med Admin AM **** DE ALMEIDA Tilak
-    1537, // Paediatrics Paeds Med Admin AM **** GOLDSMITH John
-    1525, // Paediatrics Paeds Med Admin PM **** DE ALMEIDA Tilak
-    1530, // Paediatrics Paeds Med Admin PM **** GRAHAM David
-    1531, // Paediatrics Paeds Med Admin PM **** McCAY Hamish
-    1534, // Paediatrics Paeds Med Admin PM **** SADANI Sneha
-    1062, // Paediatrics Clinic Paeds Surg PM - Surgeon **** KUKKADY Askar
-    1102, // Paediatrics NICU: L3 AM - Consultant **** WESTON Phil
-    1101, // Paediatrics NICU: L3 PM - Consultant **** MAXWELL Fraser
-    1110, // Paediatrics NICU: L3 AM - Reg-NNP **** EDMOND Tess
-    1156, // Paediatrics NICU: L2 AM - Consultant **** BOURCHIER David
-    1112, // Paediatrics NICU: L2 PM - Consultant **** MAXWELL Fraser
-    1113, // Paediatrics NICU: L2 AM - Reg-NNP **** HARRIS Deborah
-    1117, // Paediatrics NICU: Night **** GRAHAM Catherine
-    1147, // Paediatrics Paed Surgical Reg - Clinic (or OT) **** JAYARATNAM Sridharan
-    1370, // Paediatrics Paed Surgical Reg - Clinic (or OT) **** LIYANAGE Anuradha
-    1822, // Oncology On Call: Haematology IP Team - Consultant **** GOODMAN Hugh
-    1300, // Oncology On Call: Haematology - Consultant **** ISLAM Shahidul
-    1301, // Oncology On Call: Medical Oncology - Consultant **** KUPER Marion
-    1303, // Oncology On Call: Radiation Oncology - Consultant **** VAN DER VYVER Hermann
-    1302, // Oncology On Call: Palliative Care - Consultant **** BROWN Stuart
-    1467, // Oncology On Call: Palliative Care - Consultant **** BONIFANT John
-    1330, // Oncology Haem Thames Clinic - Cons **** GOODMAN Hugh
-    1331, // Oncology Haem Thames Clinic - Reg **** FERGUSON James
-    1448, // Oncology Clinic Haem JAB (PM) **** BELL Julie-Anne
-    1445, // Oncology Clinic Haem NG (PM) **** GAVRILOVA Natalia
-    1606, // Oncology MedOnc Gisborne Clinic - Cons **** SRIVASTAVA Archana
-    1605, // Oncology MedOnc Gisborne Clinic - Cons-Reg **** JAMESON Michael
-    1603, // Oncology RadOnc Gisborne Clinic - Consultant **** THOTATHIL Ziad
-    1604, // Oncology RadOnc Gisborne Clinic - Consultant **** HUANG Roger
-    1755, // Oncology Clinical-Non Clinical Admin Haem JAB (AM) **** BELL Julie-Anne
-    1756, // Oncology Clinical-Non Clinical Admin Haem SI (AM) **** ISLAM Shahidul
-    1759, // Oncology Clinical-Non Clinical Admin Haem SI (PM) **** ISLAM Shahidul
-    1757, // Oncology Clinical-Non Clinical Admin Haem NG (AM) **** GAVRILOVA Natalia
-    1608, // Oncology Waikato Hospital - Laboratory Haematologist **** MOORE Helen
-    1573, // Oncology Referral Centre Triage Only: Consultant **** ISLAM Shahidul
-    1399, // Oncology Haematology Clinics - Reg **** RUKA Myra
-    1543, // Oncology Haematology Wards - Reg **** AYE Myat Moe
-    1722, // Oncology Clinic Med Onc IK (AM) **** KENNEDY Ian
-    1728, // Oncology Clinic Med Onc IK (PM) **** KENNEDY Ian
-    1724, // Oncology Clinic Med Onc MK (AM) **** KUPER Marion
-    1730, // Oncology Clinic Med Onc MK (PM) **** KUPER Marion
-    1726, // Oncology Clinic Med Onc LN (AM) **** NAGLE Lawrence
-    1732, // Oncology Clinic Med Onc LN (PM) **** NAGLE Lawrence
-    1727, // Oncology Clinic Med Onc EE (AM) **** EPNER Elliot
-    1733, // Oncology Clinic Med Onc EE (PM) **** EPNER Elliot
-    1769, // Oncology Clinic Med Onc AT (AM) **** TAN Alvin
-    1770, // Oncology Clinic Med Onc AT (PM) **** TAN Alvin
-    1695, // Oncology Theatre Radiation Oncology HVdV (AM) **** VAN DER VYVER Hermann
-    1697, // Oncology Theatre Radiation Oncology ZT (AM) **** THOTATHIL Ziad
-    1699, // Oncology Clinic Radiation Oncology CH (PM) **** HARTOPEANU Cristian
-    1705, // Oncology Clinic Radiation Oncology HVdV (PM) **** VAN DER VYVER Hermann
-    1702, // Oncology Clinic Radiation Oncology CD (AM) **** DE GROOT Charles
-    1706, // Oncology Clinic Radiation Oncology ZT (PM) **** Cancel
-    1704, // Oncology Clinic Radiation Oncology AA (AM) **** Cancel
-    1708, // Oncology Clinic Radiation Oncology AA (PM) **** Cancel
-    1711, // Oncology Clinical-Non Clinical Admin CH Rad Onc (AM) **** HARTOPEANU Cristian
-    1717, // Oncology Clinical-Non Clinical Admin CDG Rad Onc (PM) **** DE GROOT Charles
-    1715, // Oncology Clinical-Non Clinical Admin MS Rad Onc (AM) **** SEEL Matthew
-    1719, // Oncology Clinical-Non Clinical Admin MS Rad Onc (PM) **** SEEL Matthew
-    1818, // Oncology Clinic - Palliative Care (SB) **** BROWN Stuart
-    1536, // General Surgery On Call **** VAN DALEN Ralph
-    1085, // General Surgery On Call **** GRUNEWALD Bernd
-    1470, // General Surgery Schedule Week **** Week 4
-    1508, // General Surgery CLN SOP 1 AM - Consultant **** FRENCH Rowan
-    1523, // General Surgery CLN BCC AM - Specialist **** SPELLMAN Louise
-    1665, // General Surgery CLN BCC AM - Specialist **** GILBERT Linda
-    1517, // General Surgery CLN BCC PM - Specialist **** SPELLMAN Louise
-    1666, // General Surgery CLN BCC PM - Specialist **** GILBERT Linda
-    1560, // General Surgery Admin-NonClinical AM **** VAN DALEN Ralph
-    1549, // General Surgery Admin-NonClinical PM **** CREIGHTON Jane
-    1561, // General Surgery Admin-NonClinical PM **** CHRISTEY Grant
-    1564, // General Surgery Admin-NonClinical PM **** REID Richard
-    1568, // General Surgery Admin-NonClinical PM **** GRUNEWALD Bernd
-    1557, // General Surgery Trauma Ward Round AM **** CHRISTEY Grant
-    1646, // General Surgery MCC25 - Surgeon **** Registrar List
-    1754, // General Surgery MCC11 - Surgeon **** Acutes
-    1650, // General Surgery MCC01 - Surgeon **** VAN DALEN Ralph
-    1652, // General Surgery MCC04 - Surgeon **** WU Linus (Shun-Jen)
-    1707, // General Surgery MCC ENDO 01 AM - Surgeon **** Not Available
-    1708, // General Surgery MCC ENDO 01 PM - Surgeon **** VAN DALEN Ralph
-    1709, // General Surgery MCC ENDO 02 AM - Surgeon **** REID Richard
-    1710, // General Surgery MCC ENDO 02 PM - Surgeon **** Surgeon
-    1711, // General Surgery MCC ENDO 03 AM - Surgeon **** Gastroenterology
-    1712, // General Surgery MCC ENDO 03 PM - Surgeon **** Gastroenterology
-    1713, // General Surgery MCC ENDO 04 AM - Surgeon **** GRUNEWALD Bernd
-    1714, // General Surgery MCC ENDO 04 PM - Surgeon **** Not Available
-    920, // Rehabilitation On Call - Consultant **** FONSEKA Sarath
-    884, // Rehabilitation Ward AM **** FONSEKA Sarath
-    1058, // Rehabilitation Ward AM **** FOWLER Sarah
-    1057, // Rehabilitation Ward AM **** GOVENDER Siva
-    1056, // Rehabilitation Ward AM **** MACINDOE Simone
-    886, // Rehabilitation Ward PM **** GOVENDER Siva
-    1059, // Rehabilitation Ward PM **** KAPLAN Michael
-    888, // Rehabilitation Admin-Non Clinical AM **** KAPLAN Michael
-    1148, // Rehabilitation Admin-Non Clinical AM **** SAMAD Sha
-    889, // Rehabilitation Admin-Non Clinical PM **** FONSEKA Sarath
-    893, // Rehabilitation Admin-Non Clinical PM **** FOWLER Sarah
-    1091, // Rehabilitation Admin-Non Clinical PM **** MACINDOE Simone
-    1149, // Rehabilitation Admin-Non Clinical PM **** SAMAD Sha
-    929, // ENT Schedule Week **** Week 4
-    1508, // ENT ENT Consultant on call **** CLARKSON John
-    984, // ENT CLN [A] AM - Reg **** BATES Jeremy
-    1557, // ENT CLN [B] AM - Reg **** ROYAN Amal
-    986, // ENT CLN [A] PM - Reg **** BATES Jeremy
-    996, // ENT CLN [ACUTES] PM - Reg **** ROYAN Amal
-    1002, // ENT CLN Thames - Surgeon **** To Be Advised
-    1023, // ENT CLN Te Kuiti - Surgeon **** WHITE Julian
-    1527, // ENT MCC16 - Surgeon **** Registrar List
-    1532, // ENT MCC16 - Registrar **** DULKU Kiren
-    1569, // ENT MCC17 - Surgeon **** GREGOR Theo
-    1570, // ENT MCC14-Surgeon **** CHAN Benjimen
-    1036, // Ophthalmology On Call -Surgeon **** MERRIMAN Michael
-    1555, // Ophthalmology CLN [A] AM - Consultant **** Cancel
-    1581, // Ophthalmology CLN [C] AM - Consultant **** NG Stephen
-    1582, // Ophthalmology CLN [C] AM - Registrar **** BHIKOO Riyaz
-    1155, // Ophthalmology CLN [D] AM - Consultant **** DICKSON John
-    1583, // Ophthalmology CLN [D] AM - Registrar **** No Reg
-    1520, // Ophthalmology CLN Laser AM - Registrar **** YAP Joel
-    1667, // Ophthalmology CLN AM - Optom-S.Bruder **** BRUDER Susanne
-    1586, // Ophthalmology CLN [C] PM - Consultant **** HOY Ben
-    1587, // Ophthalmology CLN [C] PM - Registrar **** YAP Joel
-    1584, // Ophthalmology CLN [D] PM - Consultant **** MERRIMAN Michael
-    1588, // Ophthalmology CLN [D] PM - Registrar **** No Reg
-    1595, // Ophthalmology CLN [D] PM - Registrar **** VOON Shong Min
-    1176, // Ophthalmology CLN Acutes AM - Registrar **** VOON Shong Min
-    1171, // Ophthalmology CLN Acutes PM - Registrar **** LEE In Jung
-    1289, // Ophthalmology Admin AM **** GUEST Stephen
-    1496, // Ophthalmology Admin AM **** MURPHY Chris
-    1633, // Ophthalmology Admin PM **** WORSLEY David
-    1475, // Ophthalmology Schedule Week **** Week 4
-    1571, // Ophthalmology MCC14 - Surgeon **** WORSLEY David
-    1572, // Ophthalmology MCC14 AM - Registrar **** CUNNINGHAM William
-    1635, // Ophthalmology MCC14 PM - Registrar **** CUNNINGHAM William
-    1573, // Ophthalmology MCC15 - Surgeon **** PATIL Bheema
-    1574, // Ophthalmology MCC15 AM - Registrar **** LEE In Jung
-    1623, // Ophthalmology MCC15 PM - Registrar **** BHIKOO Riyaz
-    1596, // Orthopaedics On Call: Ward - Surgeon **** DEVERALL Hamish
-    1435, // Orthopaedics CLN A AM - Consultant **** WOTHERSPOON Paul
-    1439, // Orthopaedics CLN A PM - Consultant **** WOTHERSPOON Paul
-    1436, // Orthopaedics CLN B AM - Consultant **** CHOY Godwin
-    1440, // Orthopaedics CLN B PM - Consultant **** WILLOUGHBY Richard
-    1587, // Orthopaedics CLN C AM **** Fracture
-    1598, // Orthopaedics CLN LFC AM - Consultant **** COWLEY Grant
-    1470, // Orthopaedics Schedule Week **** Week 4
-    1515, // Orthopaedics Ward Round AM **** HARDY Stewart
-    1688, // Orthopaedics Ward Round AM **** HONG Thin
-    1687, // Orthopaedics Ward Round AM **** KETTIDATHIL Vinu
-    1574, // Orthopaedics MCC07 **** DEVERALL Hamish
-    1647, // Orthopaedics MCC07 - Reg **** HOGAN Yeung
-    1576, // Orthopaedics MCC10 **** DONOVAN Jason
-    1580, // Orthopaedics MCC12 **** Neurosurgery
-    1646, // Orthopaedics MCC12 - Reg **** TRAVIS Elizabeth
-    1582, // Orthopaedics MCC08 **** STRICK Neville
-    1092, // Maxillo-Facial and Oral On Call - Surgeon **** COLQUHOUN Angus
-    1542, // Maxillo-Facial and Oral Schedule Week **** Week 4
-    1650, // Maxillo-Facial and Oral MCC22 - Surgeon **** EVANS Steve
-    1104, // Neurosurgery On Duty - Surgeon **** HUSSAIN Zakier
-    1106, // Neurosurgery On Call - Surgeon **** HUSSAIN Zakier
-    1250, // Neurosurgery CLN AM - Registrar **** WONG Waikeat (Justin)
-    1251, // Neurosurgery CLN PM - Registrar **** WONG Waikeat (Justin)
-    1244, // Neurosurgery Ward-Study - Registrar **** HEANEY Jonathon
-    1470, // Neurosurgery Schedule Week **** Week 4
-    1578, // Neurosurgery Ward AM **** GAN Peter
-    1653, // Neurosurgery Clinical-Non Clinical Admin AM **** HUSSAIN Zakier
-    1654, // Neurosurgery Clinical-Non Clinical Admin PM **** HUSSAIN Zakier
-    1656, // Neurosurgery Clinical Admin PM **** GAN Peter
-    1621, // Neurosurgery MCC06 - Surgeon **** MUTHU Thirayan
-    1623, // Neurosurgery MCC06 - Registrar **** RAKASZ Lucas 
-    1671, // Neurosurgery MCC12 - Surgeon **** HUSSAIN Zakier
-    1142, // Plastics On Call - Surgeon **** McEWAN Winston
-    1369, // Plastics CLN Plastics OPD AM - Consultant **** ALKADHI Ahmed
-    1657, // Plastics CLN Plastics OPD AM - Reg **** AHMED Zeeshan
-    1372, // Plastics CLN Plastics OPD AM - Reg **** MAGOYE Theresa
-    1370, // Plastics CLN Plastics Lesion PM - Consultant **** ALKADHI Ahmed
-    1371, // Plastics CLN Plastics Trauma PM - Reg **** AHMED Zeeshan
-    1373, // Plastics CLN Plastics Trauma PM - Reg **** MAGOYE Theresa
-    1588, // Plastics MCCPROC14AM **** TAIB Mujeeb
-    1382, // Plastics MCCPROC14PM **** TAIB Mujeeb
-    1597, // Plastics Theatre Week **** Week 4
-    1616, // Plastics MCC21 - Surgeon **** McEWAN Winston
-    1618, // Plastics MCC21 - Registrar 1 **** SAVAGE Jessica
-    1660, // Plastics MCC21 - Registrar 1 **** EMANUEL Henry
-    1708, // Plastics MCC24 - Plastic acutes Registrar **** SANDERS Andrew
-    1641, // Plastics MCCPROC14 - Surgeon **** YANG Arthur
-    876, // Urology On Call - Consultant **** LEYLAND John
-    1470, // Urology Schedule Week **** Week 4
-    1564, // Urology MCC23 -Surgeon **** LEYLAND John
-    671, // Respiratory On Call - Consultant **** CHANG Cat
-    1086, // Respiratory GenMed AM **** KHAN Asad
-    991, // Respiratory Ward Round AM **** WONG Janice
-    992, // Respiratory Ward Round AM **** CHANG Cat
-    1017, // Respiratory Respiratory CLN PM **** KARALUS Noel
-    1013, // Respiratory Sleep Lab PM **** CHANG Cat
-    1022, // Respiratory Admin-Non Clinical PM **** WONG Janice
-    1023, // Respiratory Admin-Non Clinical PM **** KHAN Asad
-    1562, // Z Hospital Management Duty Chaplain **** SLIGO B
-    1560, // Z Hospital Management Catholic Priest **** BOYCE G Fr
-    1573, // Z Hospital Management Bed Manager **** Bed Manager
-    1709, // Z Hospital Management IHT Coordinator **** IHT
-    1574, // Z Hospital Management Duty Manager **** Duty Manager
-    1575, // Z Hospital Management Nurse Manager **** LABASCHAGNE Deborah
-    1576, // Z Hospital Management Hospital Manager **** DEANE Jo-Anne
-    1265, // Dermatology CLN Minor Ops AM - Consultant **** YUNG Anthony
-    1615, // Dermatology CLN Minor Ops AM Reg **** HARVEY Georgina
-    1186, // Dermatology CLN 1 PM - Consultant **** YUNG Anthony
+    [748,42], // Cardio Thoracic On Call - Surgeon **** LIN Zaw
+    [748,37], // Cardiology On Call - Cardiologist **** PASUPATI Sanjeevan
+    [777,38], // Cardiology Waikato PAMI Cover **** PASUPATI Sanjeevan
+    [769,40], // Cardiology CPU PM - Cardiologist **** PASUPATI Sanjeevan
+    [929,42], // ENT Schedule Week **** Week 4
+    [1508,43], // ENT ENT Consultant on call **** GREGOR Theo
+    [1536,58], // General Surgery On Call **** CHRISTEY Grant
+    [1470,77], // General Surgery Schedule Week **** Week 4
+    [1092,40], // Maxillo-Facial and Oral On Call - Surgeon **** Rakesh Jattan
+    [1542,80], // Maxillo-Facial and Oral Schedule Week **** Week 4
+    [709,52], // Medicine Admitting Code **** 911OR (Orange)
+    [612,53], // Medicine On Call - Cons **** GRAY Erana
+    [725,58], // Medicine CPU On Call - Cons **** PASUPATI Sanjeevan
+    [639,68], // Medicine On Call Team - Cons **** Orange
+    [683,84], // Medicine On Call - Specialist **** SOLANKI Kamal
+    [697,88], // Medicine Endoscopy On Call - Cons **** DICKSON Graeme
+    [1732,48], // Mental Health Call Consultant Night 1 **** DEY Sangeeta
+    [840,42], // Neurology On Call: Neurologist **** GRENHOLM Peter 
+    [1106,42], // Neurosurgery On Call - Surgeon **** HUSSAIN Zakier
+    [1470,68], // Neurosurgery Schedule Week **** Week 4
+    [1155,51], // Obs and Gynae Admitting Consultant **** SINGH VP
+    [500,59], // Obs and Gynae On Call: Night - Consultant **** SINGH VP
+    [543,391], // Obs and Gynae Schedule Week **** Week 4
+    [1300,52], // Oncology On Call: Haematology - Consultant **** GOODMAN Hugh
+    [1301,56], // Oncology On Call: Medical Oncology - Consultant **** KUPER Marion
+    [1303,59], // Oncology On Call: Radiation Oncology - Consultant **** VAN DER VYVER Hermann
+    [1467,66], // Oncology On Call: Palliative Care - Consultant **** BROWN Stuart
+    [1036,36], // Ophthalmology On Call -Surgeon **** HOY Ben
+    [1475,126], // Ophthalmology Schedule Week **** Week 4
+    [1596,48], // Orthopaedics On Call: Ward - Surgeon **** MCCHESNEY Steve
+    [1470,109], // Orthopaedics Schedule Week **** Week 4
+    [1076,64], // Paediatrics Theatre Week **** Week 4
+    [959,72], // Paediatrics On Call: After-hours Paediatric SMO **** McCAY Hamish
+    [1247,73], // Paediatrics Admitting Paediatric SMO **** McCAY Hamish
+    [994,179], // Paediatrics On Call: Paediatric Surgeon **** SAMARAKKODY Udaya
+    [1025,186], // Paediatrics Reg Roster Week **** Week 4
+    [1077,187], // Paediatrics SHO Roster Week **** Week 6
+    [1101,248], // Paediatrics NICU: L3 PM - Consultant **** NAIR Arun
+    [1112,254], // Paediatrics NICU: L2 PM - Consultant **** NAIR Arun
+    [1142,43], // Plastics On Call - Surgeon **** YAPRAK Bulent
+    [1597,109], // Plastics Theatre Week **** Week 4
+    [920,49], // Rehabilitation On Call - Consultant **** MACINDOE Simone
+    [833,38], // Renal On Call - PM **** TAN Eddie
+    [671,38], // Respiratory On Call - Consultant **** BHIKOO Zaheer
+    [876,39], // Urology On Call - Consultant **** LEYLAND John
+    [1470,81], // Urology Schedule Week **** Week 4
+    [748,42], // Vascular On Call - Vascular Surgeon **** HAGGART Paul
+    [905,97], // Vascular Schedule Week **** Week 4
+    [1562,30], // Z Hospital Management Duty Chaplain **** SITARAM D
+    [1560,34], // Z Hospital Management Catholic Priest **** BOYCE G Fr
+    [1573,50], // Z Hospital Management Bed Manager **** Bed Manager
+    [1709,51], // Z Hospital Management IHT Coordinator **** IHT
+    [1574,52], // Z Hospital Management Duty Manager **** Duty Manager
+    [1575,53], // Z Hospital Management Nurse Manager **** LABASCHAGNE Deborah
+    [1576,54], // Z Hospital Management Hospital Manager **** DEANE Jo-Anne
+
+    [752,52], // Cardiology CLN AM - Cardiology **** SWAMPILLAI Janice
+    [762,55], // Cardiology CLN PM - Cardiology **** REGLIST
+    [764,56], // Cardiology CLN PM - Cardiology **** WADE Clyde
+    [763,57], // Cardiology CLN PM - Cardiology **** LIEW Tse Vun
+    [754,62], // Cardiology Cath Lab 1 AM **** NAIR Rajesh
+    [761,63], // Cardiology Cath Lab 1 PM **** NAIR Rajesh
+    [759,64], // Cardiology Cath Lab 2 AM **** LIEW Tse Vun
+    [760,65], // Cardiology Cath Lab 2 PM **** SEBASTIAN Cherian
+    [887,68], // Cardiology Cath Lab 4 AM **** BODDINGTON Dean
+    [888,69], // Cardiology Cath Lab 4 PM **** BODDINGTON Dean
+    [834,101], // Cardiology Admin-Non Clinical AM **** CHARLESON Hamish
+    [910,102], // Cardiology Admin-Non Clinical AM **** DAVIS Mark
+    [908,106], // Cardiology Admin-Non Clinical AM **** JOGIA Pranesh
+    [915,108], // Cardiology Admin-Non Clinical AM **** MENON Madhav
+    [921,111], // Cardiology Admin-Non Clinical AM **** PASUPATI Sanjeevan
+    [922,112], // Cardiology Admin-Non Clinical AM **** SEBASTIAN Cherian
+    [923,113], // Cardiology Admin-Non Clinical AM **** STILES Martin
+    [925,115], // Cardiology Admin-Non Clinical AM **** WADE Clyde
+    [905,119], // Cardiology Admin-Non Clinical PM **** DAVIS Mark
+    [909,122], // Cardiology Admin-Non Clinical PM **** HEALD Spencer
+    [913,123], // Cardiology Admin-Non Clinical PM **** JOGIA Pranesh
+    [916,125], // Cardiology Admin-Non Clinical PM **** MENON Madhav
+    [927,128], // Cardiology Admin-Non Clinical PM **** PASUPATI Sanjeevan
+    [929,130], // Cardiology Admin-Non Clinical PM **** STILES Martin
+    [928,131], // Cardiology Admin-Non Clinical PM **** SWAMPILLAI Janice
+    [1648,36], // Dermatology CLN Paeds 1 AM **** HILL Sarah
+    [1204,40], // Dermatology CLN Paeds 1 PM - Consultant **** YUNG Anthony
+    [1571,44], // Dermatology CLN Paeds 2 PM - Registrar **** HARVEY Georgina
+    [1201,45], // Dermatology CLN Paeds 2 PM **** HILL Sarah
+    [1615,51], // Dermatology CLN Minor Ops AM Reg **** HARVEY Georgina
+    [1184,53], // Dermatology CLN 1 AM **** RADEMAKER Marius
+    [1657,54], // Dermatology CLN 1 AM **** HA Tom
+    [1203,55], // Dermatology CLN 2 AM **** YUNG Anthony
+    [983,55], // ENT CLN [A] AM - Surgeon **** To Be Advised
+    [984,56], // ENT CLN [A] AM - Reg **** BATES Jeremy
+    [987,60], // ENT CLN [ACUTES] AM - Reg **** ROYAN Amal
+    [985,64], // ENT CLN [A] PM - Surgeon **** WHITE Julian
+    [986,65], // ENT CLN [A] PM - Reg **** CHAN Benjimen
+    [1555,66], // ENT CLN [B] PM - Surgeon **** GREGOR Theo
+    [1556,67], // ENT CLN [B] PM - Reg **** CHAN Benjimen
+    [1527,117], // ENT MCC16 - Surgeon **** CLARKSON John
+    [1532,118], // ENT MCC16 - Registrar **** DULKU Kiren
+    [1569,120], // ENT MCC17 - Surgeon **** Obs and Gynae
+    [1085,59], // General Surgery On Call **** CAMPBELL Ian
+    [1509,95], // General Surgery CLN SOP 1 PM - Consultant **** STEWART Adam
+    [1511,97], // General Surgery CLN SOP 2 PM - Consultant **** CHRISTEY Grant
+    [1520,103], // General Surgery CLN BCC AM - Consultant **** HAYES Lou
+    [1665,106], // General Surgery CLN BCC AM - Specialist **** TORRANCE Colette
+    [1548,126], // General Surgery Admin-NonClinical AM **** CAMPBELL Ian
+    [1570,128], // General Surgery Admin-NonClinical AM **** CHRISTEY Grant
+    [1754,166], // General Surgery MCC11 - Surgeon **** Acutes
+    [1646,169], // General Surgery MCC25 - Surgeon **** CREIGHTON Jane
+    [1650,172], // General Surgery MCC01 - Surgeon **** CHRISTEY Grant
+    [1652,173], // General Surgery MCC04 - Surgeon **** VAN DALEN Ralph
+    [1657,175], // General Surgery MCC06 - Surgeon **** REID Richard
+    [1708,178], // General Surgery MCC ENDO 01 PM - Surgeon **** Gastroenterology
+    [1709,180], // General Surgery MCC ENDO 02 AM - Surgeon **** RAFIQUE Mohammad
+    [1710,181], // General Surgery MCC ENDO 02 PM - Surgeon **** Gastroenterology
+    [1711,183], // General Surgery MCC ENDO 03 AM - Surgeon **** Not Available
+    [1712,184], // General Surgery MCC ENDO 03 PM - Surgeon **** Gastroenterology
+    [1713,186], // General Surgery MCC ENDO 04 AM - Surgeon **** Gastroenterology
+    [1714,187], // General Surgery MCC ENDO 04 PM - Surgeon **** Not Available
+    [1606,100], // Maxillo-Facial and Oral MCC15 Dental-Dentist **** Registrar List
+    [931,54], // Medicine GM Post Acute **** STEPHENSON Douglas
+    [722,56], // Medicine CPU On Call - Cons **** RATNAWEERA Manjula
+    [634,66], // Medicine Tokoroa Hospital Ward **** RATNAWEERA Manjula
+    [944,67], // Medicine Tokoroa Hospital Clinic and Teaching **** RATNAWEERA Manjula
+    [750,69], // Medicine CLN Gen Med AM **** Cancel
+    [649,70], // Medicine CLN Gen Med PM **** Cancel
+    [1097,76], // Medicine Rehabilitation **** MUNTHREE Sumi
+    [1101,77], // Medicine Diabetes **** FISHER Maggie
+    [1100,78], // Medicine Infectious Disease Consults **** MILLS Graham
+    [756,115], // Medicine CLN Gastro AM **** BROOKER Jim
+    [766,123], // Medicine Red Team - Cons **** KHAN Asad
+    [767,124], // Medicine Blue Team - Cons **** BROOKLYN Trevor
+    [768,125], // Medicine Gold Team - Cons **** MILLS Graham
+    [771,126], // Medicine Green Team - Cons **** QUINCEY Vicki
+    [770,127], // Medicine Silver Team - Cons **** STEPHENSON Douglas
+    [769,128], // Medicine Orange Team - Cons **** GRAY Erana
+    [1037,129], // Medicine Purple Team - Cons **** REEVE Paul
+    [932,130], // Medicine Red Ward  AM **** KHAN Asad
+    [933,131], // Medicine Blue Ward AM **** BROOKLYN Trevor
+    [934,132], // Medicine Gold Ward AM **** MILLS Graham
+    [935,133], // Medicine Green Ward AM **** QUINCEY Vicki
+    [1056,136], // Medicine Purple Ward AM **** REEVE Paul
+    [1066,139], // Medicine General Medicine Admin-Non Clinical PM **** REEVE Paul
+    [1004,175], // Medicine ENDO 1 AM **** Respiratory
+    [1008,176], // Medicine ENDO 1 PM **** Vacant
+    [1013,177], // Medicine ENDO 2 AM **** Vacant
+    [1005,178], // Medicine ENDO 2 PM **** BROOKER Jim
+    [1014,179], // Medicine ENDO 3 AM **** GenSurg
+    [1006,180], // Medicine ENDO 3 PM **** BROOKLYN Trevor
+    [1009,181], // Medicine ENDO 4 AM **** DICKSON Graeme
+    [1007,182], // Medicine ENDO 4 PM **** Vacant
+    [987,189], // Medicine Gastro Admin-NonClinical PM **** DICKSON Graeme
+    [1104,203], // Medicine On Call - Infectious Diseases **** MILLS Graham
+    [778,41], // Neurology On Duty: Neurologist **** GRENHOLM Peter 
+    [779,51], // Neurology CLN JS AM **** SCHEPEL Jan
+    [797,52], // Neurology CLN JS PM **** SCHEPEL Jan
+    [934,54], // Neurology CLN PG AM **** GRENHOLM Peter 
+    [830,67], // Neurology Clinic Reg Supv AM **** GRENHOLM Peter 
+    [831,68], // Neurology Clinic Reg Supv PM **** SCHEPEL Jan
+    [1104,41], // Neurosurgery On Duty - Surgeon **** HUSSAIN Zakier
+    [1332,54], // Neurosurgery CLN PM - Consultant **** MUTHU Thirayan
+    [1250,55], // Neurosurgery CLN AM - Registrar **** RAKASZ Lucas 
+    [1251,56], // Neurosurgery CLN PM - Registrar **** RAKASZ Lucas 
+    [1655,82], // Neurosurgery Clinical Admin AM **** MUTHU Thirayan
+    [1666,83], // Neurosurgery Clinical Admin AM **** GAN Peter
+    [1654,84], // Neurosurgery Clinical-Non Clinical Admin PM **** GAN Peter
+    [1621,98], // Neurosurgery MCC06 - Surgeon **** General Surgery
+    [1660,104], // Neurosurgery Intvl Radiology **** HUSSAIN Zakier
+    [27,52], // Obs and Gynae On Duty: AM - Consultant **** LIN Sylvia
+    [580,55], // Obs and Gynae On Duty : PM - Consultant **** LIN Sylvia
+    [910,58], // Obs and Gynae On Duty: Evening - Consultant **** SINGH VP
+    [1067,163], // Obs and Gynae REG Admin PM **** LI Lulu
+    [884,169], // Obs and Gynae Ward Round REG - Blue Team AM **** LI Lulu
+    [747,182], // Obs and Gynae Ward Rounds REG - AM **** CAMANO Isabel
+    [716,213], // Obs and Gynae ULTRASOUND TRAINING **** BURLING Michael
+    [718,215], // Obs and Gynae ULTRASOUND TRAINING **** BURLING Michael
+    [822,240], // Obs and Gynae Teaching or Training (Misc) PM **** KAMDAR Toral
+    [465,258], // Obs and Gynae Antenatal CLN 1 AM SMO **** MAKEPEACE Penelope
+    [480,259], // Obs and Gynae Antenatal CLN 1 AM - Reg **** CAMANO Isabel
+    [469,284], // Obs and Gynae Colposcopy CLN 1 AM SMO **** RAMAN Kannan
+    [595,285], // Obs and Gynae Colposcopy CLN 1 AM - Reg **** LI Lulu
+    [475,326], // Obs and Gynae Colposcopy CLN 1 PM SMO **** McCONNELL Sean
+    [622,327], // Obs and Gynae Colposcopy CLN 1 PM Reg **** COLBOURNE Lara
+    [776,329], // Obs and Gynae Colposcopy CLN 2 PM SMO **** MAKEPEACE Penelope
+    [1055,331], // Obs and Gynae Colposcopy CLN 2 PM Reg **** Cancel
+    [681,357], // Obs and Gynae Admin PM **** RAMAN Kannan
+    [1004,365], // Obs and Gynae ANC Grading AM **** DUDLEY Narena
+    [650,369], // Obs and Gynae Non Clinical AM **** DUDLEY Narena
+    [651,370], // Obs and Gynae Non Clinical AM **** McCONNELL Sean
+    [1064,393], // Obs and Gynae Rostered Day Off - REG **** HANNA Adelle
+    [1163,430], // Obs and Gynae MCC17 - Surgeon 1 **** ROHLANDT Deirdre
+    [1164,431], // Obs and Gynae MCC17 - Surgeon 2 **** BARRETT Alison
+    [1165,432], // Obs and Gynae MCC17 - Registrar 1 **** COLBOURNE Lara
+    [1166,433], // Obs and Gynae MCC17 - Registrar 2 **** CAMANO Isabel
+    [925,451], // Obs and Gynae MCC20 - Surgeon 1 **** SINGH VP
+    [934,452], // Obs and Gynae MCC20 - Surgeon 2 **** RAVIKANTI Lakshmi
+    [938,453], // Obs and Gynae MCC20 - Registrar 1 **** SALEH Tarek
+    [1822,51], // Oncology On Call: Haematology IP Team - Consultant **** PULLON Humphrey
+    [1302,64], // Oncology On Call: Palliative Care - Consultant **** HOSKINS Lara
+    [1319,75], // Oncology Haem Rotorua Clinic - Cons **** GAVRILOVA Natalia
+    [1320,76], // Oncology Haem Rotorua Clinic - Reg **** RUKA Myra
+    [1443,86], // Oncology Clinic Haem HG (AM) **** GOODMAN Hugh
+    [1448,89], // Oncology Clinic Haem JAB (PM) **** BELL Julie-Anne
+    [1751,160], // Oncology Clinical-Non Clinical Admin Haem HP (AM) **** PULLON Humphrey
+    [1752,161], // Oncology Clinical-Non Clinical Admin Haem HP (PM) **** PULLON Humphrey
+    [1755,166], // Oncology Clinical-Non Clinical Admin Haem JAB (AM) **** BELL Julie-Anne
+    [1756,168], // Oncology Clinical-Non Clinical Admin Haem SI (AM) **** ISLAM Shahidul
+    [1759,169], // Oncology Clinical-Non Clinical Admin Haem SI (PM) **** ISLAM Shahidul
+    [1608,178], // Oncology Waikato Hospital - Laboratory Haematologist **** MOORE Helen
+    [1573,179], // Oncology Referral Centre Triage Only: Consultant **** ISLAM Shahidul
+    [1401,183], // Oncology Haematology Clinics - Reg **** FERGUSON James
+    [1543,186], // Oncology Haematology Wards - Reg **** AYE Myat Moe
+    [1723,190], // Oncology Clinic Med Onc MJ (AM) **** JAMESON Michael
+    [1729,191], // Oncology Clinic Med Onc MJ (PM) **** JAMESON Michael
+    [1726,196], // Oncology Clinic Med Onc LN (AM) **** NAGLE Lawrence
+    [1732,197], // Oncology Clinic Med Onc LN (PM) **** NAGLE Lawrence
+    [1734,204], // Oncology Clinical-Non Clinical Admin Med Onc IK (AM) **** KENNEDY Ian
+    [1735,205], // Oncology Clinical-Non Clinical Admin Med Onc IK (PM) **** KENNEDY Ian
+    [1737,208], // Oncology Clinical-Non Clinical Admin Med Onc MK (AM) **** KUPER Marion
+    [1742,209], // Oncology Clinical-Non Clinical Admin Med Onc MK (PM) **** KUPER Marion
+    [1765,214], // Oncology Clinical-Non Clinical Admin Med Onc EE (AM) **** EPNER Elliot
+    [1764,215], // Oncology Clinical-Non Clinical Admin Med Onc EE (PM) **** EPNER Elliot
+    [1763,216], // Oncology Clinical-Non Clinical Admin Med Onc AT (AM) **** TAN Alvin
+    [1745,217], // Oncology Clinical-Non Clinical Admin Med Onc AT (PM) **** TAN Alvin
+    [1698,231], // Oncology Clinic Radiation Oncology CH (AM) **** HARTOPEANU Cristian
+    [1699,232], // Oncology Clinic Radiation Oncology CH (PM) **** HARTOPEANU Cristian
+    [1700,233], // Oncology Clinic Radiation Oncology HVdV (AM) **** VAN DER VYVER Hermann
+    [1705,234], // Oncology Clinic Radiation Oncology HVdV (PM) **** VAN DER VYVER Hermann
+    [1701,237], // Oncology Clinic Radiation Oncology ZT (AM) **** THOTATHIL Ziad
+    [1706,238], // Oncology Clinic Radiation Oncology ZT (PM) **** THOTATHIL Ziad
+    [1707,240], // Oncology Clinic Radiation Oncology MS (PM) **** SEEL Matthew
+    [1833,244], // Oncology Clinic Radiation Oncology RH (AM) **** HUANG Roger
+    [1834,245], // Oncology Clinic Radiation Oncology RH (PM) **** HUANG Roger
+    [1713,250], // Oncology Clinical-Non Clinical Admin CDG Rad Onc (AM) **** DE GROOT Charles
+    [1717,251], // Oncology Clinical-Non Clinical Admin CDG Rad Onc (PM) **** DE GROOT Charles
+    [1715,254], // Oncology Clinical-Non Clinical Admin MS Rad Onc (AM) **** SEEL Matthew
+    [1424,269], // Oncology Clinic - Palliative Care (lLH) **** HOSKINS Lara
+    [1818,272], // Oncology Clinic - Palliative Care (SB) **** BROWN Stuart
+    [1557,54], // Ophthalmology CLN Avastin AM - Consultant **** Registrar List
+    [1522,55], // Ophthalmology CLN Avastin AM - Registrar **** LEE In Jung
+    [1519,56], // Ophthalmology CLN Diabetic AM - Consultant **** Registrar List
+    [1591,57], // Ophthalmology CLN Diabetic AM - Registrar **** BHIKOO Riyaz
+    [1520,64], // Ophthalmology CLN Laser AM - Registrar **** YAP Joel
+    [1669,68], // Ophthalmology CLN AM - Optom-PattersonBurn **** PATTERSON BURN
+    [1586,73], // Ophthalmology CLN [C] PM - Consultant **** Cancel
+    [1584,75], // Ophthalmology CLN [D] PM - Consultant **** HOY Ben
+    [1579,78], // Ophthalmology CLN Avastin PM - Consultant **** Registrar List
+    [1565,79], // Ophthalmology CLN Avastin PM - Registrar **** BHIKOO Riyaz
+    [1180,83], // Ophthalmology CLN Laser PM - Consultant **** Cancel
+    [1253,88], // Ophthalmology CLN Min Op -GRC PM - Registrar **** VOON Shong Min
+    [1176,90], // Ophthalmology CLN Acutes AM - Registrar **** VOON Shong Min
+    [1171,91], // Ophthalmology CLN Acutes PM - Registrar **** LEE In Jung
+    [1301,102], // Ophthalmology Admin AM - Registrar **** Eye Reg 1
+    [1633,108], // Ophthalmology Admin PM **** MATLOOB Selma
+    [1571,128], // Ophthalmology MCC14 - Surgeon **** GUEST Stephen
+    [1572,129], // Ophthalmology MCC14 AM - Registrar **** CUNNINGHAM William
+    [1635,130], // Ophthalmology MCC14 PM - Registrar **** CUNNINGHAM William
+    [1435,61], // Orthopaedics CLN A AM - Consultant **** WOTHERSPOON Paul
+    [1440,68], // Orthopaedics CLN B PM - Consultant **** CHOY Godwin
+    [1587,69], // Orthopaedics CLN C AM **** Fracture
+    [1694,70], // Orthopaedics CLN C AM - Reg **** TRAVIS Elizabeth
+    [1471,85], // Orthopaedics CLN Thames  - Consultant **** DEVERALL Hamish
+    [1515,118], // Orthopaedics Ward Round AM **** CHOY Godwin
+    [1574,146], // Orthopaedics MCC07 **** MCCHESNEY Steve
+    [1647,147], // Orthopaedics MCC07 - Reg **** HOGAN Yeung
+    [1576,148], // Orthopaedics MCC10 **** DONOVAN Jason
+    [1580,151], // Orthopaedics MCC12 **** WILLOUGHBY Richard
+    [1582,158], // Orthopaedics MCC08 **** HONG Thin
+    [1648,159], // Orthopaedics MCC08 - Reg **** KETTIDATHIL Vinu
+    [1692,160], // Orthopaedics MCC08 - Reg **** TRAVIS Elizabeth
+    [958,71], // Paediatrics On Duty: Paediatric SMO **** DE ALMEIDA Tilak
+    [1564,98], // Paediatrics CLINIC Paeds Med - Reg **** HOWLETT Rachel
+    [1590,99], // Paediatrics CLINIC Paeds Med - Reg **** LALA Rachel
+    [937,134], // Paediatrics CDC & CPASS Registrar **** ADAMU Zayna
+    [1024,185], // Paediatrics Admin **** Week 5
+    [1300,199], // Paediatrics CLN Paeds Medical PM - SMO **** GOLDSMITH John
+    [1533,205], // Paediatrics CUL Paeds Med **** GRAHAM David
+    [1029,214], // Paediatrics Paeds Med Admin AM **** McCAY Hamish
+    [1528,215], // Paediatrics Paeds Med Admin AM **** GOLDSMITH John
+    [1525,223], // Paediatrics Paeds Med Admin PM **** GRAHAM David
+    [1530,224], // Paediatrics Paeds Med Admin PM **** McCAY Hamish
+    [1061,232], // Paediatrics Clinic Paeds Surg AM - Surgeon **** BROWN Stuart
+    [1102,247], // Paediatrics NICU: L3 AM - Consultant **** WESTON Phil
+    [1110,251], // Paediatrics NICU: L3 AM - Reg-NNP **** CARPENTER Lee
+    [1156,253], // Paediatrics NICU: L2 AM - Consultant **** BOURCHIER David
+    [1113,255], // Paediatrics NICU: L2 AM - Reg-NNP **** EDMOND Tess
+    [1095,256], // Paediatrics NICU - AM - HO **** HAJI MOHAMMAD Ruzaimah
+    [1116,257], // Paediatrics NICU: PM - HO **** SUTHERLAND Aleisha
+    [1149,269], // Paediatrics Paed Surgical Reg - OT (or Clinic) **** JAYARATNAM Sridharan
+    [1147,270], // Paediatrics Paed Surgical Reg - Clinic (or OT) **** SIVASUBRAMANIAM Mithila
+    [1380,280], // Paediatrics MCC 22 - Paediatrics Surgeon **** SAMARAKKODY Udaya
+    [1369,65], // Plastics CLN Plastics OPD AM - Consultant **** WOODFIELD Mike
+    [1657,66], // Plastics CLN Plastics OPD AM - Reg **** SANDERS Andrew
+    [1370,71], // Plastics CLN Plastics Lesion PM - Consultant **** WOODFIELD Mike
+    [1371,72], // Plastics CLN Plastics Trauma PM - Reg **** SANDERS Andrew
+    [1669,89], // Plastics Thames Theatre 1 AM - Consultant **** YAPRAK Bulent
+    [1671,90], // Plastics Thames Theatre 1 PM - Consultant **** YAPRAK Bulent
+    [1404,92], // Plastics Thames Theatre 1 AM - Reg **** SAVAGE Stephanie
+    [1673,93], // Plastics Thames Theatre 1PM - Reg **** SAVAGE Stephanie
+    [1588,100], // Plastics MCCPROC14AM **** AHMED Zeeshan
+    [1382,102], // Plastics MCCPROC14PM **** AHMED Zeeshan
+    [1616,122], // Plastics MCC21 - Surgeon **** ADAMS Brandon
+    [1618,123], // Plastics MCC21 - Registrar 1 **** TAIB Mujeeb
+    [1708,131], // Plastics MCC24 - Plastic acutes Registrar **** SAVAGE Jessica
+    [1080,39], // Rehabilitation Clinics AM **** FONSEKA Sarath
+    [1062,40], // Rehabilitation Clinics AM **** GOVENDER Siva
+    [1066,45], // Rehabilitation Clinics PM **** GOVENDER Siva
+    [1068,47], // Rehabilitation Clinics PM **** Cancel
+    [1058,64], // Rehabilitation Ward AM **** FOWLER Sarah
+    [1056,66], // Rehabilitation Ward AM **** MACINDOE Simone
+    [1055,67], // Rehabilitation Ward AM **** KAPLAN Michael
+    [1148,78], // Rehabilitation Admin-Non Clinical AM **** SAMAD Sha
+    [889,80], // Rehabilitation Admin-Non Clinical PM **** FONSEKA Sarath
+    [893,81], // Rehabilitation Admin-Non Clinical PM **** FOWLER Sarah
+    [895,83], // Rehabilitation Admin-Non Clinical PM **** KAPLAN Michael
+    [1149,85], // Rehabilitation Admin-Non Clinical PM **** SAMAD Sha
+    [912,37], // Renal On Call - AM **** TAN Eddie
+    [834,50], // Renal Ward Physician **** TAN Eddie
+    [835,51], // Renal Transplant Physician **** PANDEY Rakesh
+    [836,52], // Renal Hospital Outliers Physician **** RABINDRANATH Kannaiyan
+    [837,53], // Renal HHD Physician **** SIZELAND Peter
+    [928,54], // Renal CAPD Physician **** SIZELAND Peter
+    [854,59], // Renal Gen Nephrology Clinic **** TAN Eddie
+    [856,60], // Renal Gen Nephrology Clinic **** RABINDRANATH Kannaiyan
+    [939,61], // Renal Gen Nephrology Clinic **** PANDEY Rakesh
+    [949,65], // Renal CKD Clinic **** SIZELAND Peter
+    [1086,52], // Respiratory GenMed AM **** KHAN Asad
+    [994,61], // Respiratory Broncs Clinic AM **** BHIKOO Zaheer
+    [1032,72], // Respiratory Lung Function CLN PM **** BHIKOO Zaheer
+    [1013,73], // Respiratory Sleep Lab PM **** KHAN Asad
+    [1007,80], // Respiratory Admin-Non Clinical AM **** WONG Janice
+    [752,59], // Vascular CLN AM Vascular **** HOLDAWAY Chris
+    [778,60], // Vascular CLN AM Vascular - Reg 1 **** RAYNER Charles
+    [765,62], // Vascular CLN AM Diabetes Vascular **** HAGGART Paul
+    [957,69], // Vascular Angio PM - Registrar 1 **** CHANDRA Abe
+    [954,93], // Vascular MCC02 - Registrar 1 **** ULOOM Amin
+    [929,99], // Vascular Clinical Admin AM **** HOLDAWAY Chris
+    [927,100], // Vascular Clinical Admin AM **** HAGGART Paul
+    [926,101], // Vascular Clinical Admin AM **** VASUDEVAN Vasu
+    [930,103], // Vascular Clinical Admin PM **** HOLDAWAY Chris
+    [928,104], // Vascular Clinical Admin PM **** HAGGART Paul
+    [925,105], // Vascular Clinical Admin PM **** VASUDEVAN Vasu
+    [1561,32], // Z Hospital Management Maori Chaplain **** POUTAPU S
+    [1242,92], // Z IOC Test SMO On Duty AM - House Officer **** YOON Tae Young
+    [1306,93], // Z IOC Test SMO On Duty PM - House Officer **** GLASS Louis
 ];
