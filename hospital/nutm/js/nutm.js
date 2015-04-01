@@ -39,33 +39,41 @@ function get_select(database_obj) {
             .text("Sign in")
         ),
     database = database_obj[0],
-    onlinestamp = database_obj[1];
-    for(var specialty in database) {
-        if (Object.keys(database[specialty]).length > 0) {
+    onlinestamp = database_obj[1],
+    specialty, rows, optgroup, r, role, person, start,end, option;
+    for(i = 0; i < database.length; i++) {
+        specialty = database[i][0],
+        rows = database[i][1];
+        if (rows.length > 0) {
             var optgroup = $("<optgroup>").attr("label", specialty);
-            for (var role in database[specialty]) {
-                var person_time = database[specialty][role],
+            for(k = 0; k < rows.length; k++) {
+                r = rows[k],
+                person = r[0],
+                role = r[1],
+                start = r[2],
+                end = r[3],
                 option = $('<option>')
                     .data({
-                        'person':person_time[0],
+                        'person':person,
                         'role':role,
-                        'start':person_time[1],
-                        'end':person_time[2]
+                        'start':start,
+                        'end':end
                     })
-                    .text(person_time[0] + ' (' + role + ') [' + person_time[1] + ' - ' + person_time[2] + ']');
+                    .text(person + ' (' + role + ') [' + start + ' - ' + end + ']');
                 optgroup.append(option);
             }
             select.append(optgroup);
         }
     }
-    $("#user-panel").append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    $("#user-panel").prepend(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    loginToggle();
     for (i = 0; i < 5; i++) {
         addnew(get_random_rowdata()); //insert 5 random rows
     }
 }
 
 function updatePeople_dynamic() {
-    $.getJSON("amion.php", function(database_obj) {get_select(database_obj);});
+    $.getJSON("amion.php", {'get_database': 'true'}, function(database_obj) {get_select(database_obj);});
 }
 
 function updatePeople_static() {
@@ -102,11 +110,11 @@ function loginToggle() {
         $("#tasks-tab>a").tab("show");
         $("button.accept, button.complete").removeClass("disabled");
         $("#user>option:first-child").text("Sign out");
-        $("#whoami").text(user[0]);
         $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
+        $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
+        $("#whoami").text(user[0]);
         $("#whatami").text(user[1]);
         $("#whenami").text(user[2]);
-        $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
         //$("#signin-tab").addClass("hidden");
         //$("#signout-tab").removeClass("hidden");
         //$("div.jumbotron").removeClass("hidden");
@@ -114,10 +122,10 @@ function loginToggle() {
     }
     $("button.accept, button.complete").addClass("disabled");
     $("#user>option:first-child").text("Sign in");
-    $("#whoami").text("Sign in");
     $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
-    $("#whatami, #whenami").empty();
+    $("#whoami").text("Sign in");
     $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
+    $("#whatami, #whenami").empty();
     //$("#signin-tab").removeClass("hidden");
     //$("#signout-tab").addClass("hidden");
     //$("div.jumbotron").addClass("hidden");
