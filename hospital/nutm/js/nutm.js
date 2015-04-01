@@ -39,33 +39,40 @@ function get_select(database_obj) {
             .text("Sign in")
         ),
     database = database_obj[0],
-    onlinestamp = database_obj[1];
-    for(var specialty in database) {
-        if (Object.keys(database[specialty]).length > 0) {
+    onlinestamp = database_obj[1],
+    specialty, rows, optgroup, r, role, person, start,end, option;
+    for(i = 0; i < database.length; i++) {
+        specialty = database[i][0],
+        rows = database[i][1];
+        if (rows.length > 0) {
             var optgroup = $("<optgroup>").attr("label", specialty);
-            for (var role in database[specialty]) {
-                var person_time = database[specialty][role],
+            for(k = 0; k < rows.length; k++) {
+                r = rows[k],
+                person = r[0],
+                role = r[1],
+                start = r[2],
+                end = r[3],
                 option = $('<option>')
                     .data({
-                        'person':person_time[0],
+                        'person':person,
                         'role':role,
-                        'start':person_time[1],
-                        'end':person_time[2]
+                        'start':start,
+                        'end':end
                     })
-                    .text(person_time[0] + ' (' + role + ') [' + person_time[1] + ' - ' + person_time[2] + ']');
+                    .text(person + ' (' + role + ') [' + start + ' - ' + end + ']');
                 optgroup.append(option);
             }
             select.append(optgroup);
         }
     }
-    $("#user-panel").append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    $("#user-panel").empty().append(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
     for (i = 0; i < 5; i++) {
         addnew(get_random_rowdata()); //insert 5 random rows
     }
 }
 
 function updatePeople_dynamic() {
-    $.getJSON("amion.php", function(database_obj) {get_select(database_obj);});
+    $.getJSON("amion.php", {'get_database': 'true'}, function(database_obj) {get_select(database_obj);});
 }
 
 function updatePeople_static() {

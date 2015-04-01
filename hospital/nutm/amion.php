@@ -2,7 +2,7 @@
 
 date_default_timezone_set("Pacific/Auckland");
 $time = new DateTime();
-include '_blacklist.php';
+
 
 function get_url() {
     $password = 'waikato';
@@ -13,32 +13,72 @@ function print_time() {
     global $time;
     echo '<p>' . $time->format(DATE_RSS) . '</p>';
 }
-function get_database() {
+
+/*function add_to_list($r, $specialty, $listname) {
+    $lists[$listname][] = sprintf('%d, // %s %s **** %s', $r[4], $specialty, $r[1],$r[0]);
+}*/
+
+function get_database($good_only) {
     global $time;
-    global $blacklist;
-    $database = [];
+    include '_blacklist.php';
+    $specialty_blacklist = ['*ICU','Anaesthesia','Clinic and OT Schedule','Emergency Department','Radiology','Thames','Tokoroa'];
+
     $timestr = $time->format('Hi');
-    //$file = fopen('data.csv',"r");
+    
     $file = fopen(get_url(),"r");
+    //$file = fopen('data.csv',"r");
     $online_stamp = fgetcsv($file)[0];
+    $stack = [];
     while(! feof($file)) {
         $r = fgetcsv($file);
-        //if (!in_array(inval($r[5]), $blacklist)) { echo $r[5];}
-        if (count($r) == 10 && !in_array(intval($r[5]), $blacklist)) {
+        if (count($r) == 10) {
             $specialty = $r[0];
-            if (!array_key_exists($specialty, $database)) {$database[$specialty] = [];}
-            if (
-                    ($r[8] < $r[9] && $timestr >= $r[8] && $timestr <= $r[9])
-                    || ($r[8] > $r[9] && ($timestr >= $r[8] || $timestr <= $r[9]))
-                    || ($r[8] == $r[9])
-
-            ) {
-                $database[$specialty][$r[4]] = [$r[1],$r[8],$r[9]];
+            if (!array_key_exists($specialty, $stack)) {
+                $stack[$specialty] = [];
             }
+            $stack[$specialty][] = [$r[1],$r[4],$r[8],$r[9],[intval($r[5]),intval($r[6])]];
         }
     }
     fclose($file);
-    return [$database, $online_stamp];
+    ksort($stack);
+
+    $template = array_fill_keys(array_keys($stack), []);
+    $lists =[
+    'good' =>  $template,
+    'bad'=> $template, 
+    'ugly'=> $template
+    ];
+
+    $db = [];
+    foreach($stack as $specialty => $rows) {
+        foreach($rows as $r) {
+            if (in_array($specialty, $specialty_blacklist) || in_array($r[4], $blacklist)) {
+                if ($specialty == 'Urology') {echo '<p>' . print_r($r) . 'is ugly</p>';}
+                //Row is ugly!
+                $lists['ugly'][$specialty][] = $r;
+            } elseif (
+                    ($r[2] < $r[3] && $timestr >= $r[2] && $timestr <= $r[3])
+                    || ($r[2] > $r[3] && ($timestr >= $r[2] || $timestr <= $r[3]))
+                    || ($r[2] == $r[3])
+
+            ) {
+                //Row is good!
+                $lists['good'][$specialty][] = $r;
+
+            } else {
+                //Row is bad!
+                $lists['bad'][$specialty][] = $r;
+            }
+        }
+        $db[] = [$specialty, $lists['good'][$specialty]];
+    }
+    
+
+    if ($good_only) {
+        return [$db, $online_stamp];
+    } else {
+        return $lists;
+    }
 }
 
 function print_database() {
@@ -66,4 +106,6 @@ function print_select() {
     }
     printf('</select><p>%s</p>', $database_obj[1]);
 }
-echo json_encode(get_database());
+if (array_key_exists('get_database', $_GET) && $_GET['get_database'] === 'true') {
+    echo json_encode(get_database(true));
+}
