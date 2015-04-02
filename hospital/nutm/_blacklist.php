@@ -55,7 +55,6 @@ $blacklist = [
     [1574,52], // Z Hospital Management Duty Manager **** Duty Manager
     [1575,53], // Z Hospital Management Nurse Manager **** LABASCHAGNE Deborah
     [1576,54], // Z Hospital Management Hospital Manager **** DEANE Jo-Anne
-
     [752,52], // Cardiology CLN AM - Cardiology **** SWAMPILLAI Janice
     [762,55], // Cardiology CLN PM - Cardiology **** REGLIST
     [764,56], // Cardiology CLN PM - Cardiology **** WADE Clyde
@@ -344,4 +343,16 @@ $blacklist = [
     [1561,32], // Z Hospital Management Maori Chaplain **** POUTAPU S
     [1242,92], // Z IOC Test SMO On Duty AM - House Officer **** YOON Tae Young
     [1306,93], // Z IOC Test SMO On Duty PM - House Officer **** GLASS Louis
+    [778,55], // Cardio Thoracic: CLN AM Cardiac - Surgeon [0800 - 1200] (KEJRIWAL Nand)
+    [752,56], // Cardio Thoracic: CLN AM Cardiac - Surgeon [0800 - 1200] (LIN Zaw)
+    [970,65], // Cardio Thoracic: Clinical Admin AM [0800 - 1230] (KEJRIWAL Nand)
+    [971,66], // Cardio Thoracic: Clinical Admin AM [0800 - 1230] (LIN Zaw)
+    [972,67], // Cardio Thoracic: Clinical Admin AM [0800 - 1230] (ODOM Nick)
+    [973,70], // Cardio Thoracic: Clinical Admin PM [1230 - 1630] (KEJRIWAL Nand)
+    [974,71], // Cardio Thoracic: Clinical Admin PM [1230 - 1630] (LIN Zaw)
+    [975,72], // Cardio Thoracic: Clinical Admin PM [1230 - 1630] (ODOM Nick)
+    [961,133], // Cardio Thoracic: MCC03 - Cardiothoracic Surgeon [0800 - 1700] (EL GAMEL Adam)
+    [962,134], // Cardio Thoracic: MCC03 - Cardiothoracic Registrar 1 [0800 - 1700] (RADHAKRISHNAN Kamaraj)
+    [942,137], // Cardio Thoracic: MCC05 - CardioThoracic Surgeon [0800 - 1700] (LIN Zaw)
+    [943,140], // Cardio Thoracic: MCC05 - Cardio Thoracic Registrar 1 [0800 - 1700] (GOYAL Shiromani)
 ];
