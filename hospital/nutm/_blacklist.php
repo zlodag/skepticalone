@@ -355,4 +355,11 @@ $blacklist = [
     [962,134], // Cardio Thoracic: MCC03 - Cardiothoracic Registrar 1 [0800 - 1700] (RADHAKRISHNAN Kamaraj)
     [942,137], // Cardio Thoracic: MCC05 - CardioThoracic Surgeon [0800 - 1700] (LIN Zaw)
     [943,140], // Cardio Thoracic: MCC05 - Cardio Thoracic Registrar 1 [0800 - 1700] (GOYAL Shiromani)
+    [905,142], // Medical RMO: AMU.Resp.Rehab WE PM - House Officer [0815 - 2230] (SI Hooi Ling)
+    [2067,50], // Mental Health: On-call Consultant W-E 1 [0800 - 0800] (ABRAHAM Annie)
+    [909,60], // Obs and Gynae: On Duty: WE - On Site Consultant [0800 - 1200] (RAVIKANTI Lakshmi)
+    [581,61], // Obs and Gynae: On Call : WE - Consultant [1200 - 0800] (RAVIKANTI Lakshmi)
+    [1831,53], // Oncology: On Call: Haematology WE - Consultant [0800 - 0800] (GOODMAN Hugh)
+    [1248,75], // Paediatrics: On Call: Paediatric SMO - Weekend [0800 - 0800] (McCAY Hamish)
+    [839,40], // Renal: On Call - WE [0800 - 0800] (RABINDRANATH Kannaiyan)
 ];
