@@ -1,7 +1,25 @@
+var randomrows = 50;
 var time = new Date();
+var urgency = ['30 mins','1 hour','2 hours','4 hours','8 hours'];
+var wards = ['AMU','A2','A3','A4','CCU','CC2','CC3','M2','M12','M3','M4','M14','M5','M6','M16','M7','M17','M8','E1','E2','E7','34','35','36'];
 
-function pad(number) {
-    return ('0' + number).slice(-2);
+$.tablesorter.addParser({id: 'timestamp', format: function (s, table, cell, cellIndex) {return cell.getAttribute('data-timestamp');}, type: 'numeric'});
+
+$.tablesorter.addParser({id: 'urgency', format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
+
+$.tablesorter.addParser({id: 'location', format: function (s, table, cell, cellIndex) {return cell.getAttribute('data-location');}, type: 'numeric'});
+
+
+function pad(number, sigfigs, padding) {
+    sigfigs =  typeof sigfigs !== "undefined" ? sigfigs : 2,
+    padding =  typeof padding !== "undefined" ? padding : '0',
+    paddingstr = '';
+    for (var i=0;i<sigfigs;i++) {paddingstr += padding;}
+    return (paddingstr + number).slice(-sigfigs);
+}
+
+function location_to_string(ward,bed) {
+    return wards.indexOf(ward) + pad((bed.match(/\d+/g) || []).join('') || '',3);
 }
 
 function get_database(results) {
@@ -66,14 +84,21 @@ function get_select(database_obj) {
         }
     }
     $("#user-panel").prepend(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
-    loginToggle();
-    for (i = 0; i < 5; i++) {
-        addnew(get_random_rowdata()); //insert 5 random rows
+    completeTable();
+}
+
+function completeTable() {
+    //loginToggle();
+    for (var i = 0; i < randomrows; i++) {
+        addnew(get_random_rowdata()); //insert random rows
     }
+    $("#jobs").tablesorter({cancelSelection: true});
 }
 
 function updatePeople_dynamic() {
-    $.getJSON("amion.php", {'get_database': 'true'}, function(database_obj) {get_select(database_obj);});
+    $.getJSON("amion.php", {'get_database': 'true', 'test':'true'}, function(database_obj) {
+        get_select(database_obj);
+        });
 }
 
 function updatePeople_static() {
@@ -143,24 +168,27 @@ function getUser(random) {
 }
 
 function appendLabels(options) {
-    var d = getTime(options.time);
-    var user = getUser(options.random);
-    var dict = {
-        "data-toggle": "tooltip",
-            "data-placement": "right"
-    };
-    var person = $("<span>").addClass("label label-" + options.b_type).text(user[0])
+    var d = getTime(options.time),
+    user = getUser(options.random),
+    datadict = {
+        "toggle": "tooltip",
+        "placement": "right"
+    },
+    person = $("<span>").addClass("label label-" + options.b_type).text(user[0])
         .attr({
         "title": user[1] + ' (' + user[2] + ')'
     })
-        .attr(dict)
-        .tooltip();
-    var time = d.addClass("label label-" + options.b_type)
-        .attr(dict)
-        .tooltip();
+        .data(datadict)
+        .tooltip()
+    ,
+    time = d.addClass("label label-" + options.b_type)
+        .data(datadict)
+        .tooltip()
+    ;
     options.target.append(person, $("<br>"), time);
     d.timeago();
 }
+
 
 function accept_complete() {
     var row = $(this).parent().parent();
@@ -170,16 +198,18 @@ function accept_complete() {
         td = row.find("td.accepted");
         b_type = "info";
     } else if (button_type === "Complete") {
-        row.appendTo($("#oldjobs"));
+        //row.appendTo($("#oldjobs"));
         td = row.find("td.completed");
         b_type = "success";
         row.find("td.accepted>button").remove();
     }
     td.empty();
+    var timestamp = new Date();
     row.attr("class", b_type);
+    td.attr("data-timestamp", timestamp.getTime());
     appendLabels({
         cell: td,
-        time: new Date(),
+        time: timestamp,
         b_type: b_type,
         target: td,
         random: false
@@ -190,7 +220,7 @@ function accept_complete() {
 function addnew(row_data) {
     var tr = $(document.createElement('tr'));
     $("#jobs>tbody").append(tr);
-    var a = $("<td>");
+    var a = $("<td>").addClass("added").attr('data-timestamp', row_data.added.getTime());
     tr.append(a);
     appendLabels({
         cell: a,
@@ -203,7 +233,10 @@ function addnew(row_data) {
     //$("<td>").addClass("added").append(getTime(row_data.added)),
     $("<td>").addClass("nhi").text(row_data.nhi),
     $("<td>").addClass("p_name text-capitalize").text(row_data.p_name),
-    $("<td>").addClass("location").text(row_data.ward + '-' + row_data.bed),
+    $("<td>").addClass("location").attr("data-location", location_to_string(row_data.ward,row_data.bed))
+        .append($("<span>").addClass("ward").text(row_data.ward))
+        .append(' - ')
+        .append($("<span>").addClass("bed").text(row_data.bed)),
     $("<td>").addClass("specialty").text(row_data.specialty),
     $("<td>").addClass("urgency").text(row_data.urgency),
     $("<td>").addClass("details").text(row_data.details),
@@ -272,11 +305,11 @@ function get_random_rowdata() {
     var min = 5,
         max = 20;
     return {
-        "added": new Date(new Date().valueOf() - Math.random() * 28800000),
+        "added": new Date(new Date().getTime() - Math.random() * 28800000),
             "nhi": get_random_nhi(),
             "p_name": chance.name(),
             "ward": get_random_option("ward"),
-            "bed": Math.ceil((Math.random() * 15)),
+            "bed": Math.ceil((Math.random() * 15)).toString(),
             "specialty": get_random_option("specialty"),
             "urgency": get_random_option("urgency"),
             "details": chance.sentence({
@@ -304,9 +337,11 @@ function updateValidity() {
 
 
 $(function () {
+
     //Update elements:
     //updatePeople_static();
     updatePeople_dynamic();
+
     /*
     $.tablesorter.addParser({
         // set a unique id 

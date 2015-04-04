@@ -1,4 +1,4 @@
-.label, ul.nav-tabs>li>a {
+.label, ul.nav-tabs>li>a,#jobs>thead>tr>th>div {
     cursor: pointer;
 }
 body>div>* {

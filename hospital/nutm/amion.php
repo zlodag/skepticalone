@@ -26,7 +26,9 @@ function get_database($good_only) {
     $timestr = $time->format('Hi');
     
     $file = fopen(get_url(),"r");
-    //$file = fopen('data.csv',"r");
+    if (array_key_exists('test', $_GET) && $_GET['test'] === 'true') {
+        $file = fopen('data.csv',"r");
+    }
     $online_stamp = fgetcsv($file)[0];
     $stack = [];
     while(! feof($file)) {
