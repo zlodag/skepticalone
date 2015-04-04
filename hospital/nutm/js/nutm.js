@@ -92,7 +92,6 @@ function completeTable() {
     for (var i = 0; i < randomrows; i++) {
         addnew(get_random_rowdata()); //insert random rows
     }
-    $("#jobs").tablesorter({cancelSelection: true});
 }
 
 function updatePeople_dynamic() {
@@ -341,6 +340,28 @@ $(function () {
 
     //Update elements:
     //updatePeople_static();
+    $.tablesorter.themes.bootstrap.table = 'table table-striped table-hover table-condensed';
+    $("#jobs").tablesorter({
+        theme : "bootstrap",
+        sortList: [[5, 0],[0, 0]],
+        widgets : [ "uitheme", "filter", "zebra"],
+        headerTemplate : '{content} {icon}'
+    });
+    /*
+    .tablesorterPager({
+        // target the pager markup - see the HTML block below
+        container: $(".ts-pager"),
+        // target the pager page select dropdown - choose a page
+        cssGoto  : ".pagenum",
+        // remove rows from the table to speed up the sort of large tables.
+        // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+        removeRows: false,
+        // output string - default is '{page}/{totalPages}';
+        // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
+        output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+    });
+    */
+    
     updatePeople_dynamic();
 
     /*
