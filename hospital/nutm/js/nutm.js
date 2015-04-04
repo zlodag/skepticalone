@@ -214,7 +214,7 @@ function accept_complete() {
         target: td,
         random: false
     });
-    $("#jobs").trigger("update");
+    $('#jobs').trigger('update');
 }
 
 function addnew(row_data) {
@@ -243,6 +243,7 @@ function addnew(row_data) {
     $("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)),
     $("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
     loginToggle();
+    $('#jobs').trigger('update');
     /*
     $("button.complete").off("click").click(function () {
         complete($(this).parent().parent());

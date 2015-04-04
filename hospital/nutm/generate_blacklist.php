@@ -4,7 +4,8 @@
 #good {background-color: #dfffdf;}
 #bad {background-color: #dceaff;}
 #ugly {background-color: #ffebdf;}
-</style></head><body>
+</style>
+</head><body>
 <?php
 
 include 'amion.php';
