@@ -1,13 +1,41 @@
-var randomrows = 50;
+var randomrows = 100;
 var time = new Date();
 var urgency = ['30 mins','1 hour','2 hours','4 hours','8 hours'];
-var wards = ['AMU','A2','A3','A4','CCU','CC2','CC3','M2','M12','M3','M4','M14','M5','M6','M16','M7','M17','M8','E1','E2','E7','34','35','36'];
+var allwards = [['Medical',['AMU','A2','A3','A4']],['Cardiac care',['CCU','CC2','CC3']],['Menzies',['M2','M12','M3','M4','M14','M5','M6','M16','M7','M17','M8']],['ERB',['E1','E2','E7']],['HBC',['34','35','36']]];
 
-$.tablesorter.addParser({id: 'timestamp', format: function (s, table, cell, cellIndex) {return cell.getAttribute('data-timestamp');}, type: 'numeric'});
+for (var i=j=u=0, wards = {}, locationfns = {}, wardlist = []; i < allwards.length; i++) {
+    var w = allwards[i][0],
+    l = allwards[i][1];
+    locationfns[w] = function(e,n,f,i,$r){return $r.data('building') === f;};
+    for (j = 0; j < l.length; j++) {
+        wards[l[j]] = [u, w];
+        wardlist.push(l[j]);
+        u++;
+    }
+}
+//for (w in allwards) {wards = wards.concat(allwards[w]);}
 
-$.tablesorter.addParser({id: 'urgency', format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
+/*function get_building(ward) {
+    for (b in allwards) {if (allwards[b].indexOf(ward) != -1) {return b;}}
+}*/
+function get_building(ward) {
+    return wards[ward][1];
+}
+$.tablesorter.addParser(
+    {
+        parsed: true,
+        id: 'timestamp',
+        format: function (s, table, cell, cellIndex) {
+            return parseInt(cell.getAttribute('data-timestamp')) || 0;
+            },
+        type: 'numeric'
+    });
 
-$.tablesorter.addParser({id: 'location', format: function (s, table, cell, cellIndex) {return cell.getAttribute('data-location');}, type: 'numeric'});
+$.tablesorter.addParser({id: 'urgency', parsed: true, format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
+
+$.tablesorter.addParser({id: 'location', parsed: true, format: function (s, table, cell, cellIndex) {
+    return location_to_int(cell.children[0].textContent, cell.children[1].textContent);
+    }, type: 'numeric'});
 
 
 function pad(number, sigfigs, padding) {
@@ -18,9 +46,11 @@ function pad(number, sigfigs, padding) {
     return (paddingstr + number).slice(-sigfigs);
 }
 
-function location_to_string(ward,bed) {
-    return wards.indexOf(ward) + pad((bed.match(/\d+/g) || []).join('') || '',3);
+
+function location_to_int(ward,bed) {
+    return parseInt((typeof wards[ward] !== 'undefined' ? wards[ward][0] : 0) + pad((bed.match(/\d+/g) || []).join('') || '',3));
 }
+
 
 function get_database(results) {
     var timestr = pad(time.getHours()) + pad(time.getMinutes()),
@@ -95,7 +125,10 @@ function completeTable() {
 }
 
 function updatePeople_dynamic() {
-    $.getJSON("amion.php", {'get_database': 'true', 'test':'true'}, function(database_obj) {
+    $.getJSON("amion.php",
+    //{'get_database': 'true', 'test':'true'},
+    {'get_database': 'true'},
+    function(database_obj) {
         get_select(database_obj);
         });
 }
@@ -217,7 +250,7 @@ function accept_complete() {
 }
 
 function addnew(row_data) {
-    var tr = $(document.createElement('tr'));
+    var tr = $(document.createElement('tr')).attr("data-building", get_building(row_data.ward));
     $("#jobs>tbody").append(tr);
     var a = $("<td>").addClass("added").attr('data-timestamp', row_data.added.getTime());
     tr.append(a);
@@ -232,7 +265,8 @@ function addnew(row_data) {
     //$("<td>").addClass("added").append(getTime(row_data.added)),
     $("<td>").addClass("nhi").text(row_data.nhi),
     $("<td>").addClass("p_name text-capitalize").text(row_data.p_name),
-    $("<td>").addClass("location").attr("data-location", location_to_string(row_data.ward,row_data.bed))
+    //$("<td>").addClass("location").attr("data-location", location_to_string(row_data.ward,row_data.bed))
+    $("<td>").addClass("location")
         .append($("<span>").addClass("ward").text(row_data.ward))
         .append(' - ')
         .append($("<span>").addClass("bed").text(row_data.bed)),
@@ -344,10 +378,39 @@ $(function () {
     $("#jobs").tablesorter({
         theme : "bootstrap",
         sortList: [[5, 0],[0, 0]],
-        widgets : [ "uitheme", "filter", "zebra"],
-        headerTemplate : '{content} {icon}'
-    });
-    /*
+        widgets : [ "uitheme", "filter"],
+        headerTemplate : '{content} {icon}',
+        widgetOptions : {
+          // using the default zebra striping class name, so it actually isn't included in the theme variable above
+          // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+          zebra : ["even", "odd"],
+          // reset filters button
+          filter_reset : "button.reset",
+          filter_hideEmpty : true,
+          // if true, filters are collapsed initially, but can be revealed by hovering over the grey bar immediately
+          // below the header row. Additionally, tabbing through the document will open the filter row when an input gets focus
+          filter_hideFilters : true,
+          filter_placeholder : { search : 'Search...', select : 'All' },
+          //filter_useParsedData : true,
+          filter_functions : {
+            3 : locationfns,
+            5 : {
+                '30 mins' : function(e, n) { return n === 0; },
+                'within 1 hour' : function(e, n) { return n <= 1; },
+                'within 2 hours' : function(e, n) { return n <= 2; },
+                'within 4 hours' : function(e, n) { return n <= 3; },
+            },
+            7 : {
+                'Not accepted' : function(e,n,f,i,$r) {return n === 0;},
+                'Accepted' : function(e,n,f,i,$r) {return n !== 0;}
+            },
+            8 : {
+                'Incomplete' : function(e, n) {return n === 0;},
+                'Completed' : function(e, n) {return n !== 0;}
+            }
+          }
+        }
+    })
     .tablesorterPager({
         // target the pager markup - see the HTML block below
         container: $(".ts-pager"),
@@ -360,7 +423,10 @@ $(function () {
         // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
         output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
     });
-    */
+    $('select.pagesize, select.pagenum').data({
+        "toggle": "tooltip",
+        "placement": "right"
+    }).tooltip();
     
     updatePeople_dynamic();
 

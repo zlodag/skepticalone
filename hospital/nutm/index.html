@@ -9,8 +9,8 @@
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="css/bootstrap-theme.min.css" />
         <link rel="stylesheet" href="css/theme.bootstrap.css" />
+        <link rel="stylesheet" href="css/jquery.tablesorter.pager.css" />
         <link rel="stylesheet" href="css/nutm.css" />
-
         <!-- CSS
         <link rel="stylesheet" href="css/normalize.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/css/theme.bootstrap.min.css" />
@@ -28,6 +28,7 @@
         <script src="js/chance.min.js"></script>
         <script src="js/jquery.tablesorter.js"></script>
         <script src="js/jquery.tablesorter.widgets.js"></script>
+        <script src="js/jquery.tablesorter.pager.js"></script>
         <script src="js/nutm.js"></script>
         <!-- JS
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/js/jquery.tablesorter.min.js"></script>
@@ -50,9 +51,6 @@
         </div>
     <ul class="nav nav-tabs" role="tablist">
         <li id="tasks-tab" role="presentation" class="active"><a href="#tasks-panel" aria-controls="tasks-panel" role="tab" data-toggle="tab">Tasks</a>
-
-        </li>
-        <li id="completed-tab" role="presentation"><a href="#completed-panel" aria-controls="old" role="tab" data-toggle="tab">Completed</a>
 
         </li>
         <li id="new-tab" class="hidden" role="presentation"><a href="#new-panel" aria-controls="add" role="tab" data-toggle="tab">New</a>
@@ -78,64 +76,49 @@
     </ul>
     <div class="tab-content">
         <div id="tasks-panel" role="tabpanel" class="tab-pane fade in active">
+            
             <table id="jobs">
-                <thead>
+                <thead>            
                     <tr>
-                        <th data-sorter="timestamp">Added</th>
+                        <th data-sorter="timestamp" class="filter-false">Added</th>
                         <th>NHI</th>
                         <th data-sorter="false">Patient</th>
                         <th data-sorter="location">Location</th>
-                        <th>Specialty</th>
+                        <th class="filter-select filter-exact">Specialty</th>
                         <th data-sorter="urgency">Urgency</th>
                         <th data-sorter="false">Details</th>
                         <th data-sorter="timestamp">Accepted</th>
                         <th data-sorter="timestamp">Completed</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
                 <tfoot>
                     <tr>
                         <th colspan="9" class="ts-pager form-horizontal">
-                            <button type="button" class="btn first"><i class="icon-step-backward glyphicon glyphicon-step-backward"></i></button>
-                            <button type="button" class="btn prev"><i class="icon-arrow-left glyphicon glyphicon-backward"></i></button>
+                            <button type="button" class="btn first" title="First page"><span class="glyphicon glyphicon-step-backward"></span></button>
+                            <button type="button" class="btn prev" title="Previous page"><span class="glyphicon glyphicon-backward"></span></button>
                             <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
-                            <button type="button" class="btn next"><i class="icon-arrow-right glyphicon glyphicon-forward"></i></button>
-                            <button type="button" class="btn last"><i class="icon-step-forward glyphicon glyphicon-step-forward"></i></button>
-                            <select class="pagesize input-mini" title="Select page size">
-                                <option selected="selected" value="10">10</option>
+                            <button type="button" class="btn next" title="Next page"><span class="glyphicon glyphicon-forward"></span></button>
+                            <button type="button" class="btn last" title="Last page"><span class="glyphicon glyphicon-step-forward"></span></button>
+                            <select class="pagesize input-mini" title="Tasks per page">
+                                <option value="10" selected>10</option>
                                 <option value="20">20</option>
-                                <option value="30">30</option>
-                                <option value="40">40</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
                             </select>
-                            <select class="pagenum input-mini" title="Select page number"></select>
+                            <select class="pagenum input-mini" title="Select page"></select>
+                            <button type="button" class="reset btn btn-primary" data-column="0" data-filter="">
+                            <span class="icon-white glyphicon glyphicon-refresh"></span>
+                            Reset filters</button>
                         </th>
                     </tr>
-                </tfoot>
+		          </tfoot>
+                <tbody></tbody>
             </table>
+
 
             <p>
                 <button id="addrandom" class="btn btn-default btn-block">Add new random task</button>
             </p>
-        </div>
-        <div id="completed-panel" role="tabpanel" class="tab-pane fade">
-
-            <table id="oldjobs" class="table table-striped table-hover table-condensed">
-                <thead>
-                    <tr>
-                        <th class="added">Added</th>
-                        <th class="nhi">NHI</th>
-                        <th class="p_name">Patient</th>
-                        <th class="location">Location</th>
-                        <th class="specialty">Specialty</th>
-                        <th class="urgency">Urgency</th>
-                        <th class="details">Details</th>
-                        <th class="accepted">Accepted</th>
-                        <th class="completed">Completed</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-
         </div>
         <div id="new-panel" role="tabpanel" class="tab-pane fade">
             <form role="form" id="taskform" class="form-horizontal" action="#tasks-panel" method="get">
