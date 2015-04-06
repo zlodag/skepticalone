@@ -358,11 +358,6 @@ class PanelList {
 
 global $mysqli;
 include('../../_connect.php');
-if ($mysqli->connect_errno)
-{
-    echo sprintf('<p>Could not connect to MySQL: %s</p>', $mysqli->connect_error);
-    exit();
-}
 if (array_key_exists("nhi",$_GET)
 && preg_match('/^[a-z]{3}\d{4}$/', $_GET["nhi"])
 && array_key_exists('panel', $_GET)
