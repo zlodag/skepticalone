@@ -1,42 +1,5 @@
-var randomrows = 100;
+var randomrows = 0;
 var time = new Date();
-var urgency = ['30 mins','1 hour','2 hours','4 hours','8 hours'];
-var allwards = [['Medical',['AMU','A2','A3','A4']],['Cardiac care',['CCU','CC2','CC3']],['Menzies',['M2','M12','M3','M4','M14','M5','M6','M16','M7','M17','M8']],['ERB',['E1','E2','E7']],['HBC',['34','35','36']]];
-
-for (var i=j=u=0, wards = {}, locationfns = {}, wardlist = []; i < allwards.length; i++) {
-    var w = allwards[i][0],
-    l = allwards[i][1];
-    locationfns[w] = function(e,n,f,i,$r){return $r.data('building') === f;};
-    for (j = 0; j < l.length; j++) {
-        wards[l[j]] = [u, w];
-        wardlist.push(l[j]);
-        u++;
-    }
-}
-//for (w in allwards) {wards = wards.concat(allwards[w]);}
-
-/*function get_building(ward) {
-    for (b in allwards) {if (allwards[b].indexOf(ward) != -1) {return b;}}
-}*/
-function get_building(ward) {
-    return wards[ward][1];
-}
-$.tablesorter.addParser(
-    {
-        parsed: true,
-        id: 'timestamp',
-        format: function (s, table, cell, cellIndex) {
-            return parseInt(cell.getAttribute('data-timestamp')) || 0;
-            },
-        type: 'numeric'
-    });
-
-$.tablesorter.addParser({id: 'urgency', parsed: true, format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
-
-$.tablesorter.addParser({id: 'location', parsed: true, format: function (s, table, cell, cellIndex) {
-    return location_to_int(cell.children[0].textContent, cell.children[1].textContent);
-    }, type: 'numeric'});
-
 
 function pad(number, sigfigs, padding) {
     sigfigs =  typeof sigfigs !== "undefined" ? sigfigs : 2,
@@ -47,9 +10,58 @@ function pad(number, sigfigs, padding) {
 }
 
 
-function location_to_int(ward,bed) {
-    return parseInt((typeof wards[ward] !== 'undefined' ? wards[ward][0] : 0) + pad((bed.match(/\d+/g) || []).join('') || '',3));
-}
+
+$.getJSON("get_data.php",
+    function(obj) {
+        var urgency = obj.urgency,
+        allwards = obj.wards,
+        selectward = $('select#ward'),
+        selecturgency = $('select#urgency');
+        for (var i=j=u=0, wards = {}, locationfns = {}, wardlist = []; i < allwards.length; i++) {
+            var w = allwards[i][0],
+            l = allwards[i][1];
+            locationfns[w] = function(e,n,f,i,$r){return $r.data('building') === f;};
+            for (j=0; j < l.length; j++) {
+                var wardname = l[j];
+                wards[wardname] = [u, w];
+                selectward.append($('<option>').text(wardname));
+                wardlist.push(wardname);
+                u++;
+            }
+        }
+        for (var i=0;i<urgency.length;i++) {
+            selecturgency.append($('<option>').text(urgency[i]));
+        }
+
+        $.tablesorter.addParser(
+            {
+                parsed: true,
+                id: 'timestamp',
+                format: function (s, table, cell, cellIndex) {
+                    return parseInt(cell.getAttribute('data-timestamp')) || 0;
+                    },
+                type: 'numeric'
+            });
+
+        $.tablesorter.addParser({id: 'urgency', parsed: true, format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
+
+        $.tablesorter.addParser({id: 'location', parsed: true, format: function (s, table, cell, cellIndex) {
+            return location_to_int(cell.children[0].textContent, cell.children[1].textContent);
+            }, type: 'numeric'});
+
+
+        function get_building(ward) {
+            return ward in wards ? wards[ward][1] : "Unknown";
+        }
+
+
+
+        function location_to_int(ward,bed) {
+            return parseInt((typeof wards[ward] !== 'undefined' ? wards[ward][0] : 0) + pad((bed.match(/\d+/g) || []).join('') || '',3));
+        }
+    }
+);
+
 
 
 function get_database(results) {
@@ -114,11 +126,12 @@ function get_select(database_obj) {
         }
     }
     $("#user-panel").prepend(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
+    $("#addrandom").removeClass("disabled");
+    loginToggle();
     completeTable();
 }
 
 function completeTable() {
-    //loginToggle();
     for (var i = 0; i < randomrows; i++) {
         addnew(get_random_rowdata()); //insert random rows
     }
@@ -126,8 +139,8 @@ function completeTable() {
 
 function updatePeople_dynamic() {
     $.getJSON("amion.php",
-    //{'get_database': 'true', 'test':'true'},
-    {'get_database': 'true'},
+    {'get_database': 'true', 'test':'true'},
+    //{'get_database': 'true'},
     function(database_obj) {
         get_select(database_obj);
         });
@@ -201,7 +214,8 @@ function getUser(random) {
 
 function appendLabels(options) {
     var d = getTime(options.time),
-    user = getUser(options.random),
+    user = options.user,
+
     datadict = {
         "toggle": "tooltip",
         "placement": "right"
@@ -217,7 +231,7 @@ function appendLabels(options) {
         .data(datadict)
         .tooltip()
     ;
-    options.target.append(person, $("<br>"), time);
+    options.target.addClass(options.class).attr('data-timestamp', options.time.getTime()).append(person, $("<br>"), time);
     d.timeago();
 }
 
@@ -240,7 +254,7 @@ function accept_complete() {
     row.attr("class", b_type);
     td.attr("data-timestamp", timestamp.getTime());
     appendLabels({
-        cell: td,
+        class: '',
         time: timestamp,
         b_type: b_type,
         target: td,
@@ -250,29 +264,46 @@ function accept_complete() {
 }
 
 function addnew(row_data) {
-    var tr = $(document.createElement('tr')).attr("data-building", get_building(row_data.ward));
+    var pk = row_data[0],
+    added = new Date(row_data[1]*1000),
+    added_p = row_data[2],
+    added_r = row_data[3],
+    nhi = row_data[4],
+    p_name = row_data[5],
+    ward = row_data[6],
+    bed = row_data[7],
+    specialty = row_data[8],
+    urgency = row_data[9],
+    details = row_data[10],
+    accepted = row_data[11] ? new Date(row_data[11]*1000) : null,
+    accepted_p = row_data[12],
+    accepted_r = row_data[13],
+    completed = row_data[14] ? new Date(row_data[14]*1000) : null,
+    completed_p = row_data[15],
+    completed_r = row_data[16],
+    tr = $(document.createElement('tr')).attr("data-building", get_building(ward));
     $("#jobs>tbody").append(tr);
-    var a = $("<td>").addClass("added").attr('data-timestamp', row_data.added.getTime());
+    var a = $("<td>");
     tr.append(a);
     appendLabels({
-        cell: a,
-        time: row_data.added,
+        class: "added",
+        time: added,
         b_type: "default",
         target: a,
-        random: row_data.random
+        user: added_p ? [added_p, added_r] : getUser(true)
     });
     tr.append(
     //$("<td>").addClass("added").append(getTime(row_data.added)),
-    $("<td>").addClass("nhi").text(row_data.nhi),
-    $("<td>").addClass("p_name text-capitalize").text(row_data.p_name),
+    $("<td>").addClass("nhi").text(nhi),
+    $("<td>").addClass("p_name text-capitalize").text(p_name),
     //$("<td>").addClass("location").attr("data-location", location_to_string(row_data.ward,row_data.bed))
     $("<td>").addClass("location")
-        .append($("<span>").addClass("ward").text(row_data.ward))
+        .append($("<span>").addClass("ward").text(ward))
         .append(' - ')
-        .append($("<span>").addClass("bed").text(row_data.bed)),
-    $("<td>").addClass("specialty").text(row_data.specialty),
-    $("<td>").addClass("urgency").text(row_data.urgency),
-    $("<td>").addClass("details").text(row_data.details),
+        .append($("<span>").addClass("bed").text(bed)),
+    $("<td>").addClass("specialty").text(specialty),
+    $("<td>").addClass("urgency").text(urgency),
+    $("<td>").addClass("details").text(details),
     $("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)),
     $("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
     loginToggle();
@@ -371,7 +402,15 @@ function updateValidity() {
 
 
 $(function () {
-
+    $.getJSON(
+        "get_tasks.php",
+        {'all':'true'},
+        function(alltasks) {
+            for(var i = 0; i < alltasks.length; i++) {
+                addnew(alltasks[i]);
+            }
+        }
+    );
     //Update elements:
     //updatePeople_static();
     $.tablesorter.themes.bootstrap.table = 'table table-striped table-hover table-condensed';

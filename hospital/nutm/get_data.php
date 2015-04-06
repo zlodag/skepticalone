@@ -1,6 +1,44 @@
 <?php
-$q = "
-SELECT
+include('../../_connect.php');
+include('_blacklist.php');
+
+
+$stmt = $mysqli->prepare("SELECT building, name from nutm_buildings ORDER BY building ASC");
+$stmt->execute();
+$buildings = $stmt->get_result()->fetch_all();
+$stmt->close();
+
+$stmt = $mysqli->prepare("SELECT name FROM nutm_wards WHERE building=? ORDER BY ward ASC");
+$stmt->bind_param('i', $x);
+$stmt->bind_result($w);
+foreach ($buildings as $building) {
+    $temp = [];
+    list($x,$b) = $building;
+    $stmt->execute();
+    while ($stmt->fetch()) {
+        $temp[] = $w;
+    }
+    $obj['wards'][] = [$b,$temp];
+}
+$stmt->close();
+
+$stmt = $mysqli->prepare("SELECT full_name from nutm_staff");
+$stmt->execute();
+$stmt->bind_result($p);
+while ($stmt->fetch()) {
+    $obj['staff'][] = $p;
+}
+$stmt->close();
+
+$stmt = $mysqli->prepare("SELECT name from nutm_urgency ORDER BY urgency DESC");
+$stmt->execute();
+$stmt->bind_result($p);
+while ($stmt->fetch()) {
+    $obj['urgency'][] = $p;
+}
+$stmt->close();
+
+$stmt = $mysqli->prepare('SELECT
     pk,
     UNIX_TIMESTAMP(added),
     added_p,
@@ -19,40 +57,28 @@ SELECT
     completed_p,
     completed_r
     FROM nutm_tasks
-    order by urgency desc, added asc
-";
+    order by urgency desc, added asc');
+$stmt->execute();
+$obj['tasks'] = $stmt->get_result()->fetch_all();
+$stmt->close();
+
+$obj['blacklist'] = $blacklist;
+
+echo json_encode($obj);
+
 /*
-$q = "
-    SELECT UNIX_TIMESTAMP(added) as Added,
-    a.full_name as 'Added by',
-    nhi as NHI,
-    p_name as Patient,
-    w.name as Ward,
-    bed as Bed,
-    s.name as Specialty,
-    u.name as Urgency,
-    details as Details,
-    UNIX_TIMESTAMP(accepted) as Accepted,
-    b.full_name as 'Accepted by',
-    UNIX_TIMESTAMP(completed) as Completed,
-    c.full_name as 'Completed by'
-    FROM nutm_tasks as t
-    join nutm_wards as w using (ward)
-    join nutm_staff as a on (t.added_p = a.pk)
-    join nutm_specialties as s using (specialty)
-    join nutm_urgency as u using (urgency)
-    left join nutm_staff as b on (t.accepted_p = b.pk)
-    left join nutm_staff as c on (t.completed_p = c.pk)
-    order by u.urgency desc, added asc
-";
-*/
-include('../../_connect.php');
-if ($mysqli->real_query($q)) {
-    echo json_encode($mysqli->use_result()->fetch_all(), JSON_NUMERIC_CHECK); 
-} else {
-    echo 'Query failed';
+foreach(['tasks'=>$t] as $str => $query) {
+    $stmt = $mysqli->prepare($query);
+    $stmt->execute();
+    $obj[$str] = $stmt->get_result()->fetch_all();
+    $stmt->close();
 }
-$mysqli->close(); 
+
+echo '<pre>';
+echo json_encode($obj,JSON_PRETTY_PRINT);
+echo '</pre>';
+ */
+
 /*
     $stmt->execute();
     //$stmt->bind_result($this->nhi, $this->first_names, $this->last_name,$dob,$this->sex);
