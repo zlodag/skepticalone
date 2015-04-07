@@ -17,26 +17,26 @@ function value_p($str) {
 //$to = $phone = $caller = $nhi = $patient = $ward = $bed = $why = $details = "";
 $field_strings = [
 "to" => ["Pager number", "be 20 followed by 3 digits", "/^20[0-9]{3}$/"],
-"phone" => ["Phone number", "contain 5 to 11 digits", "/^[0-9]{5,12}$/"],
-"caller" => ["Name", "contain 2 to 10 characters", "/^.{2,10}$/"],
+"phone" => ["Phone number", "contain 5 to 11 digits", "/^[0-9]{5,11}$/"],
+"caller" => ["Name", "contain 2+ characters", "/^.{2,}$/"],
 "nhi" => ["NHI", "be a valid NHI number", "/^[A-Za-z]{3}[0-9]{4}$/"],
-"patient"=> ["Name", "contain 2 to 10 characters", "/^.{2,10}$/"],
+"patient"=> ["Name", "contain 2+ characters", "/^.{2,}$/"],
 "ward"=> ["Ward", "contain 1 to 3 characters", "/^[A-Za-z0-9]{1,3}$/"],
 "bed"=>["Bed", "contain 1 to 3 characters", "/^[A-Za-z0-9]{1,3}$/"],
-"why"=>["Reason for page", "be selected", "/.*/"],
-"details"=>["Details","be no more than 50 characters", "/^.{0,50}$/"]
+"why"=>["Reason for page", "be selected", "/.*/"]
 ];
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $fields = [];
     $errors = [];
     $valid = true;
+    $fields["details"] = test_input($_POST["details"]); $errors["details"] = "";
     foreach ($field_strings as $key => $array) {
+        $value = test_input($_POST[$key]);
         $str = $array[0];
         $format = $array[1];
         $regexp = $array[2];
-        $value = test_input($_POST[$key]);
-        if (empty($value) && $key != "details") {
+        if (empty($value)) {
             $fields[$key] = "";
             $valid = false;
             $errors[$key] = sprintf('<span class="error">%s is required</span>', $str);
@@ -66,7 +66,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <title>BetterPage</title>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="stylesheet" href="betterpage.css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<!--<script src="jquery-1.11.2.min.js"></script>-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="betterpage.js"></script>
 </head>
 
 <body>
@@ -84,9 +86,9 @@ echo $errors["to"];
 <fieldset>
 <legend>From</legend>
 <label for="caller">Name</label>
-<input<?php value_p('caller');?>" id="caller" name="caller" title="2 to 10 characters" pattern=".{2,10}" maxlength="10" required>
+<input<?php value_p('caller');?>" id="caller" name="caller" title="2+ characters" pattern=".{2,}" required>
 <label for="phone">Phone</label>
-<input<?php value_p('phone');?>" id="phone"  name="phone" title="5 to 11 digits" pattern="[0-9]{5,12}" maxlength="11" required>
+<input<?php value_p('phone');?>" id="phone"  name="phone" title="5 to 11 digits" pattern="[0-9]{5,11}" maxlength="11" required>
 <?php
 echo $errors["caller"], $errors["phone"];
 ?>
@@ -95,7 +97,7 @@ echo $errors["caller"], $errors["phone"];
 <fieldset>
 <legend>Patient</legend>
 <label for="patient">Name</label>
-<input<?php value_p('patient');?>" id="patient" name="patient" title="2 to 10 characters" pattern=".{2,10}" maxlength="10" required>
+<input<?php value_p('patient');?>" id="patient" name="patient" title="2+ characters" pattern=".{2,}" required>
 <label for="nhi">NHI</label>
 <input<?php value_p('nhi');?>" id="nhi" name="nhi" title="ABC1234" pattern="[A-Za-z]{3}[0-9]{4}" maxlength="7" required>
 <label for="ward">Ward</label>
@@ -132,8 +134,7 @@ foreach($reasons as $optgroup => $options) {
 }
 ?>
 </select>
-<label id="specify" for="details">Specify if needed</label>
-<input<?php value_p('details');?>" id="details" name="details" title="up to 50 characters" pattern=".{0,50}" maxlength="50" placeholder="Specify (optional - 50 character limit)"></input>
+<input<?php value_p('details');?>" id="details" name="details" placeholder="Specify (optional)"></input>
 <?php
 echo $errors["why"], $errors["details"];
 ?>
@@ -142,10 +143,16 @@ echo $errors["why"], $errors["details"];
 <input type="submit" value="Send">
 
 </form>
+<div id="preview">
+<label>Preview</label>
+<code>###:<span class="phone"></span>(<span class="caller"></span>)&nbsp;<span class="nhi"></span>(<span class="patient"></span>)[<span class="ward"></span>-<span class="bed"></span>]&nbsp;<span class="why"></span><span class="details"></span></code>
+<label><span></span>/128 characters</label>
+</div>
+<div id="outcome">
 <?php
 $filename = "pages.txt";
 if ($valid) {
-    echo "<p>Successful submission of form!</p>";
+    echo "<label>Successful submission of form!</label>";
     $message = sprintf("%s(%s) %s(%s)[%s-%s] %s",
         $fields["phone"],
         $fields["caller"],
@@ -158,17 +165,14 @@ if ($valid) {
     if ($fields["details"] != "") {
         $message .= sprintf(" (%s)", $fields["details"]);
     }
-    printf('<code>%s</code>', $message);
+    printf('<code>###:%s</code>', $message);
     $t = time();
     $logmessage = sprintf("%s To: %s\t%s\n", date("Y-m-d H:i:s", $t), $fields["to"],  $message); 
     file_put_contents ($filename, $logmessage, FILE_APPEND | LOCK_EX);
 }
-/*
-echo "<pre>";
-print_r($fields);
-echo "</pre>";
-*/
-printf("<p><a href=%s>Page Log</a></p>", $filename);
+//echo '<code>###:123456789a123456789b123456789c123456789d123456789e123456789f123456789g123456789h123456789i123456789j123456789k123456789l12345678</code>';
+printf("<a href=%s>Page Log</a>", $filename);
 ?>
+</div>
 </body>
 </html>
