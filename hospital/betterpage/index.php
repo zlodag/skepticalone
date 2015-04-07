@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <fieldset>
 <legend>To</legend>
 <label for="to">Pager</label>
-<input<?php value_p('to');?>" id="to" name="to" title="20 followed by 3 digits" pattern="20[0-9]{3}" maxlength="5" value="20" required>
+<input<?php value_p('to');?>" id="to" name="to" title="20 followed by 3 digits" pattern="20[0-9]{3}" minlength="5" maxlength="5" value="20" required>
 <?php
 echo $errors["to"];
 ?>
@@ -86,9 +86,9 @@ echo $errors["to"];
 <fieldset>
 <legend>From</legend>
 <label for="caller">Name</label>
-<input<?php value_p('caller');?>" id="caller" name="caller" title="2+ characters" pattern=".{2,}" required>
+<input<?php value_p('caller');?>" id="caller" name="caller" title="2+ characters" minlength="2" pattern=".{2,}" required>
 <label for="phone">Phone</label>
-<input<?php value_p('phone');?>" id="phone"  name="phone" title="5 to 11 digits" pattern="[0-9]{5,11}" maxlength="11" required>
+<input<?php value_p('phone');?>" id="phone"  name="phone" title="5 to 11 digits" pattern="[0-9]{5,11}" minlength="5" maxlength="11" required>
 <?php
 echo $errors["caller"], $errors["phone"];
 ?>
@@ -97,13 +97,13 @@ echo $errors["caller"], $errors["phone"];
 <fieldset>
 <legend>Patient</legend>
 <label for="patient">Name</label>
-<input<?php value_p('patient');?>" id="patient" name="patient" title="2+ characters" pattern=".{2,}" required>
+<input<?php value_p('patient');?>" id="patient" name="patient" title="2+ characters" pattern=".{2,}" minlength="2" required>
 <label for="nhi">NHI</label>
-<input<?php value_p('nhi');?>" id="nhi" name="nhi" title="ABC1234" pattern="[A-Za-z]{3}[0-9]{4}" maxlength="7" required>
+<input<?php value_p('nhi');?>" id="nhi" name="nhi" title="ABC1234" pattern="[A-Za-z]{3}[0-9]{4}" minlength="7" maxlength="7" required>
 <label for="ward">Ward</label>
-<input<?php value_p('ward');?>" id="ward" name="ward" title="1 to 3 characters" pattern="[A-Za-z0-9]{1,3}" maxlength="3" required>
+<input<?php value_p('ward');?>" id="ward" name="ward" title="1 to 3 characters" pattern="[A-Za-z0-9]{1,3}" minlength="1" maxlength="3" required>
 <label for="bed">Bed</label>
-<input<?php value_p('bed');?>" id="bed" name="bed" title="1 to 3 characters" pattern="[A-Za-z0-9]{1,3}" maxlength="3" required>
+<input<?php value_p('bed');?>" id="bed" name="bed" title="1 to 3 characters" pattern="[A-Za-z0-9]{1,3}" minlength="1" maxlength="3" required>
 <?php
 echo $errors["patient"], $errors["nhi"], $errors["ward"], $errors["bed"];
 ?>
