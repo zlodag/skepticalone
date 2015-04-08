@@ -1,14 +1,17 @@
 body {
-    margin: 0;
+    margin: 5px;
 }
 body>* {
     display: block;
-    margin: 10px;
+    padding: 10px;
+    margin: 5px;
+    background-color: #F4F4F4;
+    float:left;
 }
-#nhi,#ward,#bed {
+[name=nhi],[name=ward],[name=bed] {
     text-transform: uppercase;
 }
-#patient,#caller {
+[name=patient],[name=caller] {
     text-transform: capitalize;
 }
 fieldset {
@@ -18,36 +21,37 @@ fieldset {
     display: block;
     border: 1px solid black;
 }
-fieldset>input, fieldset>option, fieldset>label, fieldset>select {
+fieldset>input, fieldset>select {
     margin: 2px 5px;
     float: left;
 }
-fieldset>label {
+form label.info {
+    margin: 2px 5px;
+    float: left;
     text-align: right;
     width: 50px;
 }
-#details,#why {
+[name=details],[name=why] {
     width: 290px;
 }
 fieldset>input {
     width: 80px;
 }
-label[for=ward], #details {
+label[for="ward"],[name=details],label.error,div#outcome {
     clear: left;
 }
-input:required {
+input[name] {
     background-position: right;
     background-repeat: no-repeat;
 }
-input:required:valid {
+input.valid {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZZJREFUeNpi/P//PwMpgImBRMAy58QshrNPTzP8+vOLIUInisFQyYjhz98/DB9/fmT48/+35v7H+8KNhE2+WclZd+G0gZmJmYGThUNz1fUVMZtvbWT59eUXG9wGZIWMUPj993eJ5VeWxuy8veM/CzPL3yfvH/9H0QBSBDYZyOVm4mGYfn6q4cory5lYmFh+MrEwM/76/YsR7mk2ZjbWP///WP37/y8cqIDhx58fjvtu7XV6//ndT34G/v8FasUsDjKO/+A2PP3wpGLd+TVsfOz8XH6KAT+nHpokcu7h6d9q/BoMxToVbBYqlt9///+1GO4/WVdpXqY/zMqXn13/+vTjI9mj94/y//v9/3e9ZRObvYbDT0Y2xnm///x+wsfHB3GSGLf41jb3rv0O8nbcR66d+HPvxf2/+YZFTHaqjl8YWBnm/vv37yly5LL8+vuLgYuVa3uf/4T/Kd8SnSTZpb6FGUXwcvJxbAPKP2VkZESNOBDx8+9PBm4OwR1TwmYwcfzjsBUQFLjOxs52A2YyKysrXANAgAEA7buhysQuIREAAAAASUVORK5CYII=");
 }
-input:required:invalid {
+input.error {
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAT1JREFUeNpi/P//PwMpgImBRMACY/x7/uDX39sXt/67cMoDyOVgMjBjYFbV/8kkqcCBrIER5KS/967s+rmkXxzI5wJiRSBm/v8P7NTfHHFFl5mVdIzhGv4+u///x+xmuAlcdXPB9KeqeLgYd3bDU2ZpRRmwH4DOeAI07QXIRKipYPD35184/nn17CO4p/+cOfjl76+/X4GYAYThGn7/g+Mfh/ZZwjUA/aABpJVhpv6+dQUjZP78Z0YEK7OezS2gwltg64GmfTu6i+HL+mUMP34wgvGvL78ZOEysf8M1sGgZvQIqfA1SDAL8iUUMPIFRQLf+AmMQ4DQ0vYYSrL9vXDz2sq9LFsiX4dLRA0t8OX0SHKzi5bXf2HUMBVA0gN356N7p7xdOS3w5fAgcfNxWtn+BJi9gVVBOQfYPQIABABvRq3BwGT3OAAAAAElFTkSuQmCC");
 }
-span.error {
+label.error {
     color: red;
-    clear: left;
     display: block;
     padding: 2px;
 }
@@ -66,10 +70,4 @@ code, code+label {
 }
 .invalid {
     background-color: yellow;
-}
-div#preview,form {
-    float: left;
-}
-div#outcome {
-    clear: left;
 }
