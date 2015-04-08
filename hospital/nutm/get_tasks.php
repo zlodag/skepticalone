@@ -1,4 +1,5 @@
 <?php
+header('Content-type: application/json');
 $q = "
 SELECT
     UNIX_TIMESTAMP(added),
@@ -48,7 +49,7 @@ include('../../_connect.php');
 if ($mysqli->real_query($q)) {
     echo json_encode($mysqli->use_result()->fetch_all(), JSON_NUMERIC_CHECK); 
 } else {
-    echo 'Query failed';
+    echo {error: 'Query failed'};
 }
 $mysqli->close(); 
 /*

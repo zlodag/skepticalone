@@ -1,4 +1,5 @@
 <?php
+header('Content-type: application/json');
 
 date_default_timezone_set("Pacific/Auckland");
 $time = new DateTime();
