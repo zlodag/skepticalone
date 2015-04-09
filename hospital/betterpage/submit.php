@@ -11,6 +11,8 @@ function test_input($key) {
         $valid = false;
         return '';
     }
+    return $_POST[$key];
+    //remember to clean data before inserting into DB
     $data = trim($_POST[$key]);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
