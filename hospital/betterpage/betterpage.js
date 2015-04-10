@@ -62,6 +62,14 @@ $(function() {
                                 $('<label>', {'class':c, text:"Successful submission of form!"}),
                                 $('<code>', {'class':c, text:"###:" + json.page})
                                 );
+                            if (c == "ptpage") {
+                                var pagename = /\/([^\/]*?)(\.html)*$/.exec(window.location.pathname)[1];
+                                if (pagename == 'slim1') {
+                                    outcome.prepend($('<label>', {'class':c + " message", text:"If you requested a review of a patient, please ensure that the notes and chart are in the office."}));
+                                } else if (pagename == 'slim2') {
+                                    alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
+                                }
+                            }
                         } else {
                             for (var i = 0; i < json.errors.length; i++) {
                                 var error = json.errors[i];

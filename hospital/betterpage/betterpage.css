@@ -73,3 +73,5 @@ code, code+label {
 .invalid {
     background-color: yellow;
 }
+#outcome label {display:block;}
+#outcome label.message {color:blue;}
