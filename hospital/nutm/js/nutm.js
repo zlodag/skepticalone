@@ -1,73 +1,57 @@
-var randomrows = 0;
-var time = new Date();
+var production = false;
+randomrows = 0,
+time = new Date();
 
-function pad(number, sigfigs, padding) {
-    sigfigs =  typeof sigfigs !== "undefined" ? sigfigs : 2,
-    padding =  typeof padding !== "undefined" ? padding : '0',
-    paddingstr = '';
-    for (var i=0;i<sigfigs;i++) {paddingstr += padding;}
-    return (paddingstr + number).slice(-sigfigs);
+$.fn.appendLabels = function (options) {
+    /*    var settings = $.extend({
+            type:'added',
+        }, options),
+    */
+    var btype;
+    switch (options.type) {
+        case 'added':btype = 'default'; break;
+        case 'accepted':btype = 'info'; break;
+        case 'completed':btype = 'success'; break;
+    }
+    if (options.t) {
+        var tooltipdata = {toggle: "tooltip",placement: "right"},
+
+        span = $('<span>',{
+            data:tooltipdata,
+            title: options.d + ': ' + options.r,
+            text:options.p,
+            'class':'label label-' + btype
+        }).tooltip(),
+        time = $('<time>',{
+            datetime:options.t.toISOString(),
+            data:tooltipdata,
+            title: options.t.getDate() + '/' + pad(options.t.getMonth() + 1) + '/' + pad(options.t.getFullYear()%100) + ' ' + pad(options.t.getHours()) + ':' + pad(options.t.getMinutes()),
+            'class':"timeago label label-" + btype
+        }).timeago().tooltip();
+        return this.empty().attr('class',options.type).data('timestamp',options.t.getTime()).append(span,time);
+    } else {
+        var btxt;
+        switch (options.type) {
+            case 'accepted':btxt = 'Accept'; break;
+            case 'completed':btxt = 'Complete'; break;
+        }
+        return this.empty().attr('class',options.type).append($('<button>', {'class':btxt.toLowerCase()+' btn btn-'+btype, text:btxt}));
+    }
 }
 
-
-
-$.getJSON("get_data.php",
-    function(obj) {
-        var urgency = obj.urgency,
-        allwards = obj.wards,
-        selectward = $('select#ward'),
-        selecturgency = $('select#urgency');
-        for (var i=j=u=0, wards = {}, locationfns = {}, wardlist = []; i < allwards.length; i++) {
-            var w = allwards[i][0],
-            l = allwards[i][1];
-            locationfns[w] = function(e,n,f,i,$r){return $r.data('building') === f;};
-            for (j=0; j < l.length; j++) {
-                var wardname = l[j];
-                wards[wardname] = [u, w];
-                selectward.append($('<option>').text(wardname));
-                wardlist.push(wardname);
-                u++;
-            }
-        }
-        for (var i=0;i<urgency.length;i++) {
-            selecturgency.append($('<option>').text(urgency[i]));
-        }
-
-        $.tablesorter.addParser(
-            {
-                parsed: true,
-                id: 'timestamp',
-                format: function (s, table, cell, cellIndex) {
-                    return parseInt(cell.getAttribute('data-timestamp')) || 0;
-                    },
-                type: 'numeric'
-            });
-
-        $.tablesorter.addParser({id: 'urgency', parsed: true, format: function (s) {return urgency.indexOf(s);}, type: 'numeric'});
-
-        $.tablesorter.addParser({id: 'location', parsed: true, format: function (s, table, cell, cellIndex) {
-            return location_to_int(cell.children[0].textContent, cell.children[1].textContent);
-            }, type: 'numeric'});
-
-
-        function get_building(ward) {
-            return ward in wards ? wards[ward][1] : "Unknown";
-        }
-
-
-
-        function location_to_int(ward,bed) {
-            return parseInt((typeof wards[ward] !== 'undefined' ? wards[ward][0] : 0) + pad((bed.match(/\d+/g) || []).join('') || '',3));
-        }
+function pad(number, sigfigs, padding) {
+    sigfigs = typeof sigfigs !== "undefined" ? sigfigs : 2, 
+    padding = typeof padding !== "undefined" ? padding : '0', 
+    paddingstr = '';
+    for (var i = 0; i < sigfigs; i++) {
+        paddingstr += padding;
     }
-);
-
-
-
+    return (paddingstr + number).slice(-sigfigs);
+}
 function get_database(results) {
-    var timestr = pad(time.getHours()) + pad(time.getMinutes()),
-    onlinestamp = results["data"][0][0],
-    database = {},
+    var timestr = pad(time.getHours()) + pad(time.getMinutes()), 
+    onlinestamp = results["data"][0][0], 
+    database = {}, 
     r;
     $.each(results["data"], function() {
         r = $(this);
@@ -76,50 +60,50 @@ function get_database(results) {
                 database[r[0]] = [];
             }
             if (
-                    (r[8] < r[9] && timestr >= r[8] && timestr <= r[9])
-                    || (r[8] > r[9] && (timestr >= r[8] || timestr <= r[9]))
-                    || (r[8] == r[9])
-
+            (r[8] < r[9] && timestr >= r[8] && timestr <= r[9]) 
+            || (r[8] > r[9] && (timestr >= r[8] || timestr <= r[9])) 
+            || (r[8] == r[9])
+            
             ) {
-                database[r[0]][r[4]] = [r[1],r[8],r[9]];
+                database[r[0]][r[4]] = [r[1], r[8], r[9]];
             }
         }
     });
-    return [database,onlinestamp];
+    return [database, onlinestamp];
 }
 
 function get_select(database_obj) {
     var select = $("<select>")
-        .attr({"id": "user", "class":"form-control"})
-        .prop('required',true)
-        .change(loginToggle)
-        .append(
-            $('<option>')
-            .attr("value", '')
-            .text("Sign in")
-        ),
-    database = database_obj[0],
-    onlinestamp = database_obj[1],
-    specialty, rows, optgroup, r, role, person, start,end, option;
-    for(i = 0; i < database.length; i++) {
-        specialty = database[i][0],
+    .attr({"id": "user","class": "form-control"})
+    .prop('required', true)
+    .change(loginToggle)
+    .append(
+    $('<option>')
+    .attr("value", '')
+    .text("Sign in")
+    ), 
+    database = database_obj[0], 
+    onlinestamp = database_obj[1], 
+    specialty, rows, optgroup, r, role, person, start, end, option;
+    for (i = 0; i < database.length; i++) {
+        specialty = database[i][0], 
         rows = database[i][1];
         if (rows.length > 0) {
             var optgroup = $("<optgroup>").attr("label", specialty);
-            for(k = 0; k < rows.length; k++) {
-                r = rows[k],
-                person = r[0],
-                role = r[1],
-                start = r[2],
-                end = r[3],
+            for (k = 0; k < rows.length; k++) {
+                r = rows[k], 
+                person = r[0], 
+                role = r[1], 
+                start = r[2], 
+                end = r[3], 
                 option = $('<option>')
-                    .data({
-                        'person':person,
-                        'role':role,
-                        'start':start,
-                        'end':end
-                    })
-                    .text(person + ' (' + role + ') [' + start + ' - ' + end + ']');
+                .data({
+                    'person': person,
+                    'role': role,
+                    'start': start,
+                    'end': end
+                })
+                .text(person + ' (' + role + ') [' + start + ' - ' + end + ']');
                 optgroup.append(option);
             }
             select.append(optgroup);
@@ -133,22 +117,20 @@ function get_select(database_obj) {
 
 function completeTable() {
     for (var i = 0; i < randomrows; i++) {
-        addnew(get_random_rowdata()); //insert random rows
+        addnew(get_random_rowdata());
     }
 }
 
 function updatePeople_dynamic() {
-    $.getJSON("amion.php",
-    {'get_database': 'true', 'test':'true'},
-    //{'get_database': 'true'},
+    $.getJSON("amion.php", 
+    {'get_database': 'true','test': production === true ? 'false' : 'true'}, 
     function(database_obj) {
         get_select(database_obj);
-        });
+    });
 }
 
 function updatePeople_static() {
-    //var password = 'waikato';
-    //var url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
+    //var password = 'waikato', url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
     var url = 'data.csv';
     Papa.parse(url, {
         delimiter: ",",
@@ -162,8 +144,8 @@ function updatePeople_static() {
 
 function getTime(d) {
     return $("<time>").addClass("timeago")
-        .attr("title", d.getDate() + '/' + pad(d.getMonth()+1) + '/' + (d.getFullYear()).toString().slice(-2) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))
-        .attr("datetime", d.toISOString());
+    .attr("title", d.getDate() + '/' + pad(d.getMonth() + 1) + '/' + (d.getFullYear()).toString().slice(-2) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))
+    .attr("datetime", d.toISOString());
 }
 
 function loggedOn() {
@@ -185,9 +167,6 @@ function loginToggle() {
         $("#whoami").text(user[0]);
         $("#whatami").text(user[1]);
         $("#whenami").text(user[2]);
-        //$("#signin-tab").addClass("hidden");
-        //$("#signout-tab").removeClass("hidden");
-        //$("div.jumbotron").removeClass("hidden");
         return;
     }
     $("button.accept, button.complete").addClass("disabled");
@@ -196,9 +175,6 @@ function loginToggle() {
     $("#whoami").text("Sign in");
     $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
     $("#whatami, #whenami").empty();
-    //$("#signin-tab").removeClass("hidden");
-    //$("#signout-tab").addClass("hidden");
-    //$("div.jumbotron").addClass("hidden");
 }
 
 function getUser(random) {
@@ -212,51 +188,30 @@ function getUser(random) {
     return [user.data('person'), user.data('role'), user.data('start') + ' - ' + user.data('end')];
 }
 
-function appendLabels(options) {
-    var d = getTime(options.time),
-    user = options.user,
 
-    datadict = {
-        "toggle": "tooltip",
-        "placement": "right"
-    },
-    person = $("<span>").addClass("label label-" + options.b_type).text(user[0])
-        .attr({
-        "title": user[1] + ' (' + user[2] + ')'
-    })
-        .data(datadict)
-        .tooltip()
-    ,
-    time = d.addClass("label label-" + options.b_type)
-        .data(datadict)
-        .tooltip()
-    ;
-    options.target.addClass(options.class).attr('data-timestamp', options.time.getTime()).append(person, $("<br>"), time);
-    d.timeago();
-}
 
 
 function accept_complete() {
     var row = $(this).parent().parent();
     var button_type = $(this).text();
-    var td, b_type;
+    var td, btype;
     if (button_type === "Accept") {
         td = row.find("td.accepted");
-        b_type = "info";
+        btype = "info";
     } else if (button_type === "Complete") {
         //row.appendTo($("#oldjobs"));
         td = row.find("td.completed");
-        b_type = "success";
+        btype = "success";
         row.find("td.accepted>button").remove();
     }
     td.empty();
     var timestamp = new Date();
-    row.attr("class", b_type);
+    row.attr("class", btype);
     td.attr("data-timestamp", timestamp.getTime());
     appendLabels({
         class: '',
         time: timestamp,
-        b_type: b_type,
+        btype: btype,
         target: td,
         random: false
     });
@@ -264,78 +219,70 @@ function accept_complete() {
 }
 
 function addnew(row_data) {
-    var pk = row_data[0],
-    added = new Date(row_data[1]*1000),
-    added_p = row_data[2],
-    added_r = row_data[3],
-    nhi = row_data[4],
-    p_name = row_data[5],
-    ward = row_data[6],
-    bed = row_data[7],
-    specialty = row_data[8],
-    urgency = row_data[9],
-    details = row_data[10],
-    accepted = row_data[11] ? new Date(row_data[11]*1000) : null,
-    accepted_p = row_data[12],
-    accepted_r = row_data[13],
-    completed = row_data[14] ? new Date(row_data[14]*1000) : null,
-    completed_p = row_data[15],
-    completed_r = row_data[16],
-    tr = $(document.createElement('tr')).attr("data-building", get_building(ward));
-    $("#jobs>tbody").append(tr);
-    var a = $("<td>");
-    tr.append(a);
-    appendLabels({
-        class: "added",
-        time: added,
-        b_type: "default",
-        target: a,
-        user: added_p ? [added_p, added_r] : getUser(true)
-    });
-    tr.append(
-    //$("<td>").addClass("added").append(getTime(row_data.added)),
-    $("<td>").addClass("nhi").text(nhi),
-    $("<td>").addClass("p_name text-capitalize").text(p_name),
-    //$("<td>").addClass("location").attr("data-location", location_to_string(row_data.ward,row_data.bed))
-    $("<td>").addClass("location")
-        .append($("<span>").addClass("ward").text(ward))
+    var pk = row_data[0], 
+    nhi = row_data[1], 
+    p_name = row_data[2], 
+    ward = row_data[3], 
+    warddata = obj.wards[ward], 
+    bed = row_data[4], 
+    specialty = row_data[5], 
+    urgency = row_data[6], 
+    details = row_data[7],
+    added = {
+        type: 'added',
+        t : row_data[8] ? new Date(row_data[8] * 1000) : null,
+        p : row_data[9], 
+        d : row_data[10], 
+        r : row_data[11]
+    },
+    accepted = {
+        type: 'accepted',
+        t : row_data[12] ? new Date(row_data[12] * 1000) : null,
+        p : row_data[13], 
+        d : row_data[14], 
+        r : row_data[15]
+    },
+    completed = {
+        type: 'completed',
+        t : row_data[16] ? new Date(row_data[16] * 1000) : null,
+        p : row_data[17], 
+        d : row_data[18], 
+        r : row_data[19]
+    };
+    $("#jobs>tbody").append(
+    $('<tr>').data('pk',pk).append(
+        $("<td>").appendLabels(added),
+        $("<td>").addClass("nhi text-uppercase").text(nhi), 
+        $("<td>").addClass("p_name text-capitalize").text(p_name), 
+        $("<td>").addClass("location").data({'building':warddata[2], 'location_int':ward * 1000 + parseInt(bed)})
+        .append($("<span>").addClass("ward").text(warddata[0]))
         .append(' - ')
-        .append($("<span>").addClass("bed").text(bed)),
-    $("<td>").addClass("specialty").text(specialty),
-    $("<td>").addClass("urgency").text(urgency),
-    $("<td>").addClass("details").text(details),
-    $("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)),
-    $("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
-    loginToggle();
-    $('#jobs').trigger('update');
-    /*
-    $("button.complete").off("click").click(function () {
-        complete($(this).parent().parent());
-        $(this).hide();
-    });
-    $("button.accept").off("click").click(function () {
-        accept($(this).parent().parent());
-        $(this).hide();
-    });
-    */
+        .append($("<span>").addClass("bed").text(bed)), 
+        $("<td>").addClass("specialty").text(obj.specialties[specialty]), 
+        $("<td>").addClass("urgency").data('urgency',urgency).text(obj.urgency[urgency]), 
+        $("<td>").addClass("details").text(details), 
+        $("<td>").appendLabels(accepted),
+        $("<td>").appendLabels(completed)
+    ));
+    //$("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)), 
+    //$("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
+    //loginToggle();
+    //$('#jobs').trigger('update');
 }
 
 function validateForm() {
     var row_data = {
         "added": new Date(),
-            "nhi": $("#nhi").val().toUpperCase(),
-            "p_name": $("#p_name").val(),
-            "ward": $("#ward").val(),
-            "bed": $("#bed").val().toUpperCase(),
-            "specialty": $("#specialty").val(),
-            "urgency": $("#urgency").val(),
-            "details": $("#details").val(),
-            "random": false
+        "nhi": $("#nhi").val().toUpperCase(),
+        "p_name": $("#p_name").val(),
+        "ward": $("#ward").val(),
+        "bed": $("#bed").val().toUpperCase(),
+        "specialty": $("#specialty").val(),
+        "urgency": $("#urgency").val(),
+        "details": $("#details").val(),
+        "random": false
     };
-    //$("#formoutput").html(JSON.stringify(row_data, null, 2)).show();
-
     addnew(row_data);
-    //return false;
 }
 
 function get_random_str(min, max) {
@@ -367,20 +314,20 @@ function get_random_option(id) {
 }
 
 function get_random_rowdata() {
-    var min = 5,
-        max = 20;
+    var min = 5, 
+    max = 20;
     return {
         "added": new Date(new Date().getTime() - Math.random() * 28800000),
-            "nhi": get_random_nhi(),
-            "p_name": chance.name(),
-            "ward": get_random_option("ward"),
-            "bed": Math.ceil((Math.random() * 15)).toString(),
-            "specialty": get_random_option("specialty"),
-            "urgency": get_random_option("urgency"),
-            "details": chance.sentence({
+        "nhi": get_random_nhi(),
+        "p_name": chance.name(),
+        "ward": get_random_option("ward"),
+        "bed": Math.ceil((Math.random() * 15)).toString(),
+        "specialty": get_random_option("specialty"),
+        "urgency": get_random_option("urgency"),
+        "details": chance.sentence({
             words: Math.floor(Math.random() * (max - min + 1) + min)
         }),
-            "random": true
+        "random": true
     };
 }
 
@@ -399,142 +346,134 @@ function updateValidity() {
         $("#addthis").removeClass("btn-primary").addClass("disabled btn-default");
     }
 }
+function get_building(ward) {
+    return ward in wards ? wards[ward][1] : "Unknown";
+}
 
 
-$(function () {
-    $.getJSON(
-        "get_tasks.php",
-        {'all':'true'},
-        function(alltasks) {
-            for(var i = 0; i < alltasks.length; i++) {
-                addnew(alltasks[i]);
-            }
+function processJson(data) {
+    obj = data,
+    locationfns = {},
+    urgencyfns = {
+        "within 4 hours":function (e,n){return n>=2;},
+        "within 2 hours":function (e,n){return n>=3;},
+        "within 1 hour":function (e,n){return n>=4;},
+        "30 mins":function (e,n){return n===5;}
+    };
+    var selectward = $('select#ward'), 
+    selecturgency = $('select#urgency'),
+    selectspecialty = $('select#specialty');
+    for (var w in obj.wards) {
+        if (!(obj.wards[w][2] in locationfns)) {
+            locationfns[obj.wards[w][2]] = function(e, n, f, i, $r) {return $r.children('.location').data('building') === f;};
         }
-    );
-    //Update elements:
-    //updatePeople_static();
+        selectward.append($('<option>', {value:w, text:obj.wards[w]}));
+    }
+    for (var s in obj.specialties) {
+        selectspecialty.append($('<option>', {value:s, text:obj.specialties[s]}));
+    }
+    for (var u in obj.urgency) {
+        //if (u != "1") {urgencyfns['within ' + obj.urgency[u]] = function(e,n){debugger;return n<=parseInt(u);};}
+        selecturgency.append($('<option>', {value:u, text:obj.urgency[u]}));
+    }
+    for (var i = 0; i < obj.tasks.length; i++) {
+        addnew(obj.tasks[i]);
+    }
+    $('.timeago').timeago();
+    sortTables();
+}
+
+function sortTables() {
+    
+    $.tablesorter.addParser(
+    {
+        parsed: true,
+        id: 'timestamp',
+        format: function(s, table, cell) {
+            return $(cell).data('timestamp') || 0;
+        },
+        type: 'numeric'
+    });
+    
+    $.tablesorter.addParser({id: 'urgency',parsed: false,format: function(s, table, cell) {
+            return $(cell).data('urgency');
+        },type: 'numeric'});
+    
+    $.tablesorter.addParser({id: 'location',parsed: true,format: function(s, table, cell) {
+            return $(cell).data('location_int');
+        },type: 'numeric'});
+    
     $.tablesorter.themes.bootstrap.table = 'table table-striped table-hover table-condensed';
+    
     $("#jobs").tablesorter({
-        theme : "bootstrap",
-        sortList: [[5, 0],[0, 0]],
-        widgets : [ "uitheme", "filter"],
-        headerTemplate : '{content} {icon}',
-        widgetOptions : {
-          // using the default zebra striping class name, so it actually isn't included in the theme variable above
-          // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
-          zebra : ["even", "odd"],
-          // reset filters button
-          filter_reset : "button.reset",
-          filter_hideEmpty : true,
-          // if true, filters are collapsed initially, but can be revealed by hovering over the grey bar immediately
-          // below the header row. Additionally, tabbing through the document will open the filter row when an input gets focus
-          filter_hideFilters : true,
-          filter_placeholder : { search : 'Search...', select : 'All' },
-          //filter_useParsedData : true,
-          filter_functions : {
-            3 : locationfns,
-            5 : {
-                '30 mins' : function(e, n) { return n === 0; },
-                'within 1 hour' : function(e, n) { return n <= 1; },
-                'within 2 hours' : function(e, n) { return n <= 2; },
-                'within 4 hours' : function(e, n) { return n <= 3; },
-            },
-            7 : {
-                'Not accepted' : function(e,n,f,i,$r) {return n === 0;},
-                'Accepted' : function(e,n,f,i,$r) {return n !== 0;}
-            },
-            8 : {
-                'Incomplete' : function(e, n) {return n === 0;},
-                'Completed' : function(e, n) {return n !== 0;}
+        theme: "bootstrap",
+        sortList: [[5, 0], [0, 0]],
+        widgets: ["uitheme", "filter"],
+        headerTemplate: '{content} {icon}',
+        widgetOptions: {
+            zebra: ["even", "odd"],
+            filter_reset: "button.reset",
+            filter_hideEmpty: true,
+            filter_hideFilters: true,
+            filter_placeholder: {search: 'Search...',select: 'All'},
+            //filter_useParsedData : true,
+            filter_functions: {
+                3: locationfns,
+                5: urgencyfns,
+                7: {
+                    'Not accepted': function(e, n, f, i, $r) {
+                        return n === 0;
+                    },
+                    'Accepted': function(e, n, f, i, $r) {
+                        return n !== 0;
+                    }
+                },
+                8: {
+                    'Incomplete': function(e, n) {
+                        return n === 0;
+                    },
+                    'Completed': function(e, n) {
+                        return n !== 0;
+                    }
+                }
             }
-          }
         }
     })
     .tablesorterPager({
-        // target the pager markup - see the HTML block below
         container: $(".ts-pager"),
-        // target the pager page select dropdown - choose a page
-        cssGoto  : ".pagenum",
-        // remove rows from the table to speed up the sort of large tables.
-        // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled.
+        cssGoto: ".pagenum",
         removeRows: false,
-        // output string - default is '{page}/{totalPages}';
-        // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows}
         output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
     });
-    $('select.pagesize, select.pagenum').data({
-        "toggle": "tooltip",
-        "placement": "right"
-    }).tooltip();
+
+}
+function updateDom() {
+    $('select.pagesize, select.pagenum').data({"toggle": "tooltip","placement": "right"}).tooltip();
+    if (!production) {
+        $("#tasks-panel").append(
+        $("<button>", {id: 'addrandom',text: 'Add new random task',click: function() {
+                addnew(get_random_rowdata());
+            }})
+        .addClass('btn btn-default btn-block disabled')
+        );
+    }
+    //$("#taskform select").change(updateValidity);
+    $("#taskform input").on("input", updateValidity);
     
-    updatePeople_dynamic();
+    $("#user-tab>a").click(logOut).hover(
+        function() {if (loggedOn()) {$("#whoami-icon").removeClass('glyphicon-user').addClass('glyphicon-log-out');}}, 
+        function() {if (loggedOn()) {$("#whoami-icon").removeClass('glyphicon-log-out').addClass('glyphicon-user');}}
+    );
+    $("#addthis").click(validateForm);
+}
 
-    /*
-    $.tablesorter.addParser({
-        // set a unique id 
-        id: 'timestamp',
-        is: function (s) {
-            // return false so this parser is not auto detected 
-            return false;
-        },
-        format: function (s, table, cell, cellIndex) {
-            // get data attributes from $(cell).attr('data-something');
-            // check specific column using cellIndex
-            //if ($(cell).children().length === 1) {}
-            return $(cell).find("time.timeago").attr('datetime');
-            //else {return '0';}
-        },
-        // set type, either numeric or text 
-        type: 'text'
-    });
-    $.tablesorter.addParser({
-        // set a unique id
-        id: 'urgency',
-        is: function (s, table, cell, $cell) {
-            // return false so this parser is not auto detected
-            return false;
-        },
-        format: function (s, table, cell, cellIndex) {
-            // format your data for normalization
-            return s.toLowerCase()
-                .replace(/8 hours/, 0)
-                .replace(/4 hours/, 1)
-                .replace(/2 hours/, 2)
-                .replace(/1 hour/, 3)
-                .replace(/30 mins/, 4);
-        },
-        // set type, either numeric or text
-        type: 'numeric'
-    });
+$(function() {
+    updateDom();
 
-    $("#jobs").tablesorter({
-        theme: "bootstrap",
-        sortList: [
-            [5, 1],
-            [0, 0]
-        ]
+$.getJSON("get_data.php",{'data':'initial'}, function(obj) {
+        processJson(obj);
     });
-    */
-    //Add handlers:
-    //$("#user").change(loginToggle); //no "accept"/"complete" buttons or "new task" form when not logged in
-    //$("#login-dropdown>li").click(loginToggle);
-    $("#user-tab>a").click(logOut);
-    $("#addrandom").click(function () {
-        addnew(get_random_rowdata()); //add handler to "Add new random task" button
-    });
-    $("#taskform select").change(updateValidity);
-    $("#taskform input").on("input", updateValidity); //add handler to check form validity and toggle submit button
+    
 
-    $("#user-tab>a").hover(
-    function () {
-        if (loggedOn()) {
-            $("#whoami-icon").attr("class", "glyphicon glyphicon-log-out who");
-        }
-    },
-    function () {
-        if (loggedOn()) {
-            $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
-        }
-    });
-    $("#addthis").click(validateForm); //add form validation
+//updatePeople_dynamic();
 });

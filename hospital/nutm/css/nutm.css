@@ -1,5 +1,8 @@
 .label {
     cursor: pointer;
+    float: left;
+    clear: left;
+    margin: 1px;
 }
 body>div>* {
     margin:10px 0;
@@ -18,4 +21,7 @@ body>div>* {
 }
 #user-panel p {
     margin-top:20px;
+}
+#addrandom {
+    margin:10px 0;
 }
