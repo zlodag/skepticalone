@@ -139,6 +139,7 @@ if ($stmt->num_rows > 0) {
         $misc,
         $leave_bal);
     $fiscal = new DateTime('2014-03-31');
+    $changeover = new DateTime('2015-03-08');
     $last_leave_bal = 0;
     $gross_ytd = 0;
     $paye_ytd = 0;
@@ -194,7 +195,8 @@ if ($stmt->num_rows > 0) {
         printf('<td>$%.2f</td>', $other);
         printf('<td>$%.2f</td>', $gross);
         printf('<td>$%.2f</td>', $paye);
-        $kiwi = round($gross * $kiwi_p * 0.01, 2);
+        if ($date >= $changeover) {$kiwi = floor($gross * $kiwi_p) / 100;}
+        else {$kiwi = round($gross * $kiwi_p * 0.01, 2);}
         printf('<td>$%.2f@%d%%</td>', $kiwi, $kiwi_p);
         printf('<td>$%.2f</td>', $mas);
         $sloan = (floor($gross) - 367*2) * 0.12;
