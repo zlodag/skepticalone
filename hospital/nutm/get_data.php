@@ -1,8 +1,7 @@
 <?php
-include('../../_connect.php');
-include('_blacklist.php');
+//include('amion.php');
 
-
+/*
 $stmt = $mysqli->prepare("SELECT building, name from nutm_buildings ORDER BY building ASC");
 $stmt->execute();
 $buildings = $stmt->get_result()->fetch_all();
@@ -21,23 +20,91 @@ foreach ($buildings as $building) {
     $obj['wards'][] = [$b,$temp];
 }
 $stmt->close();
+*/
 
-$stmt = $mysqli->prepare("SELECT full_name from nutm_staff");
+include('../../_connect.php');
+$stmt = $mysqli->prepare("select ward,w.name,b.building,b.name from nutm_wards w join nutm_buildings b using (building) order by ward asc");
+$stmt->execute();
+$stmt->bind_result($w,$wn,$b,$bn);
+while ($stmt->fetch()) {
+    $obj['wards'][$w] = [$wn,$b,$bn];
+}
+$stmt->close();
+/*
+ * $stmt = $mysqli->prepare("SELECT full_name from nutm_staff");
 $stmt->execute();
 $stmt->bind_result($p);
 while ($stmt->fetch()) {
     $obj['staff'][] = $p;
 }
 $stmt->close();
+ */
 
-$stmt = $mysqli->prepare("SELECT name from nutm_urgency ORDER BY urgency DESC");
+
+$stmt = $mysqli->prepare("SELECT urgency,name from nutm_urgency ORDER BY urgency ASC");
 $stmt->execute();
-$stmt->bind_result($p);
+$stmt->bind_result($u,$n);
 while ($stmt->fetch()) {
-    $obj['urgency'][] = $p;
+    $obj['urgency'][$u] = $n;
 }
 $stmt->close();
 
+$stmt=$mysqli->prepare("select specialty,name from nutm_specialties where NOT blacklist order by specialty asc");
+$stmt->execute();
+$stmt->bind_result($s,$n);
+while ($stmt->fetch()) {
+    $obj['specialties'][$s] = $n;
+}
+$stmt->close();
+
+$stmt = $mysqli->prepare("select * from nutm_taskview");
+$stmt->execute();
+$stmt->bind_result(
+    $pk,
+    $nhi,        
+    $p_name,     
+    $ward,       
+    $bed,        
+    $specialty,  
+    $urgency,    
+    $details,    
+    $added,      
+    $added_p,    
+    $added_s,    
+    $added_r,    
+    $accepted,   
+    $accepted_p, 
+    $accepted_s, 
+    $accepted_r, 
+    $completed,  
+    $completed_p,
+    $completed_s,
+    $completed_r);
+while ($stmt->fetch()) {
+    $obj['tasks'][] = [
+        $pk,
+        $nhi,        
+        $p_name,     
+        $ward,       
+        $bed,        
+        $specialty,  
+        $urgency,    
+        $details,    
+        $added,      
+        $added_p,    
+        $added_s,    
+        $added_r,    
+        $accepted,   
+        $accepted_p, 
+        $accepted_s, 
+        $accepted_r, 
+        $completed,  
+        $completed_p,
+        $completed_s,
+        $completed_r];
+}
+$stmt->close();
+/*
 $stmt = $mysqli->prepare('SELECT
     pk,
     UNIX_TIMESTAMP(added),
@@ -62,61 +129,8 @@ $stmt->execute();
 $obj['tasks'] = $stmt->get_result()->fetch_all();
 $stmt->close();
 
-$obj['blacklist'] = $blacklist;
+$obj['blacklist'] = get_blacklist();
+ */
 
+header('Content-type: application/json');
 echo json_encode($obj);
-
-/*
-foreach(['tasks'=>$t] as $str => $query) {
-    $stmt = $mysqli->prepare($query);
-    $stmt->execute();
-    $obj[$str] = $stmt->get_result()->fetch_all();
-    $stmt->close();
-}
-
-echo '<pre>';
-echo json_encode($obj,JSON_PRETTY_PRINT);
-echo '</pre>';
- */
-
-/*
-    $stmt->execute();
-    //$stmt->bind_result($this->nhi, $this->first_names, $this->last_name,$dob,$this->sex);
-
-    $meta = $stmt->result_metadata(); 
-    while ($field = $meta->fetch_field()) 
-    { 
-        $params[] = &$row[$field->name]; 
-    } 
-
-    call_user_func_array(array($stmt, 'bind_result'), $params); 
-
-    while ($stmt->fetch()) { 
-        echo '<tr>';
-        foreach($row as $key => $val) 
-        { 
-            switch ($key) {
-                case 'Added' :
-                case 'Accepted' :
-                case 'Completed' :
-                    printf('<td>%s', $val);
-                    break;
-                case 'Added by' :
-                case 'Accepted by' :
-                case 'Completed by' :
-                    if ($val) {printf(' by %s', $val);}
-                    echo '</td>';
-                    break;
-                case 'Ward' : printf('<td>%s', $val); break;
-                case 'Bed' : printf(' - %s</td>', $val); break;
-                default : printf('<td>%s</td>', $val);
-            }
-            $c[$key] = $val; 
-        } 
-        $result[] = $c; 
-        echo '</tr>';
-    } 
-
-    $stmt->close(); 
-} 
- */
