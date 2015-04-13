@@ -2,7 +2,7 @@ var production = false;
 randomrows = 0,
 time = new Date();
 
-$.fn.appendLabels = function (options) {
+$.fn.appendLabels = function (options,get_str) {
     /*    var settings = $.extend({
             type:'added',
         }, options),
@@ -15,20 +15,20 @@ $.fn.appendLabels = function (options) {
     }
     if (options.t) {
         var tooltipdata = {toggle: "tooltip",placement: "right"},
-
         span = $('<span>',{
             data:tooltipdata,
             title: options.d + ': ' + options.r,
             text:options.p,
             'class':'label label-' + btype
         }).tooltip(),
+        pg = options.pg ? $('<a>',{'class':'glyphicon glyphicon-phone', data:tooltipdata, title:'pg 20'+options.pg, href:'../betterpage/?get_to=20' + options.pg + '&' + get_str, target:'_blank'}).tooltip() : null,
         time = $('<time>',{
             datetime:options.t.toISOString(),
             data:tooltipdata,
             title: options.t.getDate() + '/' + pad(options.t.getMonth() + 1) + '/' + pad(options.t.getFullYear()%100) + ' ' + pad(options.t.getHours()) + ':' + pad(options.t.getMinutes()),
             'class':"timeago label label-" + btype
         }).timeago().tooltip();
-        return this.empty().attr('class',options.type).data('timestamp',options.t.getTime()).append(span,time);
+        return this.empty().attr('class',options.type).data('timestamp',options.t.getTime()).append(span,pg,time);
     } else {
         var btxt;
         switch (options.type) {
@@ -231,27 +231,35 @@ function addnew(row_data) {
     added = {
         type: 'added',
         t : row_data[8] ? new Date(row_data[8] * 1000) : null,
-        p : row_data[9], 
-        d : row_data[10], 
-        r : row_data[11]
+        p : row_data[9],
+        pg : row_data[10],
+        d : row_data[11], 
+        r : row_data[12]
     },
     accepted = {
         type: 'accepted',
-        t : row_data[12] ? new Date(row_data[12] * 1000) : null,
-        p : row_data[13], 
-        d : row_data[14], 
-        r : row_data[15]
+        t : row_data[13] ? new Date(row_data[13] * 1000) : null,
+        p : row_data[14], 
+        pg : row_data[15],
+        d : row_data[16], 
+        r : row_data[17]
     },
     completed = {
         type: 'completed',
-        t : row_data[16] ? new Date(row_data[16] * 1000) : null,
-        p : row_data[17], 
-        d : row_data[18], 
-        r : row_data[19]
-    };
+        t : row_data[18] ? new Date(row_data[18] * 1000) : null,
+        p : row_data[19], 
+        pg : row_data[20],
+        d : row_data[21], 
+        r : row_data[22]
+    },
+    get_str = ['get_patient=' + encodeURIComponent(p_name),'get_nhi=' + nhi,'get_ward=' + ward,'get_bed=' + bed].join('&'),
+    status;
+    if (completed.t) {status = "success";}
+    else if (accepted.t) {status = "info";}
+    else {status = "default";}
     $("#jobs>tbody").append(
-    $('<tr>').data('pk',pk).append(
-        $("<td>").appendLabels(added),
+    $('<tr>',{data:{'pk':pk}, 'class':status}).append(
+        $("<td>").appendLabels(added,get_str),
         $("<td>").addClass("nhi text-uppercase").text(nhi), 
         $("<td>").addClass("p_name text-capitalize").text(p_name), 
         $("<td>").addClass("location").data({'building':warddata[2], 'location_int':ward * 1000 + parseInt(bed)})
@@ -261,8 +269,8 @@ function addnew(row_data) {
         $("<td>").addClass("specialty").text(obj.specialties[specialty]), 
         $("<td>").addClass("urgency").data('urgency',urgency).text(obj.urgency[urgency]), 
         $("<td>").addClass("details").text(details), 
-        $("<td>").appendLabels(accepted),
-        $("<td>").appendLabels(completed)
+        $("<td>").appendLabels(accepted,get_str),
+        $("<td>").appendLabels(completed,get_str)
     ));
     //$("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)), 
     //$("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
@@ -367,7 +375,7 @@ function processJson(data) {
         if (!(obj.wards[w][2] in locationfns)) {
             locationfns[obj.wards[w][2]] = function(e, n, f, i, $r) {return $r.children('.location').data('building') === f;};
         }
-        selectward.append($('<option>', {value:w, text:obj.wards[w]}));
+        selectward.append($('<option>', {value:w, text:obj.wards[w][0]}));
     }
     for (var s in obj.specialties) {
         selectspecialty.append($('<option>', {value:s, text:obj.specialties[s]}));

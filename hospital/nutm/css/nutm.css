@@ -1,7 +1,7 @@
 .label {
-    cursor: pointer;
-    float: left;
-    clear: left;
+    cursor: default;
+    /* float: left; */
+    /* clear: left; */
     margin: 1px;
 }
 body>div>* {
