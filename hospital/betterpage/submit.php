@@ -11,15 +11,18 @@ function test_input($key) {
         $valid = false;
         return '';
     }
+    return $_POST[$key];
+    //remember to clean data before inserting into DB
     $data = trim($_POST[$key]);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
     return $data;
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)) {
-    $formname = $_POST["formname"];
+    $formname = test_input("formname");
     switch($formname) {
         case 'ptpage':
+            $pagename = test_input('pagename');
             $field_strings = [
             "to" => ["To: Pager", "be 20 followed by 3 digits", "/^20[0-9]{3}$/"],
             "caller" => ["From: Name", "contain 2+ characters", "/^.{2,}$/"],
@@ -31,6 +34,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)
             "why"=>["Details: Reason for page"],
             "details"=>["Details: Specify"]
             ];
+            if ($pagename == "wong" || $pagename == "wong2") {
+                $checked = (array_key_exists('reply',$_POST) && $_POST["reply"] == "on");
+                if ($checked) {
+                    $pos   = array_search("patient", array_keys($field_strings));
+                    $field_strings = array_merge(
+                        array_slice($field_strings, 0, $pos),
+                        ["within" => ["Response time","be 1 or 2 digits","/^[0-9]{1,2}$/"]],
+                        array_slice($field_strings, $pos));
+                    //$field_strings["within"] = ["Response time","be 1 or 2 digits","/[0-9]{1,2}/"];
+                } elseif ($pagename == "wong") {
+                    unset($field_strings["phone"]);
+                }
+            }
             foreach ($field_strings as $key => $array) {
                 $value = test_input($key);
                 $str = $array[0];
@@ -54,8 +70,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)
                 }
             }
             if ($valid) {
-                $message = sprintf("%s(%s) %s(%s)[%s-%s] %s",
-                    $fields["phone"],
+                if ($pagename == "wong" || $pagename == "wong2") {
+                    if ($checked) {
+                        $message = sprintf("%s<%dm", $fields["phone"], $fields["within"]);
+                    } elseif ($pagename == "wong2") {
+                        $message = $fields["phone"];
+                    }  else {
+                        $message = "";}
+                } else {
+                    $message = $fields["phone"];
+                }
+                $message .= sprintf("(%s) %s(%s)[%s-%s] %s",
                     $fields["caller"],
                     $fields["nhi"],
                     $fields["patient"],

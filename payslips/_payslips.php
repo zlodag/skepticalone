@@ -11,7 +11,7 @@ if ($mysqli->connect_errno)
 if ($_POST["emp_id"]) {
 if ($_POST["date"]) {
     $stmt = $mysqli->prepare(
-        "INSERT INTO `payslips`(`emp_id`, `date`, `ord_n`, `ord_r`, `pub_n`, `pub_r`, `xcov_n`, `xcov_r`, `al_n`, `al_r`, `sl_n`, `sl_r`, `cb_n`, `cb_r`, `cbah_n`, `cbah_r`, `oc_n`, `oc_r`, `penal`, `paye`, `kiwi`, `mas`, `misc`, `leave_bal`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+        "INSERT INTO `payslips`(`emp_id`, `date`, `ord_n`, `ord_r`, `pub_n`, `pub_r`, `xcov_n`, `xcov_r`, `al_n`, `al_r`, `sl_n`, `sl_r`, `cbad_n`, `cbad_r`, `cbadah_n`, `cbadah_r`, `oc_n`, `oc_r`, `other`, `paye`, `kiwi`, `mas`, `misc`, `leave_bal`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
     foreach($_POST as $key => $value) {
         if ($value == null) {
             $_POST[$key] = "NULL";
@@ -30,13 +30,13 @@ if ($_POST["date"]) {
     $_POST["al_r"],
     $_POST["sl_n"],
     $_POST["sl_r"],
-    $_POST["cb_n"],
-    $_POST["cb_r"],
-    $_POST["cbah_n"],
-    $_POST["cbah_r"],
+    $_POST["cbad_n"],
+    $_POST["cbad_r"],
+    $_POST["cbadah_n"],
+    $_POST["cbadah_r"],
     $_POST["oc_n"],
     $_POST["oc_r"],
-    $_POST["penal"],
+    $_POST["other"],
     $_POST["paye"],
     $_POST["kiwi"],
     $_POST["mas"],
@@ -77,22 +77,22 @@ $headrow = '
 <th>Sick leave hours</th>
 <th>Sick leave rate</th>
 <th>Amount</th>
-<th>Call back hours</th>
-<th>Call back rate</th>
+<th>CB/AD hours</th>
+<th>CB/AD rate</th>
 <th>Amount</th>
-<th>Call back (10pm onwards) hours</th>
-<th>Call back (10pm onwards) rate</th>
+<th>CB/AD (10pm onwards) hours</th>
+<th>CB/AD (10pm onwards) rate</th>
 <th>Amount</th>
 <th>On call hours</th>
 <th>On call rate</th>
 <th>Amount</th>
-<th>Public Holiday Penal</th>
+<th>Other</th>
 <th>GROSS</th>
 <th>PAYE</th>
 <th>Kiwisaver </th>
 <th>MAS</th>
 <th>Student Loan</th>
-<th>Miscellaneous expenses</th>
+<th>Miscellaneous transactions</th>
 <th>NET</th>
 <th>Leave available</th>
 <th>Leave accrued this fortnight</th>
@@ -126,19 +126,20 @@ if ($stmt->num_rows > 0) {
         $al_r,
         $sl_n,
         $sl_r,
-        $cb_n,
-        $cb_r,
-        $cbah_n,
-        $cbah_r,
+        $cbad_n,
+        $cbad_r,
+        $cbadah_n,
+        $cbadah_r,
         $oc_n,
         $oc_r,
-        $penal,
+        $other,
         $paye,
         $kiwi_p,
         $mas,
         $misc,
         $leave_bal);
     $fiscal = new DateTime('2014-03-31');
+    $changeover = new DateTime('2015-03-08');
     $last_leave_bal = 0;
     $gross_ytd = 0;
     $paye_ytd = 0;
@@ -178,23 +179,24 @@ if ($stmt->num_rows > 0) {
         $sl= round($sl_n * $sl_r, 2);
         $gross += $sl;
         printf('<td>$%.2f</td>', $sl);
-        printf('<td>%.2f</td><td>$%.3f</td>', $cb_n, $cb_r);
-        $cb= round($cb_n * $cb_r, 2);
-        $gross += $cb;
-        printf('<td>$%.2f</td>', $cb);
-        printf('<td>%.2f</td><td>$%.3f</td>', $cbah_n, $cbah_r);
-        $cbah= round($cbah_n * $cbah_r, 2);
-        $gross += $cbah;
-        printf('<td>$%.2f</td>', $cbah);
+        printf('<td>%.2f</td><td>$%.3f</td>', $cbad_n, $cbad_r);
+        $cbad= round($cbad_n * $cbad_r, 2);
+        $gross += $cbad;
+        printf('<td>$%.2f</td>', $cbad);
+        printf('<td>%.2f</td><td>$%.3f</td>', $cbadah_n, $cbadah_r);
+        $cbadah= round($cbadah_n * $cbadah_r, 2);
+        $gross += $cbadah;
+        printf('<td>$%.2f</td>', $cbadah);
         printf('<td>%.2f</td><td>$%.3f</td>', $oc_n, $oc_r);
         $oc= round($oc_n * $oc_r, 2);
         $gross += $oc;
         printf('<td>$%.2f</td>', $oc);
-        $gross += $penal;
-        printf('<td>$%.2f</td>', $penal);
+        $gross += $other;
+        printf('<td>$%.2f</td>', $other);
         printf('<td>$%.2f</td>', $gross);
         printf('<td>$%.2f</td>', $paye);
-        $kiwi = round($gross * $kiwi_p * 0.01, 2);
+        if ($date >= $changeover) {$kiwi = floor($gross * $kiwi_p) / 100;}
+        else {$kiwi = round($gross * $kiwi_p * 0.01, 2);}
         printf('<td>$%.2f@%d%%</td>', $kiwi, $kiwi_p);
         printf('<td>$%.2f</td>', $mas);
         $sloan = (floor($gross) - 367*2) * 0.12;
@@ -238,16 +240,16 @@ $stmt->close();
         <td><input type="number" name="sl_n" min="0" max="99"></td>
         <td><input type="number" name="sl_r" min="0" max="99.999" step="0.001"></td>
         <td></td>
-        <td><input type="number" name="cb_n" min="0" max="99.99" step="0.01"></td>
-        <td><input type="number" name="cb_r" min="0" max="99.999" step="0.001"></td>
+        <td><input type="number" name="cbad_n" min="0" max="99.99" step="0.01"></td>
+        <td><input type="number" name="cbad_r" min="0" max="99.999" step="0.001"></td>
         <td></td>
-        <td><input type="number" name="cbah_n" min="0" max="99.99" step="0.01"></td>
-        <td><input type="number" name="cbah_r" min="0" max="999.999" step="0.001"></td>
+        <td><input type="number" name="cbadah_n" min="0" max="99.99" step="0.01"></td>
+        <td><input type="number" name="cbadah_r" min="0" max="999.999" step="0.001"></td>
         <td></td>
         <td><input type="number" name="oc_n" min="0" max="99.99" step="0.01"></td>
         <td><input type="number" name="oc_r" min="0" max="99.999" step="0.001"></td>
         <td></td>
-        <td><input type="number" name="penal" min="0" max="999.99" step="0.01"></td>
+        <td><input type="number" name="other" min="0" max="999.99" step="0.01"></td>
         <td></td>
         <td class="required"><input type="number" name="paye" min="0" max="9999.99" step="0.01" required></td>
         <td class="required"><select name="kiwi">
