@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)
             "why"=>["Details: Reason for page"],
             "details"=>["Details: Specify"]
             ];
-            if ($pagename == "wong") {
+            if ($pagename == "wong" || $pagename == "wong2") {
                 $checked = (array_key_exists('reply',$_POST) && $_POST["reply"] == "on");
                 if ($checked) {
                     $pos   = array_search("patient", array_keys($field_strings));
@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)
                         ["within" => ["Response time","be 1 or 2 digits","/^[0-9]{1,2}$/"]],
                         array_slice($field_strings, $pos));
                     //$field_strings["within"] = ["Response time","be 1 or 2 digits","/[0-9]{1,2}/"];
-                } else {
+                } elseif ($pagename == "wong") {
                     unset($field_strings["phone"]);
                 }
             }
@@ -70,12 +70,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists('formname', $_POST)
                 }
             }
             if ($valid) {
-                if ($pagename == "wong") {
+                if ($pagename == "wong" || $pagename == "wong2") {
                     if ($checked) {
                         $message = sprintf("%s<%dm", $fields["phone"], $fields["within"]);
-                    } else {
+                    } elseif ($pagename == "wong2") {
+                        $message = $fields["phone"];
+                    }  else {
                         $message = "";}
-                } else {$message = $fields["phone"];}
+                } else {
+                    $message = $fields["phone"];
+                }
                 $message .= sprintf("(%s) %s(%s)[%s-%s] %s",
                     $fields["caller"],
                     $fields["nhi"],

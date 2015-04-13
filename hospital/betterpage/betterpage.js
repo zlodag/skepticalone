@@ -6,7 +6,7 @@ function ucwords(str) {
     });
 }
 function calculate() {
-    var checked = pagename == "wong" && $('#reply').prop('checked'),
+    var checked = (pagename == "wong" || pagename == "wong2") && $('#reply').prop('checked'),
     a = $(this), 
     name = a.attr('name'), 
     str = a.val(), 
@@ -37,28 +37,34 @@ function calculate() {
     n = c.text().length - 4, 
     toolarge = n > 128;
     $('#preview>label>span').text(n);
-    $('span.within,span.phone').toggle(checked);
+    if (pagename == 'wong') {$('span.within,span.phone').toggle(checked)}
+    else if (pagename == 'wong2') {$('span.within').toggle(checked)}
     $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge);
     $('#preview>code, #preview>code+label>span').toggleClass('invalid', toolarge);
 }
 $(function() {
-    if (pagename == "wong") {
+    if (pagename == "wong" || pagename == "wong2") {
         f = $('form.ptpage fieldset:nth-child(2)');
         d = f.children('div:first');
-        d.append(
-            $('<label>',{for:'reply','class':'info',text:'Response required?'}),
-            $('<input>',{id:"reply", name:"reply", type:"checkbox"}).click(function() {
-                var t = $(this);
-                t.parent().nextAll('div.toggle, div.toggle+div.errors').toggle(t.prop('checked'));
-            }).click(calculate)
-        );
-        f.append($('<div>').addClass('toggle').append(
-            d.children('label[for=phone],#phone'),
-            //$('<label>',{for:'within','class':'info',text:'within'}),
-            //$('<input>', {id:'within',name:'within'}),
-            //$('<label>',{for:'within','class':'info',text:'mins'})
-            $('<label>',{for:'within','class':'info'}).append('within', $('<input>', {id:'within',name:'within'}), 'mins')
-        ).hide());
+        var label = $('<label>',{for:'reply','class':'info',text:'Response required?'}),
+        checkbox =  $('<input>',{id:"reply", name:"reply", type:"checkbox"}).click(function() {
+                var t = $(this),
+                toggled;
+                if (pagename == "wong" ) {toggled = t.parent().nextAll('div.toggle, div.toggle+div.errors');}
+                else if (pagename == "wong2") {toggled = $('input[type=checkbox]').next().add(t.parent().next('div.errors'));}
+                toggled.toggle(t.prop('checked'));
+            }).click(calculate),
+        within = $('<label>',{for:'within','class':'info'}).append('within', $('<input>', {id:'within',name:'within'}), 'mins');
+        if (pagename == "wong") {
+            d.append(checkbox,label);
+            f.append($('<div>').addClass('toggle').append(
+                d.children('label[for=phone]'),
+                d.children('#phone'),
+                within
+            ).hide());
+        } else if (pagename == "wong2") {
+            f.append($('<div>').append(label, checkbox, within.addClass('toggle').hide()));
+        }
     }
     $('select[name=choice]').change(function() {
         var context = '.' + $(this).val(), 
@@ -108,7 +114,7 @@ $(function() {
                 to: {required: true,pattern: '20[0-9]{3}'},
                 caller: {required: true,minlength: 2},
                 phone: {required: (pagename=="wong" ? '#reply:checked' : true),pattern: '[0-9]{5,11}'},
-                within: {required: (pagename=="wong" ? '#reply:checked' : false),pattern: '[0-9]{1,2}'},
+                within: {required: (pagename=="wong" || pagename=="wong2" ? '#reply:checked' : false),pattern: '[0-9]{1,2}'},
                 patient: {required: true,minlength: 2},
                 nhi: {required: true,pattern: '[a-zA-Z]{3}[0-9]{4}'},
                 ward: {required: true,pattern: '[0-9a-zA-Z]{1,3}'},

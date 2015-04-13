@@ -15,12 +15,15 @@ fieldset {
     border: 1px solid black;
 }
 fieldset>div {
-    clear:left;
+    clear: both;
 }
 fieldset>div>* {
     display: block;
     float:left;
     margin: 2px 5px;
+}
+fieldset>div>label.info:nth-of-type(2), fieldset>div>input:nth-of-type(2) {
+    float:right;
 }
 fieldset input {
     width: 80px;
@@ -45,7 +48,7 @@ input.error {background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUg
 
 form label.info {
     text-align: right;
-    width:50px;
+    width: 40px;
 }
 label.error {
     color: red;
