@@ -1,4 +1,15 @@
-var pagename = /\/([^\/]*?)(\.html)*$/.exec(window.location.pathname)[1];
+var pagename = window.location.pathname.match(/\/([^\/]*?)(?:\.html)*$/)[1],
+get_to = window.location.search.match(/to=(20[0-9]{3})/),
+get_patient = window.location.search.match(/patient=([^&]*)/),
+get_nhi = window.location.search.match(/nhi=([a-zA-Z]{3}[0-9]{4})/),
+get_ward = window.location.search.match(/ward=([a-zA-Z0-9]{1,3})/),
+get_bed = window.location.search.match(/bed=([a-zA-Z0-9]{1,3})/);
+if (get_to) {get_to = get_to[1];} else {get_to = "20";}
+if (get_patient) {get_patient = decodeURIComponent(get_patient[1]);} else {get_patient = null;}
+if (get_nhi) {get_nhi = get_nhi[1];} else {get_nhi = null;}
+if (get_ward) {get_ward = get_ward[1];} else {get_ward = null;}
+if (get_bed) {get_bed = get_bed[1];} else {get_bed = null;}
+
 function ucwords(str) {
     return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, 
     function(s) {
@@ -43,6 +54,12 @@ function calculate() {
     $('#preview>code, #preview>code+label>span').toggleClass('invalid', toolarge);
 }
 $(function() {
+    $("#to").val(get_to);
+    $("#patient").val(get_patient);
+    $("#nhi").val(get_nhi);
+    $("#ward").val(get_ward);
+    $("#bed").val(get_bed);
+    
     if (pagename == "wong" || pagename == "wong2") {
         f = $('form.ptpage fieldset:nth-child(2)');
         d = f.children('div:first');
