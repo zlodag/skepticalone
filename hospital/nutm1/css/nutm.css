@@ -1,0 +1,21 @@
+.label {
+    cursor: pointer;
+}
+body>div>* {
+    margin:10px 0;
+}
+#user-tab span.glyphicon {
+    margin-left:15px;
+}
+.who {
+    color:#3C763D;
+}
+.what {
+    color: #8A3B74;
+}
+.when {
+    color: #0087DA;
+}
+#user-panel p {
+    margin-top:20px;
+}
