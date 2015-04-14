@@ -1,4 +1,5 @@
 $(function() {
+    'use strict';
     function ucwords(str) {
         return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, 
         function(s) {
