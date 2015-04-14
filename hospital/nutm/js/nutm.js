@@ -30,7 +30,7 @@ $(function() {
                 text: options.p,
                 'class': 'label label-' + btype
             }).tooltip(), 
-            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + options.pg,href: '../betterpage/?get_to=20' + options.pg + '&' + get_str,target: '_blank'}).tooltip() : null, 
+            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + options.pg,href: '../betterpage/wong2.html?get_to=20' + options.pg + '&' + get_str,target: '_blank'}).tooltip() : null, 
             time = $('<time>', {
                 datetime: options.t.toISOString(),
                 data: tooltipdata,
