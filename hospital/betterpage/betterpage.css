@@ -22,7 +22,7 @@ fieldset>div>* {
     float:left;
     margin: 2px 5px;
 }
-fieldset>div>label.info:nth-of-type(2), fieldset>div>input:nth-of-type(2) {
+fieldset>div>label.info ~ label.info, fieldset>div>input ~ input {
     float:right;
 }
 fieldset input {
@@ -34,8 +34,8 @@ fieldset input {
 .whole {
     width: 290px;
 }
-label.info[for=reply],label.info[for=within],#reply {
-    width:initial;
+label.info[for="reply"],label.info[for="within"],#reply {
+    width: inherit;
 }
 #within {
     width:40px;
@@ -59,7 +59,6 @@ code, code+label {
     background-color: #E8E8E8;
     width: 160px;
     width: 20ch;
-    word-break: break-all;
     padding: 8px;
     padding: 1ch;
     display: block;
