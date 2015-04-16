@@ -1,0 +1,270 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type"
+content="text/html; charset=iso-8859-1">
+<meta name="GENERATOR" content="Microsoft FrontPage Express 2.0">
+<title>Netpage</title>
+<!-- This link refers to the cascading style sheet file that is used
+	on this example page. You can open and edit it as you wish. -->
+<link href="netpage.css" rel="Stylesheet">
+</head>
+
+<!-- 
+	This is the NetPage template page. You may edit this code freely.
+	You are also welcome to create a completely new NetPage page and use
+	parts of this code in the new file.
+	
+	There are a number of variables that this page supplies the system.
+	It is important that these variable names are kept as is, or the system will be confused.
+	
+	The variables are (valid characters):
+	no  =call number (0-9, no default in system)
+	msg =message text (all ANSI alphanumeric characters, no default in system)
+	bp  =beep code (0-7, 3 default in system)
+	pri =priority (1-9, 7 default in system)
+	url =URL that the user is sent to after a message has been sent (all ANSI alphanumeric characters)
+	     If this is not specified status is sent to this page (default behaviour)
+-->
+
+<body bgcolor="#FFFFFF" onload="initForm()" onunload="remLink()">
+<script language="JavaScript">
+<!-- // This code has to be kept unmodified for the page to function properly
+okFlagga=false;
+
+args1 = document.URL.split("?", 2)
+if (args1[1]) {
+  args2 = args1[1].split("&", 20);
+  if (args2[0] != "undefined")
+    okFlagga=true;
+}
+
+
+function initForm()
+{
+  numberInitialized=false;
+  messageInitialized=false;
+
+  if (okFlagga) {
+    
+    for (i = 0; i < args2.length ; i++) {
+      if (args2[i].split("=")[0] == "no") {
+        document.testform.no.value = unescape(args2[i].split("=")[1]);
+        numberInitialized=true;
+      }
+      else if (args2[i].split("=")[0] == "msg") {
+        document.testform.msg.value = unescape(args2[i].split("=")[1]);
+        messageInitialized=true;
+      }
+      else if (args2[i].split("=")[0] == "bp") {
+        document.testform.bp.value = unescape(args2[i].split("=")[1]);
+      }
+      else if (args2[i].split("=")[0] == "pri") {
+        document.testform.pri.value = unescape(args2[i].split("=")[1]);
+      }
+    }
+  }
+  if (numberInitialized == false) {
+     document.testform.no.focus();
+     document.testform.no.select();
+  }
+  else if (messageInitialized == false) {
+     document.testform.msg.focus();
+     document.testform.msg.select();
+  }
+}
+
+
+function lookUp() {
+  listWin = window.open("nrlist.html", "list", "width=200,height=280, resizable=no");
+}
+
+function addCallNo(callno, name) {
+  document.testform.no.value = callno;
+}
+
+function remLink() {
+  if (window.listWin && window.listWin.open && !window.listWin.closed) {
+    window.listWin.opener = null;
+    window.listWin.close();
+  }
+}
+
+
+//-->
+</script>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%" height="100%">
+<tr><td height="10%" colspan="2">		
+	<!--this is an empty table cell where, for example, a company logotype can be added.-->
+</td></tr>
+<tr><td valign="top" colspan="2">
+<div align="center"><center>
+
+<table border="0" cellpadding="0" cellspacing="0" width="447">
+    <tr>
+        <td align="center" colspan="3" style="width:447" style="height:24"><img
+        src="netpage_top.gif" width="447" height="24"></td>
+    </tr>
+    <tr>
+        <td align="center" style"width:3" background="sidebar.gif" style="height:3">
+	  </td>
+        <td align="center" valign="top" width="447" background="dots.gif"><br>
+	  <!-- This section holds advanced message parameters
+
+		There can only exist one instance of <input> tags with the same name or the system
+		will be confused.
+
+		To remove any of the visible inputs, create an input with that name and set its type to hidden. 
+		
+		Compare with the file index2.html to see how to add a button for the phonebook
+		and possibility to set priority.
+	   -->
+
+         <form action="/cgi-bin/npcgi" method="GET" name="testform">
+		<!--If priority should be set from the GUI, remove the line below.-->
+            <input type="hidden" name="pri" value="7">
+
+		<!--If the value is not specified, the user will not be moved to another site. 
+		Add an URL in order to show status on another page.-->
+        <input type="hidden" name="url" value>
+        
+        <!-- The parameter below must remain hidden. It is used if it is possible  
+               to select a predefined message from this webpage  -->  
+        <input type="hidden" name="ack" value="0">  
+
+		<div align="center"><center>
+		<table border="0">
+		    <tr><td colspan="3">&nbsp;</td></tr>
+		    <!--Input field for the call number-->
+                <tr>
+                    <td align="left" valign="middle">
+				<span id="normal">Call number</span>
+                    </td>
+                    <td align="left" valign="middle" colspan="2">
+				<input type="text" size="28" name="no"/>
+                    </td>
+                </tr>
+		    <!--Input field for the message text-->
+                <tr>
+                    <td align="left" valign="top">
+				<span id="normal">Message</span>
+                    </td>
+                    <td align="left" valign="top" colspan="2">
+                    	<textarea name="msg" rows="5" cols="21"></textarea>
+                    </td>
+                </tr>
+                <tr>
+		    	  <!--Select box for the beep code-->
+                    <td align="left" valign="middle">
+				<span id="normal">Beep code</span></span>
+                    </td>
+                    <td align="left" valign="middle">
+				<select name="bp" size="1">
+                       		<option value="0">0</option>
+	                        <option selected value="1">1</option>
+           		        <option value="2">2</option>
+                       		<option value="3">3</option>
+	                        <option value="4">4</option>
+           		        <option value="5">5</option>
+                       		<option value="6">6</option>
+	                        <option value="7">7</option>
+  	   		        </select>
+                    </td>
+   		        <!--Send button-->
+                    <td align="right">
+					<input type="submit" value="Send"/>
+			  </td>
+                </tr>				
+		    <tr><td colspan="3">&nbsp;</td></tr>
+		</table>
+            </center></div>
+        </form>
+        </td>
+        <td align="center" style="width:3" background="sidebar.gif" style="height:3">
+	  </td>
+    </tr>
+    <tr>
+        <td align="center" colspan="3" style="width:447" style="height:3"><img
+        src="netpage_bottom.gif" width="447" height="3"/></td>
+    </tr>
+    <tr>
+        <td align="center" style="width:3" background="sidebar.gif" style="height:3">
+	  </td>
+	  <!--Status field-->
+        <td align="center" style="width:441" style="background-color:#BDBDBD">
+		<table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr valign="middle">
+                <td align="center" style="background-color:#DCDCDC" style="height:20" style="width:30%">
+			<span id="response_left">Status on last message:</span>
+		    </td>
+		    <td background="sidebar.gif">
+			 <span id="megasmall">&nbsp;</span>
+		    </td>
+                <td style="width:69%" style="height:20" align="left" style="background-color:#EEEEEE">
+				<span id="response_left">&nbsp;&nbsp;<script language="JavaScript">
+				<!-- // This code has to be kept unmodified for the page to function properly
+				     // The status texts, for example Message accepted, can be translated 
+				     // without any loss of functionality
+				if (okFlagga) {
+				  for (i = 0; i < args2.length ; i++) {
+				    if (args2[i].split("=")[0] == "pagingstatus") {
+				      if (args2[i].split("=")[1] == "20")
+				        document.writeln ( "Message accepted");
+				
+				      else if (args2[i].split("=")[1] == "30")
+				        document.writeln ( "Memory full in message service");
+				
+				      else if (args2[i].split("=")[1] == "31")
+				        document.writeln ( "Message deleted due to time-out");
+				
+				      else if (args2[i].split("=")[1] == "40")
+				        document.writeln ( "Message not sent, invalid call number");
+				
+				      else if (args2[i].split("=")[1] == "nst")
+				        document.writeln ( "Message not sent");
+
+				      else if (args2[i].split("=")[1] == "nlc")
+				        document.writeln ( "Message cancelled, no licence");
+
+				      else if (args2[i].split("=")[1] == "sto")
+				        document.writeln ( "Status time-out from message service");
+
+				      else if (args2[i].split("=")[1] == "sns")
+				        document.writeln ( "Can't receive status");     
+				
+				      else if (args2[i].split("=")[1] == "nan")
+				        document.writeln ( "Message cancelled, no call number");
+
+				      else if (args2[i].split("=")[1] == "oor")
+				        document.writeln ( "Call number(s) out of number range");
+
+				      else
+				        document.writeln ( "Unknown returncode, confused!");
+				    }				  
+				  }  
+				}		
+				//-->		
+				</script>
+			</span></td>
+            </tr>
+        </table>
+        </td>
+        <td align="center" style="width:3" background="sidebar.gif" style="height:3">
+	  </td>
+    </tr>
+    <tr>
+        <td align="center" colspan="3" width="447" height="3"><img
+        src="netpage_bottom.gif" width="447" height="3"/></td>
+    </tr>
+</table>
+</center></div>
+</td></tr>
+<tr>
+<td style="background-color:#EEEEEE"></td>
+<td style="height:24" style="width:698" align="right" valign="middle" background="ascom_line.gif">
+</td>
+</tr>
+</table>
+</body>
+</html>
