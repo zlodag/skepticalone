@@ -67,6 +67,7 @@ code, code+label {
     border: 1px solid black;
     font-family: monospace;
     margin: 5px 0;
+    word-wrap: break-word;
 }
 .invalid {background-color: yellow;}
 #outcome label {display:block;}

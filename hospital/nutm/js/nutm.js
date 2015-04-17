@@ -30,7 +30,7 @@ $(function() {
                 text: options.p,
                 'class': 'label label-' + btype
             }).tooltip(), 
-            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + options.pg,href: '../betterpage/wong2.html?get_to=20' + options.pg + '&' + get_str,target: '_blank'}).tooltip() : null, 
+            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + options.pg,href: '../betterpage/?no=20' + options.pg + '&' + get_str,target: '_blank'}).tooltip() : null, 
             time = $('<time>', {
                 datetime: options.t.toISOString(),
                 data: tooltipdata,
@@ -265,7 +265,7 @@ $(function() {
             d: row_data[21],
             r: row_data[22]
         }, 
-        get_str = ['get_patient=' + encodeURIComponent(p_name), 'get_nhi=' + nhi, 'get_ward=' + ward, 'get_bed=' + bed].join('&'), 
+        get_str = ['patient=' + encodeURIComponent(p_name), 'nhi=' + nhi, 'ward=' + warddata[0], 'bed=' + bed].join('&'), 
         status;
         if (completed.t) {
             status = "success";

@@ -7,147 +7,101 @@ $(function() {
         });
     }
     function calculate() {
-        var checked = (pagename == "wong" || pagename == "wong2") && $('#reply').prop('checked'), 
-        a = $(this), 
-        name = a.attr('name'), 
-        str = a.val(), 
-        context = $('select[name=choice]').val();
-        switch (name) {
-            case 'details':
-                if (str !== "") {
-                    str = ' (' + str + ')';
-                }
-                break;
-            case 'within':
-                if (str !== "") {
-                    str = '<' + parseInt(str, 10) + 'm';
-                }
-                break;
-            case 'nhi':
-            case 'ward':
-            case 'bed':
-                str = str.toUpperCase();
-                break;
-            case 'caller':
-            case 'patient':
-                str = ucwords(str);
-                break;
-        }
-        $('span.' + name).text(str);
-        var c = $('#preview>code.' + context), 
-        n = c.text().length - 4, 
-        toolarge = n > 128;
-        $('#preview>label>span').text(n);
-        if (pagename == 'wong') {
-            $('span.within,span.phone').toggle(checked);
-        } 
-        else if (pagename == 'wong2') {
-            $('span.within').toggle(checked);
-        }
-        $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge);
-        $('#preview>code, #preview>code+label>span').toggleClass('invalid', toolarge);
+        var context = $('#choice').val(),
+        c = $('#preview>code.' + context),
+        n = $('#preview>label>span'),
+        msg = c.children('span:visible').text(),
+        len = msg.length,
+        toolarge = len > 128;
+        n.text(len).toggleClass('invalid', toolarge);
+        c.toggleClass('invalid', toolarge);
+        $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge).val(toolarge ? 'Character limit exceeded!' : 'Send');
+        return !toolarge;
     }
-    
-    var pagename = window.location.pathname.match(/\/([^\/]*?)(?:\.html)*$/)[1], 
-    get_to = window.location.search.match(/to=(20[0-9]{3})/), 
-    get_patient = window.location.search.match(/patient=([^&]*)/), 
-    get_nhi = window.location.search.match(/nhi=([a-zA-Z]{3}[0-9]{4})/), 
-    get_ward = window.location.search.match(/ward=([a-zA-Z0-9]{1,3})/), 
-    get_bed = window.location.search.match(/bed=([a-zA-Z0-9]{1,3})/), 
-    f, d;
-    if (get_to) {
-        get_to = get_to[1];
-    } else {
-        get_to = "20";
-    }
-    if (get_patient) {
-        get_patient = decodeURIComponent(get_patient[1]);
-    } else {
-        get_patient = null;
-    }
-    if (get_nhi) {
-        get_nhi = get_nhi[1];
-    } else {
-        get_nhi = null;
-    }
-    if (get_ward) {
-        get_ward = get_ward[1];
-    } else {
-        get_ward = null;
-    }
-    if (get_bed) {
-        get_bed = get_bed[1];
-    } else {
-        get_bed = null;
-    }
-    $("#to").val(get_to);
-    $("#patient").val(get_patient);
-    $("#nhi").val(get_nhi);
-    $("#ward").val(get_ward);
-    $("#bed").val(get_bed);
-    
-    if (pagename == "wong" || pagename == "wong2") {
-        f = $('form.ptpage fieldset:nth-child(2)');
-        d = f.children('div:first');
-        var label = $('<label>', {'for': 'reply','class': 'info',text: 'Response required?'}), 
-        checkbox = $('<input>', {id: "reply",name: "reply",type: "checkbox"}).click(function() {
-            var t = $(this), 
-            toggled;
-            if (pagename == "wong") {
-                toggled = t.parent().nextAll('div.toggle, div.toggle+div.errors');
-            } 
-            else if (pagename == "wong2") {
-                toggled = $('input[type=checkbox]').next().add(t.parent().next('div.errors'));
+    function update() {
+        var t = $(this),
+        name = t.attr('name');
+        if (name == 'ward' || name == 'bed') {
+            var ward = $('#ward').val().toUpperCase(),
+            bed = $('#bed').val().toUpperCase(),
+            locationspan = $('span.location');
+            if (ward !== "" || bed !== "") {
+                locationspan.text('['+ward+'-'+bed+'] ');
+            } else {
+                locationspan.text("");
             }
-            toggled.toggle(t.prop('checked'));
-        }).click(calculate), 
-        within = $('<label>', {'for': 'within','class': 'info'}).append('within', $('<input>', {id: 'within',name: 'within'}), 'mins');
-        if (pagename == "wong") {
-            d.append(checkbox, label);
-            f.append($('<div>').addClass('toggle').append(
-            d.children('label[for=phone]'), 
-            d.children('#phone'), 
-            within
-            ).hide());
-        } else if (pagename == "wong2") {
-            f.append($('<div>').append(label, checkbox, within.addClass('toggle').hide()));
+        } else {
+            var str = t.val();
+            switch (name) {
+                case 'details':
+                    if (str !== "") {str = ' (' + str + ')';} break;
+                case 'within':
+                    if (str !== "" && t.valid()) {str = '<' + parseInt(str, 10) + 'm';} else {str = "";} break;
+                case 'nhi':
+                    if (str !== "") {str = ' ' + str.toUpperCase();} break;
+                case 'caller':
+                case 'patient':
+                    if (str !== "") {str = '(' + ucwords(str) + ')';} break;
+            }
+            $('span.' + name).text(str);
         }
+        $('span.within').toggle($('#reply').prop('checked'));
+        calculate();
     }
-    $('select[name=choice]').change(function() {
+    var pagename = window.location.pathname.match(/\/([^\/]*?)(?:\.html)*$/)[1],
+    tuples = window.location.search.substring(1).split('&'),
+    params = {};
+    for (var i = 0; i < tuples.length; i++) {
+        var tuple = tuples[i].split('=');
+        params[tuple[0]] = tuple[1];
+    }
+    if ('msg' in params) {$('#choice').val('otherpage'); $("#contents").val(decodeURIComponent(params.msg));}
+    else {
+        if ('no' in params && params.no.match(/^20[0-9]{3}$/)) {$("#to,#to_other").val(params.no);} else {$("#to,#to_other").val(20);}
+        if ('patient' in params) {$("#patient").val(decodeURIComponent(params.patient));}
+        if ('nhi' in params && params.nhi.match(/^[a-zA-Z]{3}[0-9]{4}$/)) {$("#nhi").val(params.nhi);}
+        if ('ward' in params && params.ward.match(/^[a-zA-Z0-9]{1,3}$/)) {$("#ward").val(params.ward);}
+        if ('bed' in params && params.bed.match(/^[a-zA-Z0-9]{1,3}$/)) {$("#bed").val(params.bed);}
+    }
+
+    $('#caller,#phone,#within,#patient,#nhi,#ward,#bed,#details,#to_other,#contents').keyup(update).keyup();
+    $('#why').change(update).change();
+    $('#reply').click(function() {$('[for="within"]').toggle(this.checked);}).click(update);
+    $('#choice').change(function() {
         var context = '.' + $(this).val(), 
         toggles = $('form,code,#outcome label');
         toggles.filter(context).show();
         toggles.not(context).hide();
-    }
-    ).change();
-    $('[name=details]').placeholder();
+        calculate();
+    }).change();
+
+    //$('#details').placeholder();
+
     $.validator.addMethod("pattern", function(value, element, param) {
         return new RegExp("^(?:" + param + ")$").test(value);
     }, "Invalid format");
+
     $('form').each(function() {
         $(this).validate({
             submitHandler: function(form) {
-                $(form).ajaxSubmit({
-                    type: "POST",
-                    url: "submit.php",
-                    data: {formname: form.className,pagename: pagename},
+                $.ajax("submit.php", {
+                    method: "POST",
                     datatype: "json",
-                    success: function(json, statustxt, xhr, jqform) {
-                        var valid = json.ok, 
-                        c = jqform.attr('class'), 
+                    data: { 
+                        //formname: form.className,
+                        no: $(form).find('fieldset:first-child>div>input').val(),
+                        msg: $('#preview>code.' + form.className +'>span:visible').text()
+                    },
+                    success: function(json) {
+                        var valid = json.ok,
+                        c = form.className,
                         outcome = $('#outcome>div').empty();
                         if (valid) {
-                            outcome.prepend(
+                            outcome.append(
                             $('<label>', {'class': c,text: "Successful submission of form!"}), 
                             $('<code>', {'class': c,text: "###:" + json.page})
                             );
-                            if (c == "ptpage") {
-                                if (pagename == 'slim1') {
-                                    outcome.prepend($('<label>', {'class': c + " message",text: "If you requested a review of a patient, please ensure that the notes and chart are in the office."}));
-                                } else if (pagename == 'slim2') {
-                                    alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
-                                }
-                            }
+                            if (c == "ptpage") {alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");}
                         } else {
                             for (var i = 0; i < json.errors.length; i++) {
                                 var error = json.errors[i];
@@ -160,8 +114,8 @@ $(function() {
             rules: {
                 to: {required: true,pattern: '20[0-9]{3}'},
                 caller: {required: true,minlength: 2},
-                phone: {required: (pagename == "wong" ? '#reply:checked' : true),pattern: '[0-9]{5,11}'},
-                within: {required: (pagename == "wong" || pagename == "wong2" ? '#reply:checked' : false),pattern: '[0-9]{1,2}'},
+                phone: {required: true,pattern: '[0-9]{5,11}'},
+                within: {required: '#reply:checked', min: 1, max: 99},
                 patient: {required: true,minlength: 2},
                 nhi: {required: true,pattern: '[a-zA-Z]{3}[0-9]{4}'},
                 ward: {required: true,pattern: '[0-9a-zA-Z]{1,3}'},
@@ -184,7 +138,6 @@ $(function() {
                     required: '<em>Phone</em> is required'
                 },
                 within: {
-                    pattern: '<em>Response time</em> must be 1 or 2 digits',
                     required: '<em>Response time</em> is required'
                 },
                 patient: {
@@ -221,6 +174,4 @@ $(function() {
             }
         });
     });
-    $('form input[name!=to][type!=submit], form textarea').keyup(calculate).keyup();
-    $('select').change(calculate).change();
 });

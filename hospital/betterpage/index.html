@@ -7,8 +7,6 @@
 <link rel="stylesheet" href="betterpage.css" />
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.0.8/jquery.placeholder.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 <script src="betterpage.js"></script>
 </head>
 <body>
@@ -34,7 +32,7 @@
 <input id="phone" name="phone">
 <label for="phone" class="info">Phone</label>
     </div>
-</fieldset>
+<div><label for="reply" class="info">Response required?</label><input id="reply" name="reply" type="checkbox"><label for="within" class="info toggle">within<input id="within" name="within">mins</label></div></fieldset>
 <fieldset>
 <legend>Patient</legend>
     <div>
@@ -54,7 +52,7 @@
 <legend>Details</legend>
     <div>
 <select id="why" name="why" class="whole">
-<option value="" selected>Reason for page</option>
+<option value="" selected="">Reason for page</option>
 <optgroup label="High ADDS - specify why"><option value="adds3">ADDS 3</option><option value="adds4">ADDS 4</option><option value="adds5plus">ADDS 5+</option></optgroup><optgroup label="Concern"><option value="pain">Pain</option><option value="wound">Wound</option><option value="plan">Clarify plan</option></optgroup><optgroup label="Medication"><option value="fluids">Fluids</option><option value="analgesia">Pain relief</option><option value="antiemetic">Anti-emetic</option><option value="sleep">Sleeping pill</option><option value="laxatives">Laxatives</option><option value="regmeds">Regular Meds</option></optgroup><optgroup label="Task"><option value="iv_line">IV line</option><option value="consent">Consent</option><option value="discharge">Discharge papers</option><option value="rechart">Rechart</option></optgroup><optgroup label="Other - specify below"><option value="inform">Inform (no response needed)</option><option value="call_urgent">Call urgently!</option><option value="come_urgent">Come urgenly!</option><option value="custom">None of the above</option></optgroup>
 </select>
     </div>
@@ -70,7 +68,7 @@
 <legend>To</legend>
     <div>
 <label for="to_other" class="info">Pager</label>
-<input id="to_other" value="20" name="to_other">
+<input id="to_other" name="to_other">
     </div>
 </fieldset>
 <fieldset>
@@ -86,14 +84,14 @@
 
 <div id="preview">
 <label>Preview</label>
-<code class="ptpage">###:<span class="phone"></span><span class="within"></span>(<span class="caller"></span>)&nbsp;<span class="nhi"></span>(<span class="patient"></span>)[<span class="ward"></span>-<span class="bed"></span>]&nbsp;<span class="why"></span><span class="details"></span></code>
+<code class="ptpage">###:<span class="phone"></span><span class="within"></span><span class="caller"></span><span class="nhi"></span><span class="patient"></span><span class="location"></span><span class="why"></span><span class="details"></span></code>
 <code class="otherpage">###:<span class="contents"></span></code>
 <label><span></span>/128 characters</label>
 </div>
 
 <div id="outcome">
 <div></div>
-<a href="pages.txt">Page Log</a>
+<a href="pages.txt" target="_blank">Page Log</a>
 </div>
 
 </body>
