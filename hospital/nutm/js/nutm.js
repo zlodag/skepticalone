@@ -1,7 +1,6 @@
 $(function() {
     "use strict";
-    var production = false, 
-    randomrows = 0, 
+    var randomrows = 0, 
     oncall = {}, 
     time = new Date(), 
     timeint = time.getHours() * 100 + time.getMinutes(), 
@@ -102,7 +101,7 @@ $(function() {
         } else {
             var user = $('#user>optgroup>option:selected');
         }
-        return $.extend({div: user.parent().attr('label')}, user.data());
+        return user.data();
     }
     
     function accept_complete() {
@@ -129,7 +128,7 @@ $(function() {
                     td.empty().appendLabels(obj.labels);
                     $('#jobs').trigger('update');
                 }
-            }});
+        }});
     }
     
     function addnew(row_data) {
@@ -190,70 +189,34 @@ $(function() {
         tr.find('td.added').appendLabels(added);
         tr.find('td.accepted').appendLabels(accepted);
         tr.find('td.completed').appendLabels(completed);
-        $("#jobs>tbody").append(tr);
+        return tr;
     }
     
-    function validateForm() {
-        var row_data = {
-            "added": new Date(),
-            "nhi": $("#nhi").val().toUpperCase(),
-            "p_name": $("#p_name").val(),
-            "ward": $("#ward").val(),
-            "bed": $("#bed").val().toUpperCase(),
-            "specialty": $("#specialty").val(),
-            "urgency": $("#urgency").val(),
-            "details": $("#details").val(),
-            "random": false
-        };
-        addnew(row_data);
-    }
-    
-    function get_random_str(min, max) {
-        var text = "";
-        var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz           ";
-        var n = Math.floor(Math.random() * (max - min) + min);
-        for (var i = 0; i < n; i++) {
-            text += possible.charAt(Math.floor(Math.random() * possible.length));
-        }
-        return text;
-    }
-    
-    function get_random_nhi() {
-        var text = "";
-        var possiblealpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        var possiblenum = "0123456789";
-        for (var i = 0; i < 3; i++) {
-            text += possiblealpha.charAt(Math.floor(Math.random() * possiblealpha.length));
-        }
-        for (var x = 0; x < 4; x++) {
-            text += possiblenum.charAt(Math.floor(Math.random() * possiblenum.length));
-        }
-        return text;
-    }
-    
-    function get_random_option(id) {
-        var list = $("#" + id + " option:not(:first-child)");
-        return list.get(Math.floor(Math.random() * list.length)).text;
+    function submitTask() {
+        $.ajax({
+            method: "POST",
+            'url': "get_data.php",
+            data: $.extend({
+                data: 'update',
+                context: 'added',
+                nhi: $("#nhi").val().toUpperCase(),
+                p_name: $("#p_name").val(),
+                ward: $("#ward").val(),
+                bed: $("#bed").val().toUpperCase(),
+                specialty: $("#specialty").val(),
+                urgency: $("#urgency").val(),
+                details: $("#details").val(),
+            },getUser(false)),
+            dataType: "json",
+            success: function(obj) {
+                if (!('errors' in obj)) {
+                    addAll(obj.tasks);
+                    $("#tasks-tab>a").tab("show");
+                }
+            }
+        });
     }
 
-    /*function get_random_rowdata() {
-        var min = 5, 
-        max = 20;
-        return {
-            "added": new Date(new Date().getTime() - Math.random() * 28800000),
-            "nhi": get_random_nhi(),
-            "p_name": chance.name(),
-            "ward": get_random_option("ward"),
-            "bed": Math.ceil((Math.random() * 15)).toString(),
-            "specialty": get_random_option("specialty"),
-            "urgency": get_random_option("urgency"),
-            "details": chance.sentence({
-                words: Math.floor(Math.random() * (max - min + 1) + min)
-            }),
-            "random": true
-        };
-    }*/
-    
     function updateValidity() {
         var formgroup = $(this).closest("div.form-group");
         if ($(this).is(":valid")) {
@@ -269,20 +232,13 @@ $(function() {
             $("#addthis").removeClass("btn-primary").addClass("disabled btn-default");
         }
     }
-    /*function get_building(ward) {
-        return ward in wards ? wards[ward][1] : "Unknown";
-    }*/
     
     function getlocationfn() {
         return function(e, n, f, i, $r) {
             return $r.children('.location').data('building') === f;
         };
     }
-    
-    function processPerson(row) {
-    
-    }
-    
+        
     function processJson(data) {
         obj = data;
         locationfns = {};
@@ -322,13 +278,18 @@ $(function() {
                 selecturgency.append($('<option>', {value: u,text: obj.urgency[u]}));
             }
         }
-        for (var i = 0; i < obj.tasks.length; i++) {
-            addnew(obj.tasks[i]);
-        }
+        addAll(obj.tasks);
         $('.timeago').timeago();
         sortTables();
     }
     
+    function addAll(tasks) {
+        var tbody = $("#jobs>tbody").empty();
+        for (var i = 0; i < tasks.length; i++) {
+            tbody.append(addnew(tasks[i]));
+        }
+    }
+
     function sortTables() {
         
         $.tablesorter.addParser(
@@ -392,33 +353,11 @@ $(function() {
             output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
         });
     
-    }
-
-    /*function updatePeople_static() {
-        //var password = 'waikato', url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':625});
-        var url = 'data.csv';
-        Papa.parse(url, {
-            delimiter: ",",
-            download: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                get_select(get_database(results));
-            }
-        });
-    }*/
-    
+    }    
     
     function updateDom() {
         $('select.pagesize, select.pagenum').data({"toggle": "tooltip","placement": "right"}).tooltip();
-        if (!production) {
-            $("#tasks-panel").append(
-            $("<button>", {id: 'addrandom',text: 'Add new random task',click: function() {
-                //addnew(get_random_rowdata());
-                }})
-            .addClass('btn btn-default btn-block disabled')
-            );
-        }
-        //$("#taskform select").change(updateValidity);
+        $("#taskform select").change(updateValidity);
         $("#taskform input").on("input", updateValidity);
         
         $("#user-tab>a").click(logOut).hover(
@@ -433,7 +372,7 @@ $(function() {
             }
         }
         );
-        $("#addthis").click(validateForm);
+        $("#addthis").click(submitTask);
     }
     
     
@@ -466,16 +405,16 @@ $(function() {
                         if (black) {
                             continue;
                         }
+                        var pg = r[11].match(/^#?20([0-9]{3}$)/);
+                        if (pg != null) {pg = parseInt(pg[1],10);}
                         var row = {
                             person: r[1],
-                            pu: parseInt(r[2], 10),
-                            pb: parseInt(r[3], 10),
                             role: r[4],
                             au: parseInt(r[5], 10),
                             ab: parseInt(r[6], 10),
                             on: parseInt(r[8], 10),
-                            off: parseInt(r[9], 10)
-                        //pg : r[11]
+                            off: parseInt(r[9], 10),
+                            pg : pg
                         };
                         if (
                         (row.on < row.off && timeint >= row.on && timeint <= row.off) || 
@@ -498,27 +437,13 @@ $(function() {
                     select.append(optgroup);
                     for (var m = 0; m < oncall[div].length; m++) {
                         var row = oncall[div][m];
-                        optgroup.append($('<option>').data({
-                            person: row.person,
-                            pu: row.pu,
-                            pb: row.pb,
-                            div: div,
-                            role: row.role,
-                            au: row.au,
-                            ab: row.ab,
-                            on: row.on,
-                            off: row.off})
+                        optgroup.append($('<option>')
+                        .data(row).data('div',div)
                         .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
                     }
                 }
                 select.change(loginToggle).change().after($('<p>').text('Time generated: ' + time));
-                $("#addrandom").removeClass("disabled");
-
-            //console.log(oncall);
             }
         });
     });
-
-
-//updatePeople_dynamic();
 });
