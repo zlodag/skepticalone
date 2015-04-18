@@ -98,6 +98,60 @@ if ($_REQUEST["data"] == "initial") {
     }
     $stmt->close();
 
+} elseif ($_POST["data"] == "update") {
+    $context = $mysqli->real_escape_string($_POST["context"]);
+    $pk = $_POST["pk"];
+    if(!$stmt=$mysqli->prepare(sprintf("update nutm_tasks t join nutm_staff s join nutm_roles r
+        set t.%s = now(), t.%s_p = s.pk, t.%s_r = r.role
+        where t.pk =?
+        and s.amion_unique=? and s.amion_backup=?
+        and r.amion_unique=? and r.amion_backup=?
+        ",
+        $context,
+        $context,
+        $context)
+    )) {
+        $obj['errors'][] = $stmt->error;
+    }
+    if(!$stmt->bind_param('iiiii',
+        $pk,
+        $_POST["pu"],
+        $_POST["pb"],
+        $_POST["au"],
+        $_POST["ab"]
+    )) {
+        $obj['errors'][] = $stmt->error;
+    }
+
+    if (!$stmt->execute()) {
+        $obj['errors'][] = $stmt->error;
+    }
+    $affected = $stmt->affected_rows;
+    $stmt->close();
+    if ($affected === 1) {
+        $stmt = $mysqli->prepare(sprintf("select %s,%s_p,%s_pg,%s_d,%s_r from nutm_taskview where pk=?",
+            $context,
+            $context,
+            $context,
+            $context,
+            $context
+        ));
+        $stmt->bind_param('i',$pk);
+        $stmt->execute();
+        $stmt->bind_result($t, $p, $pg, $d, $r);    
+        $stmt->fetch();
+        $obj['labels'] = [
+            't'=>$t,
+            'p'=>$p,
+            'pg'=>$pg,
+            'd'=>$d,
+            'r'=>$r
+            ];
+        $stmt->close();
+    } else {
+        $obj['errors'][] = sprintf("%d affected rows", $affected);
+    }
+
 } else {
     echo '_REQUEST["data"] must be specified';
     exit();

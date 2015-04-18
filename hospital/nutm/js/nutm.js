@@ -1,17 +1,20 @@
 $(function() {
-    'use strict';
+    "use strict";
     var production = false, 
     randomrows = 0, 
+    oncall = {}, 
     time = new Date(), 
+    timeint = time.getHours() * 100 + time.getMinutes(), 
+    url = 'data.csv', 
+    select = $('#user'), 
     obj, locationfns, urgencyfns;
     
-    $.fn.appendLabels = function(options, get_str) {
-        /*    var settings = $.extend({
-            type:'added',
-        }, options),
-    */
-        var btype;
-        switch (options.type) {
+    $.fn.appendLabels = function(options) {
+        var t = $(this), 
+        trdata = t.closest('tr').data(), 
+        get_str = ['patient=' + encodeURIComponent(trdata.patient), 'nhi=' + trdata.nhi, 'ward=' + trdata.ward, 'bed=' + trdata.bed].join('&'), 
+        btype;
+        switch (t.attr('class')) {
             case 'added':
                 btype = 'default';
                 break;
@@ -23,24 +26,25 @@ $(function() {
                 break;
         }
         if (options.t) {
-            var tooltipdata = {toggle: "tooltip",placement: "right"}, 
+            var date = new Date(options.t * 1000),
+            tooltipdata = {toggle: "tooltip",placement: "right"}, 
             span = $('<span>', {
                 data: tooltipdata,
                 title: options.d + ': ' + options.r,
                 text: options.p,
                 'class': 'label label-' + btype
             }).tooltip(), 
-            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + options.pg,href: '../betterpage/?no=20' + options.pg + '&' + get_str,target: '_blank'}).tooltip() : null, 
+            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + pad(options.pg,3),href: '../betterpage/?no=20' + pad(options.pg,3) + '&' + get_str,target: '_blank'}).tooltip() : null, 
             time = $('<time>', {
-                datetime: options.t.toISOString(),
+                datetime: date.toISOString(),
                 data: tooltipdata,
-                title: options.t.getDate() + '/' + pad(options.t.getMonth() + 1) + '/' + pad(options.t.getFullYear() % 100) + ' ' + pad(options.t.getHours()) + ':' + pad(options.t.getMinutes()),
+                title: date.getDate() + '/' + pad(date.getMonth() + 1) + '/' + pad(date.getFullYear() % 100) + ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes()),
                 'class': "timeago label label-" + btype
             }).timeago().tooltip();
-            return this.empty().attr('class', options.type).data('timestamp', options.t.getTime()).append(span, pg, time);
+            return t.empty().attr('class', options.type).data('timestamp', options.t).append(span, pg, time);
         } else {
             var btxt;
-            switch (options.type) {
+            switch (t.attr('class')) {
                 case 'accepted':
                     btxt = 'Accept';
                     break;
@@ -48,7 +52,7 @@ $(function() {
                     btxt = 'Complete';
                     break;
             }
-            return this.empty().attr('class', options.type).append($('<button>', {'class': btxt.toLowerCase() + ' btn btn-' + btype,text: btxt}));
+            return this.empty().attr('class', options.type).append($('<button>', {'class': btxt.toLowerCase() + ' btn btn-' + btype,text: btxt,click: accept_complete}));
         }
     };
     
@@ -61,108 +65,9 @@ $(function() {
         }
         return (paddingstr + number).slice(-sigfigs);
     }
-    function get_database(results) {
-        var timestr = pad(time.getHours()) + pad(time.getMinutes()), 
-        onlinestamp = results.data[0][0], 
-        database = {}, 
-        r;
-        $.each(results.data, function() {
-            r = $(this);
-            if (r.length === 10) {
-                if (!(r[0] in database)) {
-                    database[r[0]] = [];
-                }
-                if (
-                (r[8] < r[9] && timestr >= r[8] && timestr <= r[9]) || 
-                (r[8] > r[9] && (timestr >= r[8] || timestr <= r[9])) || 
-                (r[8] == r[9])
-                
-                ) {
-                    database[r[0]][r[4]] = [r[1], r[8], r[9]];
-                }
-            }
-        });
-        return [database, onlinestamp];
-    }
-    
-    function get_select(database_obj) {
-        var select = $("<select>")
-        .attr({"id": "user","class": "form-control"})
-        .prop('required', true)
-        .change(loginToggle)
-        .append(
-        $('<option>')
-        .attr("value", '')
-        .text("Sign in")
-        ), 
-        database = database_obj[0], 
-        onlinestamp = database_obj[1], 
-        specialty, rows, optgroup, r, role, person, start, end, option;
-        for (var i = 0; i < database.length; i++) {
-            specialty = database[i][0];
-            rows = database[i][1];
-            if (rows.length > 0) {
-                optgroup = $("<optgroup>").attr("label", specialty);
-                for (var k = 0; k < rows.length; k++) {
-                    r = rows[k];
-                    person = r[0];
-                    role = r[1];
-                    start = r[2];
-                    end = r[3];
-                    option = $('<option>')
-                    .data({
-                        'person': person,
-                        'role': role,
-                        'start': start,
-                        'end': end
-                    })
-                    .text(person + ' (' + role + ') [' + start + ' - ' + end + ']');
-                    optgroup.append(option);
-                }
-                select.append(optgroup);
-            }
-        }
-        $("#user-panel").prepend(select, $('<p>').text('Time generated: ' + time), $('<p>').text(onlinestamp));
-        $("#addrandom").removeClass("disabled");
-        loginToggle();
-        //completeTable();
-    }
-    
-    /*function completeTable() {
-        for (var i = 0; i < randomrows; i++) {
-            addnew(get_random_rowdata());
-        }
-    }*/
-    
-    function updatePeople_dynamic() {
-        $.getJSON("amion.php", 
-        {'get_database': 'true','test': production === true ? 'false' : 'true'}, 
-        function(database_obj) {
-            get_select(database_obj);
-        });
-    }
-    
-    /*function updatePeople_static() {
-        //var password = 'waikato', url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':619});
-        var url = 'data.csv';
-        Papa.parse(url, {
-            delimiter: ",",
-            download: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                get_select(get_database(results));
-            }
-        });
-    }*/
-    
-    function getTime(d) {
-        return $("<time>").addClass("timeago")
-        .attr("title", d.getDate() + '/' + pad(d.getMonth() + 1) + '/' + (d.getFullYear()).toString().slice(-2) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()))
-        .attr("datetime", d.toISOString());
-    }
     
     function loggedOn() {
-        return ($("#user:valid").length === 1);
+        return $('#user').val() !== "";
     }
     
     function logOut() {
@@ -177,58 +82,54 @@ $(function() {
             $("#user>option:first-child").text("Sign out");
             $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
             $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
-            $("#whoami").text(user[0]);
-            $("#whatami").text(user[1]);
-            $("#whenami").text(user[2]);
-            return;
+            $("#whoami").text(user.person);
+            $("#whatami").text(user.div + ' (' + user.role + ')');
+            $("#whenami").text(pad(user.on, 4) + ' - ' + pad(user.off, 4));
+        } else {
+            $("button.accept, button.complete").addClass("disabled");
+            $("#user>option:first-child").text("Sign in");
+            $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
+            $("#whoami").text("Sign in");
+            $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
+            $("#whatami, #whenami").empty();
         }
-        $("button.accept, button.complete").addClass("disabled");
-        $("#user>option:first-child").text("Sign in");
-        $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
-        $("#whoami").text("Sign in");
-        $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
-        $("#whatami, #whenami").empty();
     }
     
     function getUser(random) {
-        var user;
-        if (random === false) {
-            user = $("#user>optgroup>option:selected");
-        } else if (random === true) {
-            var list = $("#user>optgroup>option");
+        if (random === true) {
+            var list = $("#user>optgroup>option"), 
             user = list.eq(Math.floor(Math.random() * list.length));
+        } else {
+            var user = $('#user>optgroup>option:selected');
         }
-        return [user.data('person'), user.data('role'), user.data('start') + ' - ' + user.data('end')];
+        return $.extend({div: user.parent().attr('label')}, user.data());
     }
     
-    
-    
-    
     function accept_complete() {
-        var row = $(this).parent().parent();
-        var button_type = $(this).text();
-        var td, btype;
-        if (button_type === "Accept") {
-            td = row.find("td.accepted");
-            btype = "info";
-        } else if (button_type === "Complete") {
-            //row.appendTo($("#oldjobs"));
-            td = row.find("td.completed");
-            btype = "success";
-            row.find("td.accepted>button").remove();
-        }
-        td.empty();
-        var timestamp = new Date();
-        row.attr("class", btype);
-        td.attr("data-timestamp", timestamp.getTime());
-        /*appendLabels({
-            'class': '',
-            time: timestamp,
-            btype: btype,
-            target: td,
-            random: false
-        });*/
-        $('#jobs').trigger('update');
+        var t = $(this), 
+        td = t.parent(), 
+        row = td.parent(), 
+        context = td.attr("class"),
+        data = $.extend({data: 'update', pk: row.data('pk'), context: context}, getUser(false));
+        $.ajax({
+            method: "POST",
+            url: "get_data.php",
+            data: data,
+            dataType: "json",
+            success: function(obj) {
+                if (!('errors' in obj)) {
+                    var btype;
+                    if (context === "accepted") {
+                        btype = "info";
+                    } else if (context === "completed") {
+                        btype = "success";
+                        row.find("td.accepted>button").remove();
+                    }
+                    row.attr("class", btype);
+                    td.empty().appendLabels(obj.labels);
+                    $('#jobs').trigger('update');
+                }
+            }});
     }
     
     function addnew(row_data) {
@@ -242,30 +143,26 @@ $(function() {
         urgency = row_data[6], 
         details = row_data[7], 
         added = {
-            type: 'added',
-            t: row_data[8] ? new Date(row_data[8] * 1000) : null,
+            t: row_data[8],
             p: row_data[9],
             pg: row_data[10],
             d: row_data[11],
             r: row_data[12]
         }, 
         accepted = {
-            type: 'accepted',
-            t: row_data[13] ? new Date(row_data[13] * 1000) : null,
+            t: row_data[13],
             p: row_data[14],
             pg: row_data[15],
             d: row_data[16],
             r: row_data[17]
         }, 
         completed = {
-            type: 'completed',
-            t: row_data[18] ? new Date(row_data[18] * 1000) : null,
+            t: row_data[18],
             p: row_data[19],
             pg: row_data[20],
             d: row_data[21],
             r: row_data[22]
         }, 
-        get_str = ['patient=' + encodeURIComponent(p_name), 'nhi=' + nhi, 'ward=' + warddata[0], 'bed=' + bed].join('&'), 
         status;
         if (completed.t) {
             status = "success";
@@ -276,9 +173,8 @@ $(function() {
         else {
             status = "default";
         }
-        $("#jobs>tbody").append(
-        $('<tr>', {data: {'pk': pk},'class': status}).append(
-        $("<td>").appendLabels(added, get_str), 
+        var tr = $('<tr>', {data: {pk: pk,patient: p_name,nhi: nhi,ward: warddata[0],bed: bed},'class': status}).append(
+        $("<td>").addClass("added"), 
         $("<td>").addClass("nhi text-uppercase").text(nhi), 
         $("<td>").addClass("p_name text-capitalize").text(p_name), 
         $("<td>").addClass("location").data({'building': warddata[2],'location_int': ward * 1000 + parseInt(bed, 10)})
@@ -288,13 +184,13 @@ $(function() {
         $("<td>").addClass("specialty").text(obj.specialties[specialty]), 
         $("<td>").addClass("urgency").data('urgency', urgency).text(obj.urgency[urgency]), 
         $("<td>").addClass("details").text(details), 
-        $("<td>").appendLabels(accepted, get_str), 
-        $("<td>").appendLabels(completed, get_str)
-        ));
-    //$("<td>").addClass("accepted").append($("<button>").addClass("accept btn btn-info").text("Accept").click(accept_complete)), 
-    //$("<td>").addClass("completed").append($("<button>").addClass("complete btn btn-success").text("Complete").click(accept_complete)));
-    //loginToggle();
-    //$('#jobs').trigger('update');
+        $("<td>").addClass("accepted"), 
+        $("<td>").addClass("completed")
+        );
+        tr.find('td.added').appendLabels(added);
+        tr.find('td.accepted').appendLabels(accepted);
+        tr.find('td.completed').appendLabels(completed);
+        $("#jobs>tbody").append(tr);
     }
     
     function validateForm() {
@@ -339,7 +235,7 @@ $(function() {
         var list = $("#" + id + " option:not(:first-child)");
         return list.get(Math.floor(Math.random() * list.length)).text;
     }
-    
+
     /*function get_random_rowdata() {
         var min = 5, 
         max = 20;
@@ -381,6 +277,10 @@ $(function() {
         return function(e, n, f, i, $r) {
             return $r.children('.location').data('building') === f;
         };
+    }
+    
+    function processPerson(row) {
+    
     }
     
     function processJson(data) {
@@ -493,12 +393,27 @@ $(function() {
         });
     
     }
+
+    /*function updatePeople_static() {
+        //var password = 'waikato', url = 'http://www.amion.com/cgi-bin/ocs?' + $.param({'Lo':password, 'Rpt':625});
+        var url = 'data.csv';
+        Papa.parse(url, {
+            delimiter: ",",
+            download: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                get_select(get_database(results));
+            }
+        });
+    }*/
+    
+    
     function updateDom() {
         $('select.pagesize, select.pagenum').data({"toggle": "tooltip","placement": "right"}).tooltip();
         if (!production) {
             $("#tasks-panel").append(
             $("<button>", {id: 'addrandom',text: 'Add new random task',click: function() {
-                    //addnew(get_random_rowdata());
+                //addnew(get_random_rowdata());
                 }})
             .addClass('btn btn-default btn-block disabled')
             );
@@ -521,10 +436,87 @@ $(function() {
         $("#addthis").click(validateForm);
     }
     
+    
     updateDom();
     
     $.getJSON("get_data.php", {'data': 'initial'}, function(obj) {
         processJson(obj);
+    });
+    
+    $.getJSON("get_data.php", {'data': 'blacklists'}, function(obj) {
+        Papa.parse(url, {
+            download: true,
+            skipEmptyLines: true,
+            complete: function(csv) {
+                for (var i = 0; i < csv.data.length; i++) {
+                    
+                    if (csv.data[i].length === 12) {
+                        var r = csv.data[i], 
+                        div = r[0];
+                        if (obj.divisions.indexOf(div) !== -1) {
+                            continue;
+                        }
+                        var black = false;
+                        for (var j = 0; j < obj.roles.length && !black; j++) {
+                            var bad = obj.roles[j];
+                            if (parseInt(r[5], 10) === bad[0] && parseInt(r[6], 10) === bad[1]) {
+                                black = true;
+                            }
+                        }
+                        if (black) {
+                            continue;
+                        }
+                        var row = {
+                            person: r[1],
+                            pu: parseInt(r[2], 10),
+                            pb: parseInt(r[3], 10),
+                            role: r[4],
+                            au: parseInt(r[5], 10),
+                            ab: parseInt(r[6], 10),
+                            on: parseInt(r[8], 10),
+                            off: parseInt(r[9], 10)
+                        //pg : r[11]
+                        };
+                        if (
+                        (row.on < row.off && timeint >= row.on && timeint <= row.off) || 
+                        (row.on > row.off && (timeint >= row.on || timeint <= row.off)) || 
+                        (row.on == row.off)
+                        
+                        ) {
+                            if (div in oncall) {
+                                oncall[div].push(row);
+                            } else {
+                                oncall[div] = [row];
+                            }
+                        }
+                    }
+                }
+                var divs = Object.keys(oncall).sort();
+                for (var k = 0; k < divs.length; k++) {
+                    var div = divs[k], 
+                    optgroup = $('<optgroup>', {"label": div});
+                    select.append(optgroup);
+                    for (var m = 0; m < oncall[div].length; m++) {
+                        var row = oncall[div][m];
+                        optgroup.append($('<option>').data({
+                            person: row.person,
+                            pu: row.pu,
+                            pb: row.pb,
+                            div: div,
+                            role: row.role,
+                            au: row.au,
+                            ab: row.ab,
+                            on: row.on,
+                            off: row.off})
+                        .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
+                    }
+                }
+                select.change(loginToggle).change().after($('<p>').text('Time generated: ' + time));
+                $("#addrandom").removeClass("disabled");
+
+            //console.log(oncall);
+            }
+        });
     });
 
 

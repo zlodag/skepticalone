@@ -50,6 +50,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/js/jquery.tablesorter.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.3/js/jquery.tablesorter.widgets.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.4/addons/pager/jquery.tablesorter.pager.min.js"></script>
+        <script src="js/papaparse.min.js"></script>
         <script src="js/nutm.js"></script>
     </head>
     <body>
@@ -184,6 +185,9 @@
             </form>
         </div>
         <div id="user-panel" role="tabpanel" class="tab-pane fade">
+        <select id="user" class="form-control" required>
+            <option value="">Sign in</option>
+        </select>
         <a class="btn btn-info" href="generate_blacklist.php" role="button">Who is included?</a>
         </div>
     </div>
