@@ -9,11 +9,10 @@ $(function() {
     obj, locationfns, urgencyfns;
     
     $.fn.appendLabels = function(options) {
-        var t = $(this), 
-        trdata = t.closest('tr').data(), 
-        get_str = ['patient=' + encodeURIComponent(trdata.patient), 'nhi=' + trdata.nhi, 'ward=' + trdata.ward, 'bed=' + trdata.bed].join('&'), 
+        var t = $(this),
+        tdclass = t.attr('class'),
         btype;
-        switch (t.attr('class')) {
+        switch (tdclass) {
             case 'added':
                 btype = 'default';
                 break;
@@ -25,7 +24,12 @@ $(function() {
                 break;
         }
         if (options.t) {
-            var date = new Date(options.t * 1000),
+            if (tdclass == 'completed' && (!('timestamp' in t.prev().data()))) {
+                t.prev().empty();
+            }
+            var trdata = t.closest('tr').data(), 
+            get_str = ['patient=' + encodeURIComponent(trdata.patient), 'nhi=' + trdata.nhi, 'ward=' + trdata.ward, 'bed=' + trdata.bed].join('&'),
+            date = new Date(options.t * 1000),
             tooltipdata = {toggle: "tooltip",placement: "right"}, 
             span = $('<span>', {
                 data: tooltipdata,
@@ -51,7 +55,7 @@ $(function() {
                     btxt = 'Complete';
                     break;
             }
-            return this.empty().attr('class', options.type).append($('<button>', {'class': btxt.toLowerCase() + ' btn btn-' + btype,text: btxt,click: accept_complete}));
+            return t.empty().attr('class', options.type).append($('<button>', {'class': btxt.toLowerCase() + ' btn btn-' + btype,text: btxt,click: accept_complete}));
         }
     };
     
