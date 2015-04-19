@@ -4,14 +4,36 @@ include('../../_connect.php');
 function getrows() {
     global $mysqli;
     global $obj;
-    if(!$stmt = $mysqli->prepare("select * from nutm_taskview where pk=?")) {
+    if(!$stmt = $mysqli->prepare("select * from nutm_taskview")) {
         $obj['errors'][] = $mysqli->error;
     } else {
-        if (!$stmt->bind_param("i", $pk)) {
-            $obj['errors'][] = $mysqli->error;
-        } else {
-            $stmt->execute();
-            $stmt->bind_result(
+        $stmt->execute();
+        $stmt->bind_result(
+            $pk,
+            $nhi,        
+            $p_name,     
+            $ward,       
+            $bed,        
+            $specialty,  
+            $urgency,    
+            $details,    
+            $added,      
+            $added_p,    
+            $added_pg,    
+            $added_s,    
+            $added_r,    
+            $accepted,   
+            $accepted_p, 
+            $accepted_pg, 
+            $accepted_s, 
+            $accepted_r, 
+            $completed,  
+            $completed_p,
+            $completed_pg,
+            $completed_s,
+            $completed_r);
+        while ($stmt->fetch()) {
+            $obj['tasks'][] = [
                 $pk,
                 $nhi,        
                 $p_name,     
@@ -34,33 +56,7 @@ function getrows() {
                 $completed_p,
                 $completed_pg,
                 $completed_s,
-                $completed_r);
-            while ($stmt->fetch()) {
-                $obj['tasks'][] = [
-                    $pk,
-                    $nhi,        
-                    $p_name,     
-                    $ward,       
-                    $bed,        
-                    $specialty,  
-                    $urgency,    
-                    $details,    
-                    $added,      
-                    $added_p,    
-                    $added_pg,    
-                    $added_s,    
-                    $added_r,    
-                    $accepted,   
-                    $accepted_p, 
-                    $accepted_pg, 
-                    $accepted_s, 
-                    $accepted_r, 
-                    $completed,  
-                    $completed_p,
-                    $completed_pg,
-                    $completed_s,
-                    $completed_r];
-            }
+                $completed_r];
         }
         $stmt->close();
     }
@@ -89,7 +85,7 @@ if ($_REQUEST["data"] == "initial") {
         $obj['urgency'][$u] = $n;
     }
     $stmt->close();
-    getrows('all');
+    getrows();
 
 } elseif ($_REQUEST["data"] == "blacklists") {
 
@@ -166,17 +162,72 @@ if ($_REQUEST["data"] == "initial") {
     }
 
     if ($context === "added") {
-        $data = $mysqli->real_escape_string($_POST["person"]);
-        $data = $mysqli->real_escape_string($_POST["person"]);
-        $data = $mysqli->real_escape_string($_POST["person"]);
-        $data = $mysqli->real_escape_string($_POST["person"]);
-        $data = $mysqli->real_escape_string($_POST["person"]);
-        $data = $mysqli->real_escape_string($_POST["person"]);
+        //adding a task
+        $nhi = $mysqli->real_escape_string(strtoupper($_POST["nhi"]));
+        $p_name = $mysqli->real_escape_string(ucwords($_POST["p_name"]));
+        $ward = intval($_POST["ward"]);
+        $bed = $mysqli->real_escape_string(strtoupper($_POST["bed"]));
+        $specialty = intval($_POST["specialty"]);
+        $urgency = intval($_POST["urgency"]);
+        $details = $mysqli->real_escape_string($_POST["details"]);
 
-        getrows();
+        if(!$stmt=$mysqli->prepare("
+            insert into nutm_tasks (
+                nhi,
+                p_name,
+                ward,
+                bed,
+                specialty,
+                urgency,
+                details,
+                added,
+                added_p,
+                added_r
+            ) values (
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                ?,
+                now(),
+                (select pk from nutm_staff where full_name = ?),
+                (select role from nutm_roles where amion_unique = ? and amion_backup=?)
+            )
+            ")
+        ) {
+            $obj['errors'][] = $mysqli->error;
+        } else {
+            if(!$stmt->bind_param('ssisiissii',
+                $nhi,
+                $p_name,
+                $ward,
+                $bed,
+                $specialty,
+                $urgency,
+                $details,
+                $person,
+                $au,
+                $ab
+            )) {
+                $obj['errors'][] = $stmt->error;
+            } else {
+                if (!$stmt->execute()) {
+                    $obj['errors'][] = $stmt->error;
+                } else {
+                    $affected = $stmt->affected_rows;
+                    $stmt->close();
+                    if ($affected === 1) {
+                        getrows();
+                    } else {
+                        $obj['errors'][] = sprintf("%d affected rows", $affected);
+                    }
+                }
+            }
+        }
     } else {
-        $pk = intval($_POST["pk"]);
-
+        //accepting or completing a task
 
         if(!$stmt=$mysqli->prepare(sprintf("update nutm_tasks t join nutm_staff p join nutm_roles r
             set t.%s = now(), t.%s_p = p.pk, t.%s_r = r.role

@@ -215,6 +215,7 @@ $(function() {
                 }
             }
         });
+        return false;
     }
 
     function updateValidity() {
@@ -278,9 +279,9 @@ $(function() {
                 selecturgency.append($('<option>', {value: u,text: obj.urgency[u]}));
             }
         }
-        addAll(obj.tasks);
-        $('.timeago').timeago();
         sortTables();
+        addAll(obj.tasks);
+        //$('.timeago').timeago();
     }
     
     function addAll(tasks) {
@@ -288,6 +289,7 @@ $(function() {
         for (var i = 0; i < tasks.length; i++) {
             tbody.append(addnew(tasks[i]));
         }
+        $('#jobs').trigger('update');
     }
 
     function sortTables() {
@@ -372,7 +374,7 @@ $(function() {
             }
         }
         );
-        $("#addthis").click(submitTask);
+        $("#taskform").submit(submitTask);
     }
     
     
