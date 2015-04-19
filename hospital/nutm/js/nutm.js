@@ -4,7 +4,7 @@ $(function() {
     oncall = {}, 
     time = new Date(), 
     timeint = time.getHours() * 100 + time.getMinutes(), 
-    url = 'data.csv', 
+    url = "get_data.php", 
     select = $('#user'), 
     obj, locationfns, urgencyfns;
     
@@ -80,17 +80,22 @@ $(function() {
             $("button.accept, button.complete").removeClass("disabled");
             $("#user>option:first-child").text("Sign out");
             $("#whoami-icon").attr("class", "glyphicon glyphicon-user who");
-            $("#whatami-icon, #whenami-icon, #new-tab").removeClass("hidden");
+            $("#whatami-icon, #whichami-icon, #whenami-icon, #new-tab").removeClass("hidden");
             $("#whoami").text(user.person);
-            $("#whatami").text(user.div + ' (' + user.role + ')');
+            if (user.pg) {
+                $('#mypager-icon').removeClass("hidden");
+                $("#mypager").text('20' + pad(user.pg,3));
+            }
+            $("#whatami").text(user.div);
+            $("#whichami").text(user.role);
             $("#whenami").text(pad(user.on, 4) + ' - ' + pad(user.off, 4));
         } else {
             $("button.accept, button.complete").addClass("disabled");
             $("#user>option:first-child").text("Sign in");
             $("#whoami-icon").attr("class", "glyphicon glyphicon-log-in who");
             $("#whoami").text("Sign in");
-            $("#whatami-icon, #whenami-icon, #new-tab").addClass("hidden");
-            $("#whatami, #whenami").empty();
+            $("#mypager-icon, #whatami-icon, #whichami-icon, #whenami-icon, #new-tab").addClass("hidden");
+            $("#mypager, #whatami, #whenami, #whichami").empty();
         }
     }
     
@@ -112,7 +117,7 @@ $(function() {
         data = $.extend({data: 'update', pk: row.data('pk'), context: context}, getUser(false));
         $.ajax({
             method: "POST",
-            url: "get_data.php",
+            url: url,
             data: data,
             dataType: "json",
             success: function(obj) {
@@ -195,7 +200,7 @@ $(function() {
     function submitTask() {
         $.ajax({
             method: "POST",
-            'url': "get_data.php",
+            url: url,
             data: $.extend({
                 data: 'update',
                 context: 'added',
@@ -380,17 +385,18 @@ $(function() {
     
     updateDom();
     
-    $.getJSON("get_data.php", {'data': 'initial'}, function(obj) {
+    $.getJSON(url, {'data': 'initial'}, function(obj) {
         processJson(obj);
     });
     
-    $.getJSON("get_data.php", {'data': 'blacklists'}, function(obj) {
-        Papa.parse(url, {
+    $.getJSON(url, {'data': 'blacklists'}, function(obj) {
+        Papa.parse(url+'?data=csv', {
             download: true,
+            delimiter: ",",
             skipEmptyLines: true,
             complete: function(csv) {
                 for (var i = 0; i < csv.data.length; i++) {
-                    
+                    if (i === 0) {var allocationtime = csv.data[i][0];}
                     if (csv.data[i].length === 12) {
                         var r = csv.data[i], 
                         div = r[0];
@@ -444,7 +450,7 @@ $(function() {
                         .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
                     }
                 }
-                select.change(loginToggle).change().after($('<p>').text('Time generated: ' + time));
+                select.change(loginToggle).change().after($('<p>').text('Time generated: ' + time), $('<p>').text(allocationtime));
             }
         });
     });

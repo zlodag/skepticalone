@@ -1,4 +1,22 @@
 <?php
+if ($_REQUEST["data"] === "csv") {
+
+    $password = 'waikato';
+    $report = 625;
+    $params = ['Lo' => $password, 'Rpt' => $report];
+    $file = 'http://www.amion.com/cgi-bin/ocs?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+    //$file = 'data.csv';
+
+    header('Pragma: public');
+    header('Cache-Control: max-age=300');
+    header('Content-Type: application/octet-stream');
+    //header('Content-Disposition: attachment; filename='.basename($file));
+    //header('Content-Length: ' . filesize($file));
+    header('Content-Transfer-Encoding: binary');
+    readfile($file);
+    exit;
+}
+
 include('../../_connect.php');
 
 function getrows() {
@@ -61,6 +79,22 @@ function getrows() {
         $stmt->close();
     }
 }
+
+/*if ($_GET["data"] === "displayblacklist") {
+    ?>
+    <!DOCTYPE html>
+    <html><head><meta charset="utf-8"><title>Good/Bad/Ugly</title>
+    <style type="text/css">
+    #good {background-color: #dfffdf;}
+    #bad {background-color: #dceaff;}
+    #ugly {background-color: #ffebdf;}
+    </style>
+    </head><body>
+    <?php
+    $time = new DateTime();
+
+} else
+*/
 if ($_REQUEST["data"] == "initial") {
     $stmt = $mysqli->prepare("select ward,w.name,b.building,b.name from nutm_wards w join nutm_buildings b using (building) order by ward asc");
     $stmt->execute();
@@ -221,13 +255,15 @@ if ($_REQUEST["data"] == "initial") {
                     if ($affected === 1) {
                         getrows();
                     } else {
-                        $obj['errors'][] = sprintf("%d affected rows", $affected);
+                        $obj['errors'][] = sprintf("%d affected rows (context = %s)", $affected, $context);
                     }
                 }
             }
         }
     } else {
         //accepting or completing a task
+
+        $pk = intval($_POST["pk"]);
 
         if(!$stmt=$mysqli->prepare(sprintf("update nutm_tasks t join nutm_staff p join nutm_roles r
             set t.%s = now(), t.%s_p = p.pk, t.%s_r = r.role
@@ -276,7 +312,7 @@ if ($_REQUEST["data"] == "initial") {
                             ];
                         $stmt->close();
                     } else {
-                        $obj['errors'][] = sprintf("%d affected rows", $affected);
+                        $obj['errors'][] = sprintf("%d affected rows (context = %s)", $affected, $context);
                     }
                 }
             }
@@ -284,7 +320,7 @@ if ($_REQUEST["data"] == "initial") {
     }
 } else {
     echo '_REQUEST["data"] must be specified';
-    exit();
+    exit;
 }
 header('Content-type: application/json');
 echo json_encode($obj);
