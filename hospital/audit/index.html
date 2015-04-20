@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Paging Audit</title>
+        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js">
+</script>
+        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js">
+</script>
+        <script src="audit.js">
+</script>
+        <link rel="stylesheet" type="text/css" href="audit.css">
+    </head>
+    <body>
+
+<form>
+    <fieldset class="persist">
+        <select name="person" required><option value="">Who are you?</option></select>
+    </fieldset>
+
+    <fieldset class="persist">
+        <legend>Shift demographics</legend>
+        <select name="specialty" required><option value="">Specialty?</option></select>
+        <select name="shift" required></select>
+        <label class="info" for="date" placeholder="YYYY-MM-DD">Date commenced shift?</label><input name="date" id="date" type="date" required/>
+     </fieldset>
+
+     <fieldset class="vary">
+        <legend>Page data</legend>
+        <input id="contents" name="contents" maxlength="255" placeholder="Exact contents" required/>
+        <label class="info" for="received" placeholder="HH:MM">Time received?</label><input name="received" id="received" type="time"/>
+        <label class="info"><input id="urgent" name="urgent" type="checkbox"/>Urgent?</label>
+        <label class="info"><input id="required" name="required" type="checkbox"/>Required this shift?</label>
+        <label class="info"><input id="repeat" name="repeat" type="checkbox"/>Repeat page?</label>
+        <input type="submit" value="Submit"/>
+    </fieldset>
+    
+
+</form>
+
+<table>
+<caption></caption>
+<thead>
+<tr>
+<th>ID</th>
+<th>Timestamp</th>
+<th>Entered</th>
+<th>Specialty</th>
+<th>Shift</th>
+<th>Date</th>
+<th>Exact text</th>
+<th>Time</th>
+<th>Urg?</th>
+<th>Req?</th>
+<th>Rpt?</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+    </body>
+</html>

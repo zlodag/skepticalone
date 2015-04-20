@@ -1,0 +1,31 @@
+fieldset>* {
+    float:left;
+}
+fieldset>legend {
+    float:none;
+    padding:2px;
+}
+fieldset {
+    margin:5px;
+}
+fieldset,fieldset * {
+    margin:2px;
+}
+select,input,label.info {
+    clear:left;
+}
+label.error {
+    color:red;
+}
+input#contents{
+    width:300px;
+}
+table {
+    margin: 10px;
+    border-collapse:collapse;
+    background-color:#EAEAEA;
+}
+td,th {
+    border: 1px solid black;
+    padding:5px;
+}
