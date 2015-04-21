@@ -6,7 +6,6 @@ function getAll() {
     global $obj;
     $stmt = $mysqli->prepare('SELECT
         `pages`.`page_id`,
-        `pages`.`timestamp`,
         `team`.`name`,
         `specialties`.`name`,
         `shifts`.`description`,
@@ -26,7 +25,6 @@ function getAll() {
     $stmt->execute();
     $stmt->bind_result(
     $page_id,
-    $timestamp,
     $entered,
     $specialty,
     $shift,
@@ -40,7 +38,6 @@ function getAll() {
     while ($stmt->fetch()) {
         $obj['rows'][] = [
             $page_id,
-            $timestamp,
             $entered,
             $specialty,
             $shift,

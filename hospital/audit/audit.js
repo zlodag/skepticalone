@@ -6,7 +6,7 @@ $(function() {
         $.each(obj,function(i,arr){
             var tr = $('<tr>');
             $.each(arr,function(j,str){
-                if (j===7) {str = str ? str.slice(3) : "";}
+                if (j===6) {str = str ? str.slice(3) : "";}
                 tr.append($('<td>',{text:str}));
             })
             tbody.append(tr);
@@ -18,7 +18,7 @@ $(function() {
             if (key === "rows") {
                 processRows(value);
             } else {
-                var sel = $('select[name="' + key + '"');
+                var sel = $('select[name="' + key + '"]');
                 $.each(value,function(i,tuple){
                     sel.append($('<option>',{value:tuple[0],text:tuple[1]}));
                 });

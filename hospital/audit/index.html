@@ -22,13 +22,13 @@
         <legend>Shift demographics</legend>
         <select name="specialty" required><option value="">Specialty?</option></select>
         <select name="shift" required></select>
-        <label class="info" for="date" placeholder="YYYY-MM-DD">Date commenced shift?</label><input name="date" id="date" type="date" required/>
+        <label class="info" for="date">Date commenced shift?</label><input name="date" id="date" type="date" placeholder="YYYY-MM-DD" required/>
      </fieldset>
 
      <fieldset class="vary">
         <legend>Page data</legend>
         <input id="contents" name="contents" maxlength="255" placeholder="Exact contents" required/>
-        <label class="info" for="received" placeholder="HH:MM">Time received?</label><input name="received" id="received" type="time"/>
+        <label class="info" for="received">Time received?</label><input name="received" id="received" type="time" placeholder="HH:MM"/>
         <label class="info"><input id="urgent" name="urgent" type="checkbox"/>Urgent?</label>
         <label class="info"><input id="required" name="required" type="checkbox"/>Required this shift?</label>
         <label class="info"><input id="repeat" name="repeat" type="checkbox"/>Repeat page?</label>
@@ -43,7 +43,6 @@
 <thead>
 <tr>
 <th>ID</th>
-<th>Timestamp</th>
 <th>Entered</th>
 <th>Specialty</th>
 <th>Shift</th>
