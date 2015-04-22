@@ -1,4 +1,5 @@
 function processRows(obj) {
+    'use strict';
     $('table>caption').text(obj.length + ' entries total');
     var tbody = $('tbody').empty();
     $.each(obj, function(i, arr) {
@@ -60,13 +61,13 @@ $(function() {
                 person: parseInt(form.person.value, 10),
                 shift: parseInt(form.shift.value, 10),
                 specialty: parseInt(form.specialty.value, 10),
-                received: form.received.value,
+                received: form.time.checked ? form.received.value: '',
                 urgent: +form.urgent.checked,
                 required: +form.required.checked,
                 repeat: +form.repeat.checked
             }, function(obj) {
                 processRows(obj.rows);
-                $('fieldset.vary input:not([type="submit"])').val('').removeAttr('checked');
+                $('fieldset.vary input:not(#time,[type="submit"])').val('').removeAttr('checked');
                 $('#contents').focus();
             }, 'json');
             return false;
