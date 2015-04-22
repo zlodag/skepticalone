@@ -1,31 +1,39 @@
-fieldset>* {
+#newpage>fieldset>* {
     float:left;
 }
-fieldset>legend {
+#newpage legend {
     float:none;
     padding:2px;
 }
-fieldset {
+#newpage>fieldset, #newpage label, #newpage select {
     margin:5px;
 }
-fieldset,fieldset * {
-    margin:2px;
-}
-select,input,label.info {
+#newpage input[type="submit"] {
     clear:left;
 }
-label.error {
+#newpage select  {
+    clear:left;
+    width: 300px;
+}
+#newpage label.info {
+    clear:left;
+    width: 150px;
+}
+#newpage input[type="checkbox"] {
+    float:right;
+}
+#newpage label.error {
     color:red;
 }
-input#contents{
-    width:300px;
-}
-table {
+#pages {
     margin: 10px;
     border-collapse:collapse;
     background-color:#EAEAEA;
 }
-td,th {
+#pages td, #pages th {
     border: 1px solid black;
     padding:5px;
+}
+#ui-datepicker-div {
+    font-size:11px;
 }

@@ -9,18 +9,18 @@ function getAll() {
         `team`.`name`,
         `specialties`.`name`,
         `shifts`.`description`,
-        `sessions`.`date`,
+        DATE_FORMAT(`sessions`.`date`,"%d/%m/%Y"),
         `pages`.`text`,
-        `pages`.`received`,
+        TIME_FORMAT(`pages`.`received`,"%H:%i"),
         `pages`.`urgent`,
         `pages`.`required`,
         `pages`.`repeat`
-         FROM `audit_pages` `pages`
-        join `audit_sessions` `sessions` using (`session`)
-        join `audit_shifts` `shifts` using (`shift`)
-        join `audit_specialties` `specialties` using (`specialty`)
-        join `audit_team` `team` using (`person`)
-        order by `pages`.`timestamp` DESC
+        FROM `audit_pages` `pages`
+        JOIN `audit_sessions` `sessions` USING (`session`)
+        JOIN `audit_shifts` `shifts` USING (`shift`)
+        JOIN `audit_specialties` `specialties` USING (`specialty`)
+        JOIN `audit_team` `team` USING (`person`)
+        ORDER BY `pages`.`timestamp` DESC
     ');
     $stmt->execute();
     $stmt->bind_result(
