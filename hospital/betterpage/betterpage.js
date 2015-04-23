@@ -1,53 +1,51 @@
+function ucwords(str) {
+    return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) {return s.toUpperCase();});
+}
+function calculate() {
+    var context = $('#choice').val(),
+    c = $('#preview>code.' + context),
+    n = $('#preview>label>span'),
+    msg = c.children('span:visible').text(),
+    len = msg.length,
+    toolarge = len > 128;
+    n.text(len).toggleClass('invalid', toolarge);
+    c.toggleClass('invalid', toolarge);
+    $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge).val(toolarge ? 'Character limit exceeded!' : 'Send');
+    return !toolarge;
+}
+function update() {
+    var t = $(this),
+    name = t.attr('name');
+    if (name == 'ward' || name == 'bed') {
+        var ward = $('#ward').val().toUpperCase(),
+        bed = $('#bed').val().toUpperCase(),
+        locationspan = $('span.location');
+        if (ward !== "" || bed !== "") {
+            locationspan.text('['+ward+'-'+bed+'] ');
+        } else {
+            locationspan.text("");
+        }
+    } else {
+        var str = t.val();
+        switch (name) {
+            case 'details':
+                if (str !== "") {str = ' (' + str + ')';} break;
+            case 'within':
+                if (str !== "" && t.valid()) {str = '<' + parseInt(str, 10) + 'm';} else {str = "";} break;
+            case 'nhi':
+                if (str !== "") {str = ' ' + str.toUpperCase();} break;
+            case 'caller':
+            case 'patient':
+                if (str !== "") {str = '(' + ucwords(str) + ')';} break;
+        }
+        $('span.' + name).text(str);
+    }
+    $('span.within').toggle($('#reply').prop('checked'));
+    calculate();
+}
+
 $(function() {
     'use strict';
-    function ucwords(str) {
-        return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, 
-        function(s) {
-            return s.toUpperCase();
-        });
-    }
-    function calculate() {
-        var context = $('#choice').val(),
-        c = $('#preview>code.' + context),
-        n = $('#preview>label>span'),
-        msg = c.children('span:visible').text(),
-        len = msg.length,
-        toolarge = len > 128;
-        n.text(len).toggleClass('invalid', toolarge);
-        c.toggleClass('invalid', toolarge);
-        $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge).val(toolarge ? 'Character limit exceeded!' : 'Send');
-        return !toolarge;
-    }
-    function update() {
-        var t = $(this),
-        name = t.attr('name');
-        if (name == 'ward' || name == 'bed') {
-            var ward = $('#ward').val().toUpperCase(),
-            bed = $('#bed').val().toUpperCase(),
-            locationspan = $('span.location');
-            if (ward !== "" || bed !== "") {
-                locationspan.text('['+ward+'-'+bed+'] ');
-            } else {
-                locationspan.text("");
-            }
-        } else {
-            var str = t.val();
-            switch (name) {
-                case 'details':
-                    if (str !== "") {str = ' (' + str + ')';} break;
-                case 'within':
-                    if (str !== "" && t.valid()) {str = '<' + parseInt(str, 10) + 'm';} else {str = "";} break;
-                case 'nhi':
-                    if (str !== "") {str = ' ' + str.toUpperCase();} break;
-                case 'caller':
-                case 'patient':
-                    if (str !== "") {str = '(' + ucwords(str) + ')';} break;
-            }
-            $('span.' + name).text(str);
-        }
-        $('span.within').toggle($('#reply').prop('checked'));
-        calculate();
-    }
     var pagename = window.location.pathname.match(/\/([^\/]*?)(?:\.html)*$/)[1],
     tuples = window.location.search.substring(1).split('&'),
     params = {};
@@ -75,14 +73,42 @@ $(function() {
         calculate();
     }).change();
 
-    //$('#details').placeholder();
-
-    $.validator.addMethod("pattern", function(value, element, param) {
-        return new RegExp("^(?:" + param + ")$").test(value);
-    }, "Invalid format");
-
+    $.validator.addMethod("pattern", 
+        function(value, element, param) {return this.optional(element) || param.regexp.test(value);}, 
+        function(param, element) {return "<em>" + $('label.info[for="' + element.id + '"]').text() + "</em> " + param.errorstr;}
+    );
+    $.validator.addMethod("pager", 
+        function(value, element, param) {return this.optional(element) || /^20[0-9]{3}$/.test(value);},
+        "Pager number must be 20 followed by 3 digits"
+    );
+    $.validator.addMethod("nhi", 
+        function(value, element, param) {return this.optional(element) || /^[a-zA-Z]{3}[0-9]{4}$/.test(value);},
+        "Please enter a valid NHI number"
+    );
+    
     $('form').each(function() {
         $(this).validate({
+            rules: {
+                to: {required: true,pager: true},
+                caller: {required: true,minlength: 2},
+                phone: {required: true,digits:true,rangelength: [5,11]},
+                within: {required: '#reply:checked', range: [1,99]},
+                patient: {required: true,minlength: 2},
+                nhi: {required: true,nhi: true},
+                ward: {required: true, rangelength: [1,3]},
+                bed: {required: true, rangelength: [1,3]},
+                why: {required: true},
+                to_other: {required: true,pager: true},
+                contents: {required: true,maxlength: 128}
+            },
+            errorPlacement: function(error, element) {
+                var p = element.closest('div'), 
+                d = p.next('div.errors');
+                if (d.length === 0) {
+                    d = $('<div>').addClass("errors").insertAfter(p);
+                }
+                d.prepend(error);
+            },
             submitHandler: function(form) {
                 $.ajax("submit.php", {
                     method: "POST",
@@ -110,67 +136,6 @@ $(function() {
                         }
                     }
                 });
-            },
-            rules: {
-                to: {required: true,pattern: '20[0-9]{3}'},
-                caller: {required: true,minlength: 2},
-                phone: {required: true,pattern: '[0-9]{5,11}'},
-                within: {required: '#reply:checked', min: 1, max: 99},
-                patient: {required: true,minlength: 2},
-                nhi: {required: true,pattern: '[a-zA-Z]{3}[0-9]{4}'},
-                ward: {required: true,pattern: '[0-9a-zA-Z]{1,3}'},
-                bed: {required: true,pattern: '[0-9a-zA-Z]{1,3}'},
-                why: {required: true},
-                to_other: {required: true,pattern: '20[0-9]{3}'},
-                contents: {required: true,maxlength: 128}
-            },
-            messages: {
-                to: {
-                    pattern: '<em>Pager</em> must be 20 followed by 3 digits',
-                    required: '<em>Pager</em> is required'
-                },
-                caller: {
-                    minlength: '<em>Name</em> must contain at least 2 characters',
-                    required: '<em>Name</em> is required'
-                },
-                phone: {
-                    pattern: '<em>Phone</em> must contain 5 to 11 digits',
-                    required: '<em>Phone</em> is required'
-                },
-                within: {
-                    required: '<em>Response time</em> is required'
-                },
-                patient: {
-                    minlength: '<em>Name</em> must contain at least 2 characters',
-                    required: '<em>Name</em> is required'
-                },
-                nhi: {
-                    pattern: '<em>NHI</em> must be a valid NHI number',
-                    required: '<em>NHI</em> is required'
-                },
-                ward: {
-                    pattern: '<em>Ward</em> must contain 1 to 3 characters',
-                    required: '<em>Ward</em> is required'
-                },
-                bed: {
-                    pattern: '<em>Bed</em> must contain 1 to 3 characters',
-                    required: '<em>Bed</em> is required'
-                },
-                why: {
-                    required: '<em>Reason for page</em> is required'
-                },
-                to_other: {
-                    pattern: '<em>Pager</em> must be 20 followed by 3 digits',
-                    required: '<em>Pager</em> is required'
-                }
-            },
-            errorPlacement: function(error, element) {
-                var p = element.closest('div'), 
-                d = p.next('div.errors');
-                if (d.length === 0) {
-                    d = $('<div>').addClass("errors").insertAfter(p);
-                }
-                d.prepend(error);
             }
         });
     });
