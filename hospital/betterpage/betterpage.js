@@ -1,7 +1,9 @@
 function ucwords(str) {
+    'use strict';
     return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) {return s.toUpperCase();});
 }
 function calculate() {
+    'use strict';
     var context = $('#choice').val(),
     c = $('#preview>code.' + context),
     n = $('#preview>label>span'),
@@ -14,6 +16,7 @@ function calculate() {
     return !toolarge;
 }
 function update() {
+    'use strict';
     var t = $(this),
     name = t.attr('name');
     if (name == 'ward' || name == 'bed') {
@@ -73,33 +76,51 @@ $(function() {
         calculate();
     }).change();
 
-    $.validator.addMethod("pattern", 
+    $.validator.addMethod("cRequired", $.validator.methods.required,
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> is required";}
+    );
+    $.validator.addMethod("cPattern", 
         function(value, element, param) {return this.optional(element) || param.regexp.test(value);}, 
-        function(param, element) {return "<em>" + $('label.info[for="' + element.id + '"]').text() + "</em> " + param.errorstr;}
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> " + param.errorstr;}
     );
-    $.validator.addMethod("pager", 
-        function(value, element, param) {return this.optional(element) || /^20[0-9]{3}$/.test(value);},
-        "Pager number must be 20 followed by 3 digits"
+    $.validator.addMethod("cMinlength", $.validator.methods.minlength,
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be at least " + param + " characters long";}
     );
-    $.validator.addMethod("nhi", 
-        function(value, element, param) {return this.optional(element) || /^[a-zA-Z]{3}[0-9]{4}$/.test(value);},
-        "Please enter a valid NHI number"
+    $.validator.addMethod("cMaxlength", $.validator.methods.maxlength,
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be no more than " + param + " characters long";}
     );
-    
+    $.validator.addMethod("cRangelength", $.validator.methods.rangelength,
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be " + param[0] + " to " + param[1] + " characters long";}
+    );
+    $.validator.addMethod("cRange", $.validator.methods.range,
+        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be within " + param[0] + " and " + param[1];}
+    );    
     $('form').each(function() {
         $(this).validate({
             rules: {
-                to: {required: true,pager: true},
-                caller: {required: true,minlength: 2},
-                phone: {required: true,digits:true,rangelength: [5,11]},
-                within: {required: '#reply:checked', range: [1,99]},
-                patient: {required: true,minlength: 2},
-                nhi: {required: true,nhi: true},
-                ward: {required: true, rangelength: [1,3]},
-                bed: {required: true, rangelength: [1,3]},
-                why: {required: true},
-                to_other: {required: true,pager: true},
-                contents: {required: true,maxlength: 128}
+                to: {cRequired: true,cPattern: {
+                    regexp:/^20[0-9]{3}$/,
+                    errorstr:'must be 20 followed by 3 digits'
+                }},
+                caller: {cRequired: true,cMinlength: 2},
+                phone: {cRequired: true,cPattern:{
+                    regexp:/^[0-9]{5,11}$/,
+                    errorstr:'must contain 5 to 11 digits'
+                }},
+                within: {cRequired: '#reply:checked', cRange: [1,99]},
+                patient: {cRequired: true,cMinlength: 2},
+                nhi: {cRequired: true,cPattern: {
+                    regexp: /^[a-zA-Z]{3}[0-9]{4}$/,
+                    errorstr: 'must be valid'
+                }},
+                ward: {cRequired: true, cRangelength: [1,3]},
+                bed: {cRequired: true, cRangelength: [1,3]},
+                why: {cRequired: true},
+                to_other: {cRequired: true,cPattern: {
+                    regexp:/^20[0-9]{3}$/,
+                    errorstr:'must be 20 followed by 3 digits'
+                }},
+                contents: {cRequired: true,cMaxlength: 128}
             },
             errorPlacement: function(error, element) {
                 var p = element.closest('div'), 
@@ -107,14 +128,13 @@ $(function() {
                 if (d.length === 0) {
                     d = $('<div>').addClass("errors").insertAfter(p);
                 }
-                d.prepend(error);
+                d.append(error);
             },
             submitHandler: function(form) {
                 $.ajax("submit.php", {
                     method: "POST",
                     datatype: "json",
                     data: { 
-                        //formname: form.className,
                         no: $(form).find('fieldset:first-child>div>input').val(),
                         msg: $('#preview>code.' + form.className +'>span:visible').text()
                     },

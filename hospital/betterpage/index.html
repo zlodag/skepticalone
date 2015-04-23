@@ -21,38 +21,38 @@
 <legend>To</legend>
     <div>
 <label for="to" class="info">Pager</label>
-<input id="to" name="to">
+<input id="to" name="to" data-readable="Pager number">
     </div>
 </fieldset>
 <fieldset>
 <legend>From</legend>
     <div>
 <label for="caller" class="info">Name</label>
-<input id="caller" name="caller">
-<input id="phone" name="phone">
+<input id="caller" name="caller" data-readable="Name">
+<input id="phone" name="phone" data-readable="Phone">
 <label for="phone" class="info">Phone</label>
     </div>
-<div><label for="reply" class="info">Response required?</label><input id="reply" name="reply" type="checkbox"><label for="within" class="info toggle">within<input id="within" name="within">mins</label></div></fieldset>
+<div><label for="reply" class="info">Response required?</label><input id="reply" name="reply" type="checkbox"><label for="within" class="info toggle">within<input id="within" name="within" data-readable="Response time">mins</label></div></fieldset>
 <fieldset>
 <legend>Patient</legend>
     <div>
 <label for="patient" class="info">Name</label>
-<input id="patient" name="patient">
-<input id="nhi" name="nhi">
+<input id="patient" name="patient" data-readable="Name">
+<input id="nhi" name="nhi" data-readable="NHI">
 <label for="nhi" class="info">NHI</label>
     </div>
     <div>
 <label for="ward" class="info">Ward</label>
-<input id="ward" name="ward">
-<input id="bed" name="bed">
+<input id="ward" name="ward" data-readable="Ward">
+<input id="bed" name="bed" data-readable="Bed">
 <label for="bed" class="info">Bed</label>
     </div>
 </fieldset>
 <fieldset>
 <legend>Details</legend>
     <div>
-<select id="why" name="why" class="whole">
-<option value="" selected="">Reason for page</option>
+<select id="why" name="why" class="whole" data-readable="Reason for page">
+<option value="" selected>Reason for page</option>
 <optgroup label="High ADDS - specify why"><option value="adds3">ADDS 3</option><option value="adds4">ADDS 4</option><option value="adds5plus">ADDS 5+</option></optgroup><optgroup label="Concern"><option value="pain">Pain</option><option value="wound">Wound</option><option value="plan">Clarify plan</option></optgroup><optgroup label="Medication"><option value="fluids">Fluids</option><option value="analgesia">Pain relief</option><option value="antiemetic">Anti-emetic</option><option value="sleep">Sleeping pill</option><option value="laxatives">Laxatives</option><option value="regmeds">Regular Meds</option></optgroup><optgroup label="Task"><option value="iv_line">IV line</option><option value="consent">Consent</option><option value="discharge">Discharge papers</option><option value="rechart">Rechart</option></optgroup><optgroup label="Other - specify below"><option value="inform">Inform (no response needed)</option><option value="call_urgent">Call urgently!</option><option value="come_urgent">Come urgenly!</option><option value="custom">None of the above</option></optgroup>
 </select>
     </div>
@@ -68,13 +68,13 @@
 <legend>To</legend>
     <div>
 <label for="to_other" class="info">Pager</label>
-<input id="to_other" name="to_other">
+<input id="to_other" name="to_other" data-readable="Pager number">
     </div>
 </fieldset>
 <fieldset>
 <legend>Contents</legend>
     <div>
-<textarea id="contents" name="contents" class="whole"></textarea>
+<textarea id="contents" name="contents" class="whole" data-readable="Contents"></textarea>
     </div>
 </fieldset>
     <div>
