@@ -396,7 +396,7 @@ $(function() {
             skipEmptyLines: true,
             complete: function(csv) {
                 for (var i = 0; i < csv.data.length; i++) {
-                    if (i === 0) {var allocationtime = csv.data[i][0];}
+                    if (i === 0) {var allocationtime = new Date(/\w+ \d{1,2} \d{1,2}:\d{1,2} \d{4}/.exec(csv.data[i][0])[0] + 'EDT');}
                     if (csv.data[i].length === 12) {
                         var r = csv.data[i], 
                         div = r[0];
@@ -450,7 +450,10 @@ $(function() {
                         .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
                     }
                 }
-                select.change(loginToggle).change().after($('<p>').text('Time generated: ' + time), $('<p>').text(allocationtime));
+                select.change(loginToggle).change().after(
+                    $('<p>',{text:'Page loaded '}).append($('<time>', {datetime:time.toISOString()}).timeago()),
+                    $('<p>',{text:'Roster loaded '}).append($('<time>', {datetime:allocationtime.toISOString()}).timeago())
+                );
             }
         });
     });
