@@ -62,9 +62,10 @@
         <li id="tasks-tab" role="presentation" class="active"><a href="#tasks-panel" aria-controls="tasks-panel" role="tab" data-toggle="tab">Tasks</a>
 
         </li>
-        <li id="new-tab" role="presentation"><a href="#new-panel" aria-controls="new-panel" role="tab" data-toggle="tab">New</a>
-
+        <li id="new-tab" role="presentation" class="hidden">
+            <a href="#new-panel" aria-controls="new-panel" role="tab" data-toggle="tab">New</a>
         </li>
+
         <!--<li id="signin-tab" class="dropdown pull-right"><a id="signin" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                     Sign in
                     <span class="caret"></span>
@@ -85,6 +86,9 @@
                     <span id="whenami" class="when"></span>
                 </a>
 
+        </li>
+        <li id="lists-tab" role="presentation" class="hidden pull-right">
+            <a href="#lists-panel" aria-controls="lists-panel" role="tab" data-toggle="tab" >Lists</a>
         </li>
     </ul>
     <div class="tab-content">
@@ -192,8 +196,12 @@
         <select id="user" class="form-control" required>
             <option value="">Sign in</option>
         </select>
-        <!--<a class="btn btn-info" href="generate_blacklist.php" role="button">Who is included?</a>-->
         </div>
+        <div id="lists-panel" role="tabpanel" class="tab-pane fade">
+        <table class="table table-condensed table-hover">
+        <thead><tr><th data-sorter="boolean">On call</th><th>Division</th><th>Job</th><th>Time</th><th>Person</th><th data-sorter="boolean">Toggle</th></tr></thead>
+        <tbody></tbody>
+        </table>
     </div>
 </div>
     </body>
