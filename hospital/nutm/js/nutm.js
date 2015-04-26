@@ -457,7 +457,10 @@ $(function() {
             if (initial && i === 0) {var allocationtime = new Date(/\w+ \d{1,2} \d{1,2}:\d{1,2} \d{4}/.exec(csv.data[i][0])[0] + 'EDT');}
             if (csv.data[i].length === 12) {
                 var r = csv.data[i], 
-                div = r[0];
+                div = r[0],
+                on = parseInt(r[8], 10),
+                off = parseInt(r[9], 10);
+                
                 if (blacklists.divisions.indexOf(div) !== -1) {
                     continue;
                 }
@@ -482,11 +485,11 @@ $(function() {
                     role: r[4],
                     au: parseInt(r[5], 10),
                     ab: parseInt(r[6], 10),
-                    on: parseInt(r[8], 10),
-                    off: parseInt(r[9], 10),
+                    on: on,
+                    off: off,
                     pg : pg
                 };
-                if (isOncall(row)) {
+                if (isOncall(on,off)) {
                     if (div in oncall) {
                         oncall[div].push(row);
                     } else {
