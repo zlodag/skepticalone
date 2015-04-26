@@ -6,7 +6,7 @@ $(function() {
     timeint = time.getHours() * 100 + time.getMinutes(), 
     url = "get_data.php", 
     select = $('#user'), 
-    obj, locationfns, urgencyfns;
+    obj, locationfns, urgencyfns,listbody;
     
     $.fn.appendLabels = function(options) {
         var t = $(this), 
@@ -308,6 +308,16 @@ $(function() {
             },
             type: 'numeric'
         });
+        $.tablesorter.addParser(
+        {
+            parsed: true,
+            id: 'boolean',
+            format: function(s, table, cell) {
+                return $(cell).data('boolean');
+            },
+            type: 'numeric'
+        });
+
         
         $.tablesorter.addParser({id: 'urgency',parsed: false,format: function(s, table, cell) {
                 return $(cell).data('urgency');
@@ -359,6 +369,7 @@ $(function() {
             removeRows: false,
             output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
         });
+        $('#lists-panel>table').tablesorter();
     
     }    
     
@@ -382,6 +393,138 @@ $(function() {
         $("#taskform").submit(submitTask);
     }
     
+    function addRow(row, type) {
+        var glyphicon = null,
+        checked = false,
+        rowclass = 'default',
+        on = parseInt(row[8],10),
+        off = parseInt(row[9],10),
+        oncall = isOncall(on,off);
+        switch(type) {
+            case 'good':
+            case 'bad':
+                rowclass = 'success';
+                checked = true;
+                break;
+        }
+        var tr = $('<tr>',{'class':rowclass}).append(
+            $('<td>',{data:{boolean:+(oncall)}}).append($('<span>',{'class':'glyphicon ' + (oncall ? 'glyphicon-ok' : 'glyphicon-remove')})),
+            $('<td>',{text: row[0]}),
+            $('<td>',{text: row[4]}),
+            $('<td>',{text: row[8] + ' - ' + row[9]}),
+            $('<td>',{text: row[1]}),
+            $('<td>',{data:{boolean:+(checked)}}).append($('<input>',{type:'checkbox',prop: {checked:checked}, data: {
+                au:parseInt(row[5],10),
+                ab:parseInt(row[6],10),
+                div:row[0],
+                role:row[4],
+                on:on,
+                off:off
+            }, click: function() {
+                var paternal = $(this).closest('tr');
+                $.ajax({
+                    method: "POST",
+                    url: url,
+                    dataType: "json",
+                    data: $.extend($(this).data(),{data:'update',context:'list',blacklist:+(!this.checked)}),
+                    success: function(obj) {
+                        this.closest('tr').attr('class', (obj.blacklisted === 0 ? 'success' : 'default'));
+                    },
+                    context: $(this).closest('tr')});
+            }}))
+        );
+        listbody.append(tr);
+    }
+    function isOncall(on,off) {
+        return  ((on < off && timeint >= on && timeint <= off) || 
+                (on > off && (timeint >= on || timeint <= off)) || 
+                (on == off));
+    }
+    function processCsv(csv, blacklists, initial) {
+        if (!initial) {
+            /*var good = $('<table>', {id:'good'}).append($('<caption>', {text: 'Whitelist (eligible, on call)'})),
+            bad = $('<table>', {id:'bad'}).append($('<caption>', {text: 'Greylist (not on call, otherwise eligible)'})),
+            ugly = $('<table>', {id:'ugly'}).append($('<caption>', {text: 'Blacklist (not eligible)'})),
+            */
+            //good.add(bad).add(ugly).addClass('table table-condensed table-hover').append($('<thead>').append(tr),$('<tbody>'));
+            listbody = $('#lists-panel>table>tbody').empty();
+        }
+        for (var i = 0; i < csv.data.length; i++) {
+            if (initial && i === 0) {var allocationtime = new Date(/\w+ \d{1,2} \d{1,2}:\d{1,2} \d{4}/.exec(csv.data[i][0])[0] + 'EDT');}
+            if (csv.data[i].length === 12) {
+                var r = csv.data[i], 
+                div = r[0];
+                if (blacklists.divisions.indexOf(div) !== -1) {
+                    continue;
+                }
+                var black = false;
+                for (var j = 0; j < blacklists.roles.length && !black; j++) {
+                    var badrole = blacklists.roles[j];
+                    if (parseInt(r[5], 10) === badrole[0] && parseInt(r[6], 10) === badrole[1]) {
+                        if (!initial) {
+                            addRow(r,'ugly');
+                        }
+                        black = true;
+                        continue;
+                    }
+                }
+                if (black) {
+                    continue;
+                }
+                var pg = r[11].match(/^#?20([0-9]{3}$)/);
+                if (pg != null) {pg = parseInt(pg[1],10);}
+                var row = {
+                    person: r[1],
+                    role: r[4],
+                    au: parseInt(r[5], 10),
+                    ab: parseInt(r[6], 10),
+                    on: parseInt(r[8], 10),
+                    off: parseInt(r[9], 10),
+                    pg : pg
+                };
+                if (isOncall(row)) {
+                    if (div in oncall) {
+                        oncall[div].push(row);
+                    } else {
+                        oncall[div] = [row];
+                    }
+                    if (!initial) {
+                        addRow(r,'good');
+                    }
+
+                } else if (!initial) {
+                    addRow(r,'bad');
+                }
+            }
+        }
+        var divs = Object.keys(oncall).sort();
+        if (initial) {
+            for (var k = 0; k < divs.length; k++) {
+                var div = divs[k], 
+                optgroup = $('<optgroup>', {"label": div});
+                select.append(optgroup);
+                for (var m = 0; m < oncall[div].length; m++) {
+                    var row = oncall[div][m];
+                    optgroup.append($('<option>')
+                    .data(row).data('div',div)
+                    .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
+                }
+            }
+            select.change(loginToggle).change().after(
+                $('<button>', {'class': "btn btn-info", text:"Who is included?", data: {csv: csv}, click: function() {
+                    var csv = $(this).data('csv');
+                    $.getJSON(url, {'data': 'blacklists'}, function(blacklists) {
+                        processCsv(csv, blacklists, false);
+                    });
+                }}),
+                $('<p>',{text:'Page loaded '}).append($('<time>', {datetime:time.toISOString()}).timeago()),
+                $('<p>',{text:'Roster loaded '}).append($('<time>', {datetime:allocationtime.toISOString()}).timeago())
+            );
+        } else {
+            $('#lists-panel>table').trigger('update');
+            $('#lists-tab').removeClass("hidden").children('a').click();
+        }
+    }
     
     updateDom();
     
@@ -389,71 +532,13 @@ $(function() {
         processJson(obj);
     });
     
-    $.getJSON(url, {'data': 'blacklists'}, function(obj) {
+    $.getJSON(url, {'data': 'blacklists'}, function(blacklists) {
         Papa.parse(url+'?data=csv', {
             download: true,
             delimiter: ",",
             skipEmptyLines: true,
             complete: function(csv) {
-                for (var i = 0; i < csv.data.length; i++) {
-                    if (i === 0) {var allocationtime = new Date(/\w+ \d{1,2} \d{1,2}:\d{1,2} \d{4}/.exec(csv.data[i][0])[0] + 'EDT');}
-                    if (csv.data[i].length === 12) {
-                        var r = csv.data[i], 
-                        div = r[0];
-                        if (obj.divisions.indexOf(div) !== -1) {
-                            continue;
-                        }
-                        var black = false;
-                        for (var j = 0; j < obj.roles.length && !black; j++) {
-                            var bad = obj.roles[j];
-                            if (parseInt(r[5], 10) === bad[0] && parseInt(r[6], 10) === bad[1]) {
-                                black = true;
-                            }
-                        }
-                        if (black) {
-                            continue;
-                        }
-                        var pg = r[11].match(/^#?20([0-9]{3}$)/);
-                        if (pg != null) {pg = parseInt(pg[1],10);}
-                        var row = {
-                            person: r[1],
-                            role: r[4],
-                            au: parseInt(r[5], 10),
-                            ab: parseInt(r[6], 10),
-                            on: parseInt(r[8], 10),
-                            off: parseInt(r[9], 10),
-                            pg : pg
-                        };
-                        if (
-                        (row.on < row.off && timeint >= row.on && timeint <= row.off) || 
-                        (row.on > row.off && (timeint >= row.on || timeint <= row.off)) || 
-                        (row.on == row.off)
-                        
-                        ) {
-                            if (div in oncall) {
-                                oncall[div].push(row);
-                            } else {
-                                oncall[div] = [row];
-                            }
-                        }
-                    }
-                }
-                var divs = Object.keys(oncall).sort();
-                for (var k = 0; k < divs.length; k++) {
-                    var div = divs[k], 
-                    optgroup = $('<optgroup>', {"label": div});
-                    select.append(optgroup);
-                    for (var m = 0; m < oncall[div].length; m++) {
-                        var row = oncall[div][m];
-                        optgroup.append($('<option>')
-                        .data(row).data('div',div)
-                        .text(row.person + ' (' + row.role + ') [' + pad(row.on, 4) + ' - ' + pad(row.off, 4) + ']'));
-                    }
-                }
-                select.change(loginToggle).change().after(
-                    $('<p>',{text:'Page loaded '}).append($('<time>', {datetime:time.toISOString()}).timeago()),
-                    $('<p>',{text:'Roster loaded '}).append($('<time>', {datetime:allocationtime.toISOString()}).timeago())
-                );
+                processCsv(csv, blacklists, true);
             }
         });
     });
