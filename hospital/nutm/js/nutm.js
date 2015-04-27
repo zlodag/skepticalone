@@ -6,7 +6,7 @@ $(function() {
     timeint = time.getHours() * 100 + time.getMinutes(), 
     url = "get_data.php", 
     select = $('#user'), 
-    obj, locationfns, urgencyfns,listbody;
+    obj, locationfns, urgencyfns, booleanfns, listbody;
     
     $.fn.appendLabels = function(options) {
         var t = $(this),
@@ -266,6 +266,10 @@ $(function() {
                 return n === 5;
             }
         };
+        booleanfns = {
+            'Yes': function(e,n) {return n === 1;},
+            'No': function(e,n) {return n === 0;},
+        };
         var selectward = $('select#ward'), 
         selecturgency = $('select#urgency'), 
         selectspecialty = $('select#specialty');
@@ -340,7 +344,7 @@ $(function() {
             headerTemplate: '{content} {icon}',
             widgetOptions: {
                 zebra: ["even", "odd"],
-                filter_reset: "button.reset",
+                filter_reset: "#jobsreset",
                 filter_hideEmpty: true,
                 filter_hideFilters: true,
                 filter_placeholder: {search: 'Search...',select: 'All'},
@@ -349,10 +353,10 @@ $(function() {
                     3: locationfns,
                     5: urgencyfns,
                     7: {
-                        'Not accepted': function(e, n, f, i, $r) {
+                        'Not accepted': function(e, n) {
                             return n === 0;
                         },
-                        'Accepted': function(e, n, f, i, $r) {
+                        'Accepted': function(e, n) {
                             return n !== 0;
                         }
                     },
@@ -373,7 +377,19 @@ $(function() {
             removeRows: false,
             output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
         });
-        $('#lists-panel>table').tablesorter();
+        $('#lists-panel>table').tablesorter({
+            theme: "bootstrap",
+            sortList: [[1, 0], [0, 1]],
+            widgets: ["uitheme", "filter"],
+            headerTemplate: '{content} {icon}',
+            widgetOptions: {
+                filter_reset: "#listreset",
+                filter_hideEmpty: true,
+                filter_hideFilters: true,
+                filter_placeholder: {search: 'Search...', select: 'All'},
+                filter_functions: {0: booleanfns, 5: booleanfns}
+            }
+        });
     
     }    
     

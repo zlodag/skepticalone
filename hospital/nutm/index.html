@@ -131,7 +131,7 @@
                                 <option value="100">100</option>
                             </select>
                             <select class="pagenum input-mini" title="Select page"></select>
-                            <button type="button" class="reset btn btn-primary" data-column="0" data-filter="">
+                            <button type="button" id="jobsreset" class="reset btn btn-primary">
                             <span class="icon-white glyphicon glyphicon-refresh"></span>
                             Reset filters</button>
                         </th>
@@ -206,8 +206,12 @@
         </select>
         </div>
         <div id="lists-panel" role="tabpanel" class="tab-pane fade">
+        <button type="button" id="listreset" class="reset btn btn-primary">
+            <span class="icon-white glyphicon glyphicon-refresh"></span>
+            Reset filters
+        </button>
         <table class="table table-condensed table-hover">
-        <thead><tr><th data-sorter="boolean">On call</th><th>Division</th><th>Job</th><th>Time</th><th>Person</th><th data-sorter="boolean">Toggle</th></tr></thead>
+        <thead><tr><th data-sorter="boolean">On call</th><th class="filter-select filter-onlyAvail">Division</th><th>Job</th><th class="filter-select filter-onlyAvail">Time</th><th>Person</th><th data-sorter="boolean">Eligible</th></tr></thead>
         <tbody></tbody>
         </table>
     </div>
