@@ -37,3 +37,9 @@
 #ui-datepicker-div {
     font-size:11px;
 }
+tr.newrow,input.ng-dirty.ng-invalid {
+    background-color: orange;
+}
+tr.newrow.valid,input.ng-dirty.ng-valid {
+    background-color: lightgreen;
+}
