@@ -1,0 +1,21 @@
+<table id="pages">
+    <caption>{{ db.rows.length }} entries total</caption>
+    <thead><tr><th ng-repeat="str in db.headers">{{ str }}</th></tr></thead>
+    <tbody>
+    <tr class="newrow" ng-class="{valid:newpage.$valid}">
+    <td></td>
+    <td>{{entry.person[1]}}</td>
+    <td>{{entry.specialty[1]}}</td>
+    <td>{{entry.shift[1]}}</td>
+    <td>{{entry.date | date:'dd/MM/yyyy'}}</td>
+    <td>{{entry.contents}}</td>
+    <td>{{entry.received | date:'HH:mm'}}</td>
+    <td>{{entry.urgent ? 'Y' : 'N'}}</td>
+    <td>{{entry.required ? 'Y' : 'N'}}</td>
+    <td>{{entry.repeat ? 'Y' : 'N'}}</td>
+    </tr>
+    <tr ng-repeat="row in db.rows">
+        <td ng-repeat="n in db.indices">{{ row[n] }}</td>
+    </tr>
+    </tbody>
+</table>
