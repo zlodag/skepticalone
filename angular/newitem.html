@@ -1,31 +1,31 @@
-<form id="newpage" name="newpage" novalidate>
+<form id="newpage" name="newpage" ng-submit="new.submit()" novalidate>
     <fieldset class="persist">
-        <select ng-model="entry.person" ng-options="person[1] for person in new.data.person" required>
+        <select ng-model="new.entry.person" ng-options="person[1] for person in new.data.person" required>
         <option value="">Who are you?</option>
         </select>
     </fieldset>
 
     <fieldset class="persist">
         <legend>Shift data</legend>
-        <select ng-model="entry.specialty" ng-options="specialty[1] for specialty in new.data.specialty" required>
+        <select ng-model="new.entry.specialty" ng-options="specialty[1] for specialty in new.data.specialty" required>
         <option value="">Select specialty</option>
         </select>
        
-        <select ng-model="entry.shift" ng-options="shift[1] for shift in new.data.shift" required>
+        <select ng-model="new.entry.shift" ng-options="shift[1] for shift in new.data.shift" required>
         <option value="">Select shift</option>
         </select>
 
-        <label class="info" for="date">Date commenced: </label><input ng-model="entry.date" id="date" type="date" placeholder="YYYY-MM-DD" required/>
+        <label class="info" for="date">Date commenced: </label><input ng-model="new.entry.date" id="date" type="date" placeholder="YYYY-MM-DD" required/>
      </fieldset>
 
      <fieldset class="vary">
         <legend>Page data</legend>
-        <label class="info" for="contents">Exact contents: </label><input id="contents" ng-model="entry.contents" maxlength="255" required/>
-        <label class="info">Time recorded?<input id="time" ng-model="checked" type="checkbox" ng-init="checked=true"/></label><input type="time" ng-required="checked" ng-model="entry.received" id="received" placeholder="HH:MM (24hr)"/>
-        <label class="info">Urgent?<input id="urgent" ng-model="entry.urgent" type="checkbox"/></label>
-        <label class="info">Required this shift?<input id="required" ng-model="entry.required" type="checkbox"/></label>
-        <label class="info">Repeat page?<input id="repeat" ng-model="entry.repeat" type="checkbox"/></label>
-        <input type="submit" value="Submit"/>
+        <label class="info" for="contents">Exact contents: </label><input id="contents" ng-model="new.entry.contents" maxlength="255" required/>
+        <label class="info">Time recorded?<input id="time" ng-model="new.entry.checked" type="checkbox"/></label><input type="time" ng-required="new.entry.checked" ng-model="new.entry.received" id="received" placeholder="HH:MM (24hr)"/>
+        <label class="info">Urgent?<input id="urgent" ng-model="new.entry.urgent" type="checkbox"/></label>
+        <label class="info">Required this shift?<input id="required" ng-model="new.entry.required" type="checkbox"/></label>
+        <label class="info">Repeat page?<input id="repeat" ng-model="new.entry.repeat" type="checkbox"/></label>
+        <input ng-disabled="newpage.$invalid" type="submit" value="Submit"/>
     </fieldset>
 </form>
-<pre>valid: {{newpage.$valid}}!! checked: {{ checked }}? {{ entry }}</pre>
+<pre ng-bind="new.params.contents"></pre>

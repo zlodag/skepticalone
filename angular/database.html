@@ -3,19 +3,28 @@
     <thead><tr><th ng-repeat="str in db.headers">{{ str }}</th></tr></thead>
     <tbody>
     <tr class="newrow" ng-class="{valid:newpage.$valid}">
-    <td></td>
-    <td>{{entry.person[1]}}</td>
-    <td>{{entry.specialty[1]}}</td>
-    <td>{{entry.shift[1]}}</td>
-    <td>{{entry.date | date:'dd/MM/yyyy'}}</td>
-    <td>{{entry.contents}}</td>
-    <td>{{entry.received | date:'HH:mm'}}</td>
-    <td>{{entry.urgent ? 'Y' : 'N'}}</td>
-    <td>{{entry.required ? 'Y' : 'N'}}</td>
-    <td>{{entry.repeat ? 'Y' : 'N'}}</td>
+    <td>{{db.rows[0][0] + 1}}</td>
+    <td>{{new.entry.person[1]}}</td>
+    <td>{{new.entry.specialty[1]}}</td>
+    <td>{{new.entry.shift[1]}}</td>
+    <td>{{new.entry.date | date:'dd/MM/yyyy'}}</td>
+    <td>{{new.entry.contents}}</td>
+    <td>{{new.entry.checked ? (new.entry.received | date:'HH:mm') : ''}}</td>
+    <td>{{new.entry.urgent ? 'Y' : 'N'}}</td>
+    <td>{{new.entry.required ? 'Y' : 'N'}}</td>
+    <td>{{new.entry.repeat ? 'Y' : 'N'}}</td>
     </tr>
     <tr ng-repeat="row in db.rows">
-        <td ng-repeat="n in db.indices">{{ row[n] }}</td>
+        <td>{{row[0]}}</td>
+        <td>{{row[1]}}</td>
+        <td>{{row[2]}}</td>
+        <td>{{row[3]}}</td>
+        <td>{{row[4] * 1000 | date:'dd/MM/yyyy'}}</td>
+        <td>{{row[5]}}</td>
+        <td>{{row[6] | date:'HH:mm'}}</td>
+        <td>{{row[7] ? 'Y' : 'N'}}</td>
+        <td>{{row[8] ? 'Y' : 'N'}}</td>
+        <td>{{row[9] ? 'Y' : 'N'}}</td>
     </tr>
     </tbody>
 </table>
