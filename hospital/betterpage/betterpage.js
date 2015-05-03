@@ -1,162 +1,124 @@
-function ucwords(str) {
-    'use strict';
-    return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) {return s.toUpperCase();});
-}
-function calculate() {
-    'use strict';
-    var context = $('#choice').val(),
-    c = $('#preview>code.' + context),
-    n = $('#preview>label>span'),
-    msg = c.children('span:visible').text(),
-    len = msg.length,
-    toolarge = len > 128;
-    n.text(len).toggleClass('invalid', toolarge);
-    c.toggleClass('invalid', toolarge);
-    $('form.' + context + ' input[type="submit"]').prop('disabled', toolarge).val(toolarge ? 'Character limit exceeded!' : 'Send');
-    return !toolarge;
-}
-function update() {
-    'use strict';
-    var t = $(this),
-    name = t.attr('name');
-    if (name == 'ward' || name == 'bed') {
-        var ward = $('#ward').val().toUpperCase(),
-        bed = $('#bed').val().toUpperCase(),
-        locationspan = $('span.location');
-        if (ward !== "" || bed !== "") {
-            locationspan.text('['+ward+'-'+bed+'] ');
-        } else {
-            locationspan.text("");
-        }
-    } else {
-        var str = t.val();
-        switch (name) {
-            case 'details':
-                if (str !== "") {str = ' (' + str + ')';} break;
-            case 'within':
-                if (str !== "" && t.valid()) {str = '<' + parseInt(str, 10) + 'm';} else {str = "";} break;
-            case 'nhi':
-                if (str !== "") {str = ' ' + str.toUpperCase();} break;
-            case 'caller':
-            case 'patient':
-                if (str !== "") {str = '(' + ucwords(str) + ')';} break;
-        }
-        $('span.' + name).text(str);
-    }
-    $('span.within').toggle($('#reply').prop('checked'));
-    calculate();
-}
-
-$(function() {
-    'use strict';
-    var pagename = window.location.pathname.match(/\/([^\/]*?)(?:\.html)*$/)[1],
-    tuples = window.location.search.substring(1).split('&'),
-    params = {};
-    for (var i = 0; i < tuples.length; i++) {
-        var tuple = tuples[i].split('=');
-        params[tuple[0]] = tuple[1];
-    }
-    if ('msg' in params) {$('#choice').val('otherpage'); $("#contents").val(decodeURIComponent(params.msg));}
-    else {
-        if ('no' in params && params.no.match(/^20[0-9]{3}$/)) {$("#to,#to_other").val(params.no);} else {$("#to,#to_other").val(20);}
-        if ('patient' in params) {$("#patient").val(decodeURIComponent(params.patient));}
-        if ('nhi' in params && params.nhi.match(/^[a-zA-Z]{3}[0-9]{4}$/)) {$("#nhi").val(params.nhi);}
-        if ('ward' in params && params.ward.match(/^[a-zA-Z0-9]{1,3}$/)) {$("#ward").val(params.ward);}
-        if ('bed' in params && params.bed.match(/^[a-zA-Z0-9]{1,3}$/)) {$("#bed").val(params.bed);}
-    }
-
-    $('#caller,#phone,#within,#patient,#nhi,#ward,#bed,#details,#to_other,#contents').keyup(update).keyup();
-    $('#why').change(update).change();
-    $('#reply').click(function() {$('[for="within"]').toggle(this.checked);}).click(update);
-    $('#choice').change(function() {
-        var context = '.' + $(this).val(), 
-        toggles = $('form,code,#outcome label');
-        toggles.filter(context).show();
-        toggles.not(context).hide();
-        calculate();
-    }).change();
-
-    $.validator.addMethod("cRequired", $.validator.methods.required,
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> is required";}
-    );
-    $.validator.addMethod("cPattern", 
-        function(value, element, param) {return this.optional(element) || param.regexp.test(value);}, 
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> " + param.errorstr;}
-    );
-    $.validator.addMethod("cMinlength", $.validator.methods.minlength,
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be at least " + param + " characters long";}
-    );
-    $.validator.addMethod("cMaxlength", $.validator.methods.maxlength,
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be no more than " + param + " characters long";}
-    );
-    $.validator.addMethod("cRangelength", $.validator.methods.rangelength,
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be " + param[0] + " to " + param[1] + " characters long";}
-    );
-    $.validator.addMethod("cRange", $.validator.methods.range,
-        function(param, element) {return "<em>" + element.getAttribute('data-readable') + "</em> must be within " + param[0] + " and " + param[1];}
-    );    
-    $('form').each(function() {
-        $(this).validate({
-            rules: {
-                to: {cRequired: true,cPattern: {
-                    regexp:/^20[0-9]{3}$/,
-                    errorstr:'must be 20 followed by 3 digits'
-                }},
-                caller: {cRequired: true,cMinlength: 2},
-                phone: {cRequired: true,cPattern:{
-                    regexp:/^[0-9]{5,11}$/,
-                    errorstr:'must contain 5 to 11 digits'
-                }},
-                within: {cRequired: '#reply:checked', cRange: [1,99]},
-                patient: {cRequired: true,cMinlength: 2},
-                nhi: {cRequired: true,cPattern: {
-                    regexp: /^[a-zA-Z]{3}[0-9]{4}$/,
-                    errorstr: 'must be valid'
-                }},
-                ward: {cRequired: true, cRangelength: [1,3]},
-                bed: {cRequired: true, cRangelength: [1,3]},
-                why: {cRequired: true},
-                to_other: {cRequired: true,cPattern: {
-                    regexp:/^20[0-9]{3}$/,
-                    errorstr:'must be 20 followed by 3 digits'
-                }},
-                contents: {cRequired: true,cMaxlength: 128}
-            },
-            errorPlacement: function(error, element) {
-                var p = element.closest('div'), 
-                d = p.next('div.errors');
-                if (d.length === 0) {
-                    d = $('<div>').addClass("errors").insertAfter(p);
-                }
-                d.append(error);
-            },
-            submitHandler: function(form) {
-                $.ajax("submit.php", {
-                    method: "POST",
-                    datatype: "json",
-                    data: { 
-                        no: $(form).find('fieldset:first-child>div>input').val(),
-                        msg: $('#preview>code.' + form.className +'>span:visible').text()
-                    },
-                    success: function(json) {
-                        var valid = json.ok,
-                        c = form.className,
-                        outcome = $('#outcome>div').empty();
-                        if (valid) {
-                            outcome.append(
-                            $('<label>', {'class': c,text: "Successful submission of form!"}), 
-                            $('<code>', {'class': c,text: "###:" + json.page})
-                            );
-                            if (c == "ptpage") {alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");}
-                        } else {
-                            for (var i = 0; i < json.errors.length; i++) {
-                                var error = json.errors[i];
-                                outcome.append($('<label>', {"class": c + " error","for": error[0],html: error[1]}));
-                            }
-                        }
-                    }
+(function() {
+    var app = angular.module('betterpage', [])
+    .config(['$locationProvider',function($locationProvider) {
+        $locationProvider.html5Mode(true);
+    }])
+    .directive('titleCase', function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function(str) {
+                    return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) {
+                        return s.toUpperCase();
+                    });
                 });
             }
-        });
+        };
+    })
+    .directive('upperCase', function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function(str) {
+                    return str.toUpperCase();
+                });
+            }
+        };
+    })
+    .directive('pageForm', function() {
+        return {
+            restrict: 'A',
+            templateUrl: 'pageform.html',
+            controllerAs: 'page',
+            controller: ['$http', '$scope','$location', function($http, $scope, $location) {
+                    this.reasons = [
+                        {label: "ADDS 3",value: "adds3",group: "High ADDS - specify why"}, 
+                        {label: "ADDS 4",value: "adds4",group: "High ADDS - specify why"}, 
+                        {label: "ADDS 5+",value: "adds5plus",group: "High ADDS - specify why"}, 
+                        {label: "Pain",value: "pain",group: "Concern"}, 
+                        {label: "Wound",value: "wound",group: "Concern"}, 
+                        {label: "Clarify plan",value: "plan",group: "Concern"}, 
+                        {label: "Fluids",value: "fluids",group: "Medication"}, 
+                        {label: "Pain relief",value: "analgesia",group: "Medication"}, 
+                        {label: "Anti-emetic",value: "antiemetic",group: "Medication"}, 
+                        {label: "Sleeping pill",value: "sleep",group: "Medication"}, 
+                        {label: "Laxatives",value: "laxatives",group: "Medication"}, 
+                        {label: "Regular Meds",value: "regmeds",group: "Medication"}, 
+                        {label: "IV line",value: "iv_line",group: "Task"}, 
+                        {label: "Consent",value: "consent",group: "Task"}, 
+                        {label: "Discharge papers",value: "discharge",group: "Task"}, 
+                        {label: "Rechart",value: "rechart",group: "Task"}, 
+                        {label: "Inform (no response needed)",value: "inform",group: "Other - specify below"}, 
+                        {label: "Call urgently!",value: "call_urgent",group: "Other - specify below"}, 
+                        {label: "Come urgenly!",value: "come_urgent",group: "Other - specify below"}, 
+                        {label: "None of the above",value: "custom",group: "Other - specify below"}
+                    ];
+                    this.choices = [
+                        {label: "Page about a patient",value: "ptpage"}, 
+                        {label: "Page about something else",value: "otherpage"}
+                    ];
+                    this.get = $location.search();
+                    this.initial = angular.extend({
+                        caller: '',
+                        phone: '',
+                        reply:false,
+                        within: '',
+                        why: '',
+                        details: '',
+                        contents: ''
+                    },{
+                        no: parseInt(this.get.no ,10) || 20,
+                        patient: this.get.patient ? decodeURIComponent(this.get.patient) : '',
+                        nhi: this.get.nhi,
+                        ward: this.get.ward,
+                        bed: this.get.bed
+                    });
+                    this.form = angular.extend({choice:'ptpage'},this.initial);
+                    var me = this;
+                    this.display = function() {
+                        var form = me.form;
+                        if (form.choice === 'ptpage') {
+                            return (form.phone || "")+ 
+                            (form.reply && form.within ? "<" + form.within + "m" : "") + 
+                            (form.caller ? "(" + form.caller + ")" : "") + 
+                            (form.nhi ? " " + form.nhi : "") + 
+                            (form.patient ? "(" + form.patient + ")" : "") + 
+                            ((form.ward || form.bed) ? "[" + ( form.ward || "") + "-" + ( form.bed || "") + "]" : "") + 
+                            (form.why ? " " + form.why : "") + 
+                            (form.details ? " (" + form.details + ")" : "");
+                        } else if (form.choice === 'otherpage') {
+                            return form.contents || '';
+                        }
+                    };
+                    this.overflow = function() {
+                        return me.display().length > 128;
+                    };
+                    this.submit = function() {
+                        var betterform = $scope.betterform;
+                        if (betterform.$invalid || me.overflow()) {
+                            angular.forEach($scope.betterform.$error, function(type) {
+                                angular.forEach(type, function (field) {
+                                    field.$setDirty();
+                                });
+                            });
+                            return false;
+                        }
+                        $http.post('submit.php', {no:me.form.no, msg:me.display()})
+                        .success(function(data) {
+                            if (data.ok) {
+                                me.prevpage = data.page;
+                                if (me.form.choice === 'ptpage') {
+                                    alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
+                                }
+                                angular.extend(me.form, me.initial);
+                                $scope.betterform.$setPristine();
+                            }
+                        });
+                    };
+                    this.prevpage = '';
+                }]
+        };
     });
-});
+})();

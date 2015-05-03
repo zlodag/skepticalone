@@ -6,19 +6,21 @@ $maxlength = 128;
 $valid = true;
 $fields = [];
 $errors = [];
+$feed = json_decode(file_get_contents("php://input"));
 function test_input($key) {
     global $valid;
     global $errors;
     global $maxlength;
-    if (!array_key_exists($key, $_POST)) {
+    global $feed;
+    if (!array_key_exists($key, $feed)) {
         $valid = false;
-        $errors[] = [$key,sprintf('"%s" was not submitted in POST', $key)];
+        $errors[] = [$key,sprintf('"%s" was not submitted in feed', $key)];
         return '';
     }
     
-    $data = $_POST[$key];
+    $data = $feed->$key;
     /*remember to clean data before inserting into DB
-    $data = trim($_POST[$key]);
+    $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
      */
@@ -34,13 +36,8 @@ function test_input($key) {
     }
     return $data;
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $no = test_input("no");
-    $msg = test_input("msg");
-} else {
-    $valid = false;
-    $errors[] = ["",'<em>The request method must be POST</em>'];
-}
+$no = test_input("no");
+$msg = test_input("msg");
 if ($valid) {
     $t = time();
     $logmessage = sprintf("%s To: %s %s\n", date("Y-m-d H:i:s", $t), $no, $msg); 
