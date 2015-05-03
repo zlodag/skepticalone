@@ -53,25 +53,6 @@ case "rows":
         WHERE `pages`.`page_id` > ?
         ORDER BY `pages`.`page_id` DESC
     ');
-    $stmt = $mysqli->prepare('SELECT
-        `pages`.`page_id`,
-        `team`.`name`,
-        `specialties`.`name`,
-        `shifts`.`description`,
-        UNIX_TIMESTAMP(`sessions`.`date`),
-        `pages`.`text`,
-        TIME_FORMAT(`pages`.`received`,"%H:%i"),
-        `pages`.`urgent`,
-        `pages`.`required`,
-        `pages`.`repeat`
-        FROM `audit_pages` `pages`
-        JOIN `audit_sessions` `sessions` USING (`session`)
-        JOIN `audit_shifts` `shifts` USING (`shift`)
-        JOIN `audit_specialties` `specialties` USING (`specialty`)
-        JOIN `audit_team` `team` USING (`person`)
-        WHERE `pages`.`page_id` > ?
-        ORDER BY `pages`.`page_id` DESC
-    ');
     $stmt->bind_param('i', array_key_exists("since",$data) ? intval($data->since) : 0);
     $stmt->execute();
     $stmt->bind_result(
@@ -95,9 +76,9 @@ case "rows":
             $date,
             $exact,
             $received,
-            $urgent,
-            $required,
-            $repeat
+            $urgent ? 'Y' : 'N',
+            $required ? 'Y' : 'N',
+            $repeat ? 'Y' : 'N'
         ];
     }
     break;
