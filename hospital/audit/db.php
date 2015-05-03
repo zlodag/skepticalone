@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set('Pacific/Auckland');
 header('Content-type: application/json');
-include('../_connect.php');
+include('../../_connect.php');
 $data = json_decode(file_get_contents("php://input"));
 
 switch($data->str) {
