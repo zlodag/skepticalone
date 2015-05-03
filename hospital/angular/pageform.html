@@ -1,0 +1,92 @@
+<select name="choice" ng-model="page.form.choice" ng-options="option.value as option.label for option in page.choices"></select>
+
+<fieldset>
+<legend>To</legend>
+<div>
+    <label for="no">Pager</label>
+    <input id="no" name="no" ng-model="page.form.no" type="number" ng-pattern="/^20[0-9]{3}$/" required>
+</div>
+<div class="errors">
+    <label ng-if="betterform.no.$dirty && betterform.no.$error.required" for="no"><em>Pager number</em> is required</label>
+    <label ng-if="betterform.no.$dirty && betterform.no.$error.pattern" for="no"><em>Pager number</em> must be 20 followed by 3 digits</label>
+</div>
+</fieldset>
+
+<fieldset ng-if="page.form.choice==='ptpage'">
+<legend>From</legend>
+<div>
+    <label for="caller">Name</label>
+    <input title-case id="caller" name="caller" ng-model="page.form.caller" ng-minlength="2" required>
+    <label for="phone">Phone</label>
+    <input id="phone" name="phone" ng-model="page.form.phone" ng-pattern="/^[0-9]+$/" required>
+</div>
+<div class="errors">
+    <label ng-if="betterform.caller.$dirty && betterform.caller.$error.required" for="caller"><em>Name</em> is required</label>
+    <label ng-if="betterform.caller.$dirty && betterform.caller.$error.minlength" for="caller"><em>Name</em> must be at least 2 characters long</label>
+    <label ng-if="betterform.phone.$dirty && betterform.phone.$error.required" for="phone"><em>Phone</em> is required</label>
+    <label ng-if="betterform.phone.$dirty && betterform.phone.$error.pattern" for="phone"><em>Phone</em> must contain only digits</label>
+</div>
+<div>
+    <label for="reply">Response required? <input id="reply" name="reply" ng-model="page.form.reply" type="checkbox"></label>
+    <label ng-if="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" max="99" min="1" ng-pattern="/^[0-9]+$/"> mins</label>
+</div>
+<div class="errors">
+    <label ng-if="betterform.within.$dirty && betterform.within.$error.required" for="within"><em>Response time</em> is required</label>
+    <label ng-if="betterform.within.$dirty && (betterform.within.$error.max || betterform.within.$error.min || betterform.within.$error.pattern)" for="within"><em>Response time</em> must be an integer between 0 and 100</label>
+</div>
+</fieldset>
+
+<fieldset ng-if="page.form.choice==='ptpage'">
+<legend>Patient</legend>
+<div>
+    <label for="patient">Name</label>
+    <input title-case id="patient" name="patient" ng-model="page.form.patient" ng-minlength="2" required>
+    <label for="nhi">NHI</label>
+    <input upper-case id="nhi" name="nhi" ng-model="page.form.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required>
+</div>
+<div class="errors">
+    <label ng-if="betterform.patient.$dirty && betterform.patient.$error.required" for="patient"><em>Name</em> is required</label>
+    <label ng-if="betterform.patient.$dirty && betterform.patient.$error.minlength" for="patient"><em>Name</em> must be at least 2 characters long</label>
+    <label ng-if="betterform.nhi.$dirty && betterform.nhi.$error.required" for="nhi"><em>NHI</em> is required</label>
+    <label ng-if="betterform.nhi.$dirty && betterform.nhi.$error.pattern" for="nhi"><em>NHI</em> must be valid</label>
+</div>
+<div>
+    <label for="ward">Ward</label>
+    <input upper-case id="ward" name="ward" ng-model="page.form.ward" ng-maxlength="3" required>
+    <label for="bed">Bed</label>
+    <input upper-case id="bed" name="bed" ng-model="page.form.bed" ng-maxlength="3" required>
+</div>
+<div class="errors">
+    <label ng-if="betterform.ward.$dirty && betterform.ward.$error.required" for="ward"><em>Ward</em> is required</label>
+    <label ng-if="betterform.ward.$dirty && betterform.ward.$error.maxlength" for="ward"><em>Ward</em> must be 1 to 3 characters long</label>
+    <label ng-if="betterform.bed.$dirty && betterform.bed.$error.required" for="bed"><em>Bed</em> is required</label>
+    <label ng-if="betterform.bed.$dirty && betterform.bed.$error.maxlength" for="bed"><em>Bed</em> must be 1 to 3 characters long</label>
+</div>
+</fieldset>
+
+<fieldset ng-if="page.form.choice==='ptpage'">
+<legend>Details</legend>
+<div>
+    <select id="why" name="why" ng-model="page.form.why" ng-options="option.value as option.label group by option.group for option in page.reasons" class="whole" required>
+        <option value="" selected>Reason for page</option>
+    </select>
+</div>
+<div class="errors">
+    <label ng-if="betterform.why.$dirty && betterform.why.$error.required" for="why"><em>Reason for page</em> is required</label>
+</div>
+<div>
+    <input id="details" name="details" ng-model="page.form.details" class="whole" placeholder="Specify (optional)">
+</div>
+</fieldset>
+
+<fieldset ng-if="page.form.choice==='otherpage'">
+<legend>Contents</legend>
+<div>
+    <textarea id="contents" name="contents" ng-model="page.form.contents" class="whole" required></textarea>
+</div>
+<div class="errors">
+    <label ng-if="betterform.contents.$dirty && betterform.contents.$error.required" for="contents"><em>Contents</em> is required</label>
+</div>
+</fieldset>
+
+<input ng-disabled="page.overflow()" type="submit" value="{{ page.overflow() ? 'Character limit exceeded' : 'Send' }}" />
