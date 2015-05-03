@@ -1,61 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="audit">
     <head>
         <meta charset="UTF-8">
         <title>Paging Audit</title>
-        <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
-        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-        <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.13.1/jquery.validate.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.5/js/jquery.tablesorter.min.js"></script>
-        <script src="audit.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.4/themes/start/jquery-ui.css" />
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.21.5/css/theme.ice.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script type="text/javascript" src="app.js"></script>
         <link rel="stylesheet" type="text/css" href="audit.css" />
     </head>
     <body>
-
-<form method="POST" id="newpage">
-    <fieldset class="persist">
-        <select name="person" required><option value="">Who are you?</option></select>
-    </fieldset>
-
-    <fieldset class="persist">
-        <legend>Shift data</legend>
-        <select name="specialty" required><option value="">Select specialty</option></select>
-        <select name="shift" required><option value="">Select shift</option></select>
-        <label class="info" for="date">Date commenced: </label><input name="date" id="date" placeholder="DD-MM-YYYY" required/>
-     </fieldset>
-
-     <fieldset class="vary">
-        <legend>Page data</legend>
-        <label class="info" for="contents">Exact contents: </label><input id="contents" name="contents" maxlength="255" required/>
-        <label class="info">Time recorded?<input id="time" type="checkbox" checked/></label><input name="received" id="received" placeholder="HH:MM (24hr)"/>
-        <label class="info">Urgent?<input id="urgent" name="urgent" type="checkbox"/></label>
-        <label class="info">Required this shift?<input id="required" name="required" type="checkbox"/></label>
-        <label class="info">Repeat page?<input id="repeat" name="repeat" type="checkbox"/></label>
-        <input type="submit" value="Submit"/>
-    </fieldset>
-    
-
-</form>
-
-<table id="pages">
-<caption></caption>
-<thead>
-<tr>
-<th class="filter-match">ID</th>
-<th>Entered by</th>
-<th>Specialty</th>
-<th>Shift</th>
-<th data-sorter="shortDate" data-date-format="ddmmyyyy">Date</th>
-<th>Exact text</th>
-<th>Time</th>
-<th>Urg?</th>
-<th>Req?</th>
-<th>Rpt?</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
+        <new-item></new-item>
+        <database-table></database-table>
     </body>
 </html>

@@ -1,9 +1,39 @@
 <?php
-include('../../_connect.php');
+date_default_timezone_set('Pacific/Auckland');
+header('Content-type: application/json');
+include('../_connect.php');
+$data = json_decode(file_get_contents("php://input"));
 
-function getAll() {
-    global $mysqli;
-    global $obj;
+switch($data->str) {
+
+case "initial":
+    $stmt = $mysqli->prepare("select shift,description from audit_shifts order by shift asc");
+    $stmt->execute();
+    $stmt->bind_result($shift,$description);
+    while ($stmt->fetch()) {
+        $obj["shift"][] = [$shift,$description];
+    }
+    $stmt->close();
+
+    $stmt = $mysqli->prepare("select specialty,name from audit_specialties order by specialty asc");
+    $stmt->execute();
+    $stmt->bind_result($specialty,$name);
+    while ($stmt->fetch()) {
+        $obj["specialty"][] = [$specialty,$name];
+    }
+    $stmt->close();
+
+    $stmt = $mysqli->prepare("select person,name from audit_team order by person asc");
+    $stmt->execute();
+    $stmt->bind_result($person,$name);
+    while ($stmt->fetch()) {
+        $obj["person"][] = [$person,$name];
+    }
+    $stmt->close();
+
+    break;
+
+case "rows":
     $stmt = $mysqli->prepare('SELECT
         `pages`.`page_id`,
         `team`.`name`,
@@ -20,8 +50,10 @@ function getAll() {
         JOIN `audit_shifts` `shifts` USING (`shift`)
         JOIN `audit_specialties` `specialties` USING (`specialty`)
         JOIN `audit_team` `team` USING (`person`)
-        ORDER BY `pages`.`timestamp` DESC
+        WHERE `pages`.`page_id` > ?
+        ORDER BY `pages`.`page_id` DESC
     ');
+    $stmt->bind_param('i', array_key_exists("since",$data) ? intval($data->since) : 0);
     $stmt->execute();
     $stmt->bind_result(
     $page_id,
@@ -36,7 +68,7 @@ function getAll() {
     $repeat
     );
     while ($stmt->fetch()) {
-        $obj['rows'][] = [
+        $obj[] = [
             $page_id,
             $entered,
             $specialty,
@@ -44,58 +76,24 @@ function getAll() {
             $date,
             $exact,
             $received,
-            $urgent,
-            $required,
-            $repeat
+            $urgent ? 'Y' : 'N',
+            $required ? 'Y' : 'N',
+            $repeat ? 'Y' : 'N'
         ];
     }
-}
-if ($_REQUEST["data"] == "initial") {
-    $stmt = $mysqli->prepare("select shift,description from audit_shifts order by shift asc");
-    $stmt->execute();
-    $stmt->bind_result($shift,$description);
-    while ($stmt->fetch()) {
-        $obj['shift'][] = [$shift,$description];
-    }
-    $stmt->close();
+    break;
 
-    $stmt = $mysqli->prepare("select specialty,name from audit_specialties order by specialty asc");
-    $stmt->execute();
-    $stmt->bind_result($specialty,$name);
-    while ($stmt->fetch()) {
-        $obj['specialty'][] = [$specialty,$name];
-    }
-    $stmt->close();
-
-    $stmt = $mysqli->prepare("select person,name from audit_team order by person asc");
-    $stmt->execute();
-    $stmt->bind_result($person,$name);
-    while ($stmt->fetch()) {
-        $obj['person'][] = [$person,$name];
-    }
-    $stmt->close();
-
-    getAll();
-
-} else if ($_POST['data'] == 'submit') {
-    $specialty = intval($_POST['specialty']);
-    $shift = intval($_POST['shift']);
-    $date = $mysqli->real_escape_string($_POST['date']);
+case "submit":
+    $specialty = $data->params->specialty;
+    $shift = $data->params->shift;
+    $date = $data->params->date;
 
     $stmt = $mysqli->prepare("INSERT IGNORE INTO audit_sessions (specialty,shift,date) VALUES (?,?,?)");
     $stmt->bind_param('iis',$specialty,$shift,$date);
     $stmt->execute();
     $stmt->close();
-
-    $person = intval($_POST['person']);
-    $contents = $mysqli->real_escape_string($_POST['contents']);
-    $urgent = intval($_POST['urgent']);
-    $required = intval($_POST['required']);
-    $repeat = intval($_POST['repeat']);
-    $received = $mysqli->real_escape_string($_POST['received']);
-    if ($received === "") {$received = NULL;}
-
-    if (!$stmt = $mysqli->prepare("INSERT IGNORE INTO `audit_pages`
+    
+    $stmt = $mysqli->prepare("INSERT IGNORE INTO `audit_pages`
     (`person`,`session`,`text`,`urgent`,`required`,`repeat`,`received`)
     VALUES (?,
     (SELECT `session` from `audit_sessions`
@@ -103,28 +101,24 @@ if ($_REQUEST["data"] == "initial") {
         and `shift`=?
         and `date`=?
     ),
-    ?,?,?,?,?)")) {
-        echo $mysqli->error;
-    }
+    ?,?,?,?,?)");
     $stmt->bind_param('iiissiiis',
-        $person,
+        $data->params->person,
         $specialty,
         $shift,
         $date,
-        $contents,
-        $urgent,
-        $required,
-        $repeat,
-        $received);
+        $data->params->contents,
+        $data->params->urgent,
+        $data->params->required,
+        $data->params->repeat,
+        $data->params->received
+    );
     $stmt->execute();
+    $obj = $stmt->affected_rows;
     $stmt->close();
-    
-    getAll();
-    //printf('%d affected rows', $mysqli->affected_rows);
-
-} else {
-    echo '_REQUEST["data"] must be specified';
-    exit;
+    break;
+default:
+    $obj = sprintf('str must be set to a valid value, not "%s"', $data->str);
+    break;
 }
-header('Content-type: application/json');
 echo json_encode($obj);
