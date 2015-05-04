@@ -8,12 +8,14 @@
             controller: ['$http',function($http){
                 var self = this;
                 self.rows = [];
-                self.indices = [];
+                self.sortindex = 0;
+                self.reversed = true;
+                self.sort = function(int) {
+                    if (self.sortindex === int) {self.reversed = !self.reversed;}
+                    else {self.sortindex = int;self.reversed = false;}
+                };
                 $http.post('db.php', {str:'rows'}).success(function(obj){
                     self.rows = obj;
-                    for (var i = 0; i < 10; i++) {
-                        self.indices.push(i);
-                    }
                 });
                 self.headers = ['ID', 'Entered by','Specialty','Shift','Date','Exact text','Time','Urg?','Req?','Rpt?'];
             }]
@@ -42,6 +44,7 @@
                             angular.extend(self.entry,{contents:'',urgent:false,required:false,repeat:false,checked:true,received:''});
                             $scope.newpage.$setPristine();
                             document.getElementById('contents').focus();
+                            $scope.db.sortindex = 0; $scope.db.reversed = true;
                             $http.post('db.php', {str:'rows', since: $scope.db.rows[0][0]}).success(function(obj){
                                 for (var i= obj.length - 1; i >= 0 ; i--) {
                                     $scope.db.rows.unshift(obj[i]);

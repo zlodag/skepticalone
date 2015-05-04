@@ -39,7 +39,7 @@ case "rows":
         `team`.`name`,
         `specialties`.`name`,
         `shifts`.`description`,
-        DATE_FORMAT(`sessions`.`date`,"%d/%m/%Y"),
+        DATE_FORMAT(`sessions`.`date`,"%Y-%m-%d"),
         `pages`.`text`,
         TIME_FORMAT(`pages`.`received`,"%H:%i"),
         `pages`.`urgent`,

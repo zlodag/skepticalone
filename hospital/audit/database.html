@@ -1,21 +1,24 @@
+
+
 <table id="pages">
-    <caption>{{ db.rows.length }} entries total</caption>
-    <thead><tr><th ng-repeat="str in db.headers">{{ str }}</th></tr></thead>
+    <caption><label for="restrict">Filter:</label> <input id="restrict" name="restrict" type="search" ng-model="restrict" />
+    {{ db.rows.length }} entries total</caption>
+    <thead><tr><th ng-repeat="str in db.headers" ng-class="{active:db.sortindex === $index,asc:!db.reversed,desc:db.reversed}" ng-click="db.sort($index)">{{ str }}</th></tr></thead>
     <tbody>
     <tr class="newrow" ng-class="{invalid:newpage.$invalid}">
-    <td>{{db.rows[0][0] + 1}}</td>
+    <td></td>
     <td ng-class="{invalid:!new.entry.person}">{{new.entry.person[1]}}</td>
     <td ng-class="{invalid:!new.entry.specialty}">{{new.entry.specialty[1]}}</td>
     <td ng-class="{invalid:!new.entry.shift}">{{new.entry.shift[1]}}</td>
-    <td ng-class="{invalid:!new.entry.date}">{{new.entry.date | date:'dd/MM/yyyy'}}</td>
+    <td ng-class="{invalid:!new.entry.date}">{{new.entry.date | date:'yyyy-MM-dd'}}</td>
     <td ng-class="{invalid:!new.entry.contents}">{{new.entry.contents}}</td>
     <td ng-class="{invalid:new.entry.checked ? !new.entry.received : false}">{{new.entry.checked ? (new.entry.received | date:'HH:mm') : ''}}</td>
     <td>{{new.entry.urgent ? 'Y' : 'N'}}</td>
     <td>{{new.entry.required ? 'Y' : 'N'}}</td>
     <td>{{new.entry.repeat ? 'Y' : 'N'}}</td>
     </tr>
-    <tr ng-repeat="row in db.rows">
-        <td ng-repeat="index in db.indices" ng-bind="row[index]"></td>
+    <tr ng-repeat="row in db.rows | filter:restrict | orderBy: '[' + db.sortindex + ']' : db.reversed ">
+        <td ng-repeat="cell in row track by $index" ng-bind="cell"></td>
     </tr>
     </tbody>
 </table>

@@ -6,7 +6,7 @@
     padding:2px;
 }
 #newpage>fieldset, #newpage label, #newpage select {
-    margin:5px;
+    margin:5px 0;
 }
 #newpage input[type="submit"] {
     clear:left;
@@ -26,7 +26,6 @@
     color:red;
 }
 #pages {
-    margin: 10px;
     border-collapse:collapse;
     background-color:#EAEAEA;
 }
@@ -37,9 +36,28 @@
 #ui-datepicker-div {
     font-size:11px;
 }
-tr.newrow,input.ng-dirty.ng-valid {
+tr.newrow,form input.ng-dirty.ng-valid {
     background-color: lightgreen;
 }
-tr.newrow>td.invalid,input.ng-dirty.ng-invalid {
+tr.newrow>td.invalid,form input.ng-dirty.ng-invalid {
     background-color: lightcoral;
+}
+caption {
+    padding:10px;
+}
+th {
+    font-family:monospace;
+}
+th:hover {
+    cursor:pointer;
+}
+th.active {
+    background-color: black;
+    color:white;
+}
+th.active.desc:after {
+    content: ' \25be';
+}
+th.active.asc:after {
+    content: ' \25b4';
 }
