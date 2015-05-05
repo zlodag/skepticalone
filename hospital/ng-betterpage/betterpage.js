@@ -1,4 +1,5 @@
 (function() {
+    "use strict";
     var app = angular.module('betterpage', [])
     .config(['$locationProvider',function($locationProvider) {
         $locationProvider.html5Mode(true);
