@@ -67,7 +67,9 @@ $(function() {
 
     $('#caller,#phone,#within,#patient,#nhi,#ward,#bed,#details,#to_other,#contents').keyup(update).keyup();
     $('#why').change(update).change();
-    $('#reply').click(function() {$('[for="within"]').toggle(this.checked);}).click(update);
+    var within = $('[for="within"]');
+    within.hide();
+    $('#reply').click(function() {within.toggle(this.checked);}).click(update);
     $('#choice').change(function() {
         var context = '.' + $(this).val(), 
         toggles = $('form,code,#outcome label');
