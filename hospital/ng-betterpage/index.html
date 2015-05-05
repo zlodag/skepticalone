@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>BetterPage</title>
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script type="text/javascript" src="betterpage.js"></script>
+        <link rel="stylesheet" type="text/css" href="betterpage.css" />
+        <base href="/hospital/betterpage/">
+    </head>
+    <body ng-app="betterpage">
+        <form ng-submit="page.submit(betterform)" name="betterform" novalidate page-form></form>
+
+        <div id="preview">
+            <label>Preview</label>
+            <code>###:{{ page.display() }}</code>
+            <label>{{page.display().length}}/128 characters</label>
+        </div>
+
+        <div id="outcome">
+        <div ng-if="page.prevpage">
+        <label>Successful submission of form!</label>
+        <code>###:{{ page.prevpage }}</code>
+        </div>
+        <a href="pages.txt" target="_blank">Page Log</a>
+        </div>
+
+    </body>
+</html>
