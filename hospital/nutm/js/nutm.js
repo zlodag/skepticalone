@@ -470,7 +470,9 @@ $(function() {
             listbody = $('#lists-panel>table>tbody').empty();
         }
         for (var i = 0; i < csv.data.length; i++) {
-            if (initial && i === 0) {var allocationtime = new Date(/\w+ \d{1,2} \d{1,2}:\d{1,2} \d{4}/.exec(csv.data[i][0])[0] + 'EDT');}
+            if (initial && i === 0) {
+                var allocationtime = new Date(/\w+ +\d{1,2} +\d{1,2}:\d{1,2} +\d{4}/.exec(csv.data[i][0])[0] + 'EDT');
+            }
             if (csv.data[i].length === 12) {
                 var r = csv.data[i], 
                 div = r[0],
