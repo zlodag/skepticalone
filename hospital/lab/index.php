@@ -373,7 +373,7 @@ if (array_key_exists("nhi",$_GET)
         <meta charset="UTF-8">
         <title>LabViewer</title>
         <link rel="stylesheet" type="text/css" href="lab.css">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
         <script src="lab.js"></script>
     </head>
     <body>
