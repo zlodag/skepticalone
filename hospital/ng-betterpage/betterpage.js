@@ -113,7 +113,7 @@
                         $http.post(submiturl, {no:me.form.no, msg:msg})
                         .success(function(data) {
                             if (data.ok) {
-                                alert('it worked!');
+                                alert(pageurl + '?bp=1&no=' + parseInt(me.form.no,10) + '&msg=' + encodeURIComponent(msg));
                                 //window.open(pageurl);
                                 //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
 
