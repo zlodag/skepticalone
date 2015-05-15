@@ -15,13 +15,6 @@
         <base href="/hospital/ng-betterpage/">
     </head>
     <body ng-app="betterpage">
-        <div>
-        <!--[if gt IE 8]><!-->
-        This version is greater than IE8.
-        <!--<![endif]-->
-        <!--[if lte IE 8]>
-        This version is less than or equal to IE8.
-        <![endif]-->
         <form ng-submit="page.submit(betterform)" name="betterform" novalidate page-form></form>
 
         <div id="preview">
@@ -37,6 +30,16 @@
         </div>
         <a href="pages.txt" target="_blank">Page Log</a>
         </div>
+
+        <div>
+        <!--[if gt IE 8]><!-->
+        This version is greater than IE8.
+        <!--<![endif]-->
+        <!--[if lte IE 8]>
+        This version is less than or equal to IE8.
+        <![endif]-->
+        </div>
+
 
     </body>
 </html>
