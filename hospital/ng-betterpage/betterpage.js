@@ -1,5 +1,5 @@
 (function() {
-    var submiturl = 'submit.php',
+    var submiturl = './submit.php',
     pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
 
     "use strict";
@@ -113,6 +113,7 @@
                         $http.post(submiturl, {no:me.form.no, msg:msg})
                         .success(function(data) {
                             if (data.ok) {
+                                alert('it worked!');
                                 //window.open(pageurl);
                                 //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
 
