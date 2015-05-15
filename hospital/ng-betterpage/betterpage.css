@@ -62,7 +62,7 @@ div.errors>label {
     display: block;
     text-align: left;
 }
-code, code+label {
+pre, pre+label {
     background-color: #E8E8E8;
     width: 20ch;
     padding: 1ch;
@@ -70,5 +70,5 @@ code, code+label {
     border: 1px solid black;
     font-family: monospace;
     margin: 5px 0;
-    word-wrap: break-word;
+    white-space: pre-wrap;
 }
