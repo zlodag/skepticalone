@@ -112,13 +112,13 @@
                 .success(function(data) {
                     if (data.ok) {
                         var urlstring = pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg);
-                        alert(urlstring);
-                        window.open(urlstring);
+                        //alert(urlstring);
+                        //window.open(urlstring);
                         //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
                         
-                        //var xmlhttp = new XMLHttpRequest();
-                        //xmlhttp.open("GET", urlstring, true);
-                        //xmlhttp.send();
+                        var xmlhttp = new XMLHttpRequest();
+                        xmlhttp.open("GET", urlstring, true);
+                        xmlhttp.send();
                         
                         me.prevpage = data.page;
                         if (me.form.choice === 'ptpage') {
