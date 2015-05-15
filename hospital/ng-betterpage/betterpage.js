@@ -111,13 +111,14 @@
                 $http.post(submiturl, {no: me.form.no,msg: msg})
                 .success(function(data) {
                     if (data.ok) {
-                        alert(pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg));
-                        //window.open(pageurl);
+                        var urlstring = pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg);
+                        alert(pageurl);
+                        window.open(pageurl);
                         //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
                         
-                        var xmlhttp = new XMLHttpRequest();
-                        xmlhttp.open("GET", pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg), true);
-                        xmlhttp.send();
+                        //var xmlhttp = new XMLHttpRequest();
+                        //xmlhttp.open("GET", urlstring, true);
+                        //xmlhttp.send();
                         
                         me.prevpage = data.page;
                         if (me.form.choice === 'ptpage') {
