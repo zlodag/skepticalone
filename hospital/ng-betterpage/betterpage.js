@@ -1,4 +1,7 @@
 (function() {
+    var submiturl = 'submit.php',
+    pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
+
     "use strict";
     var app = angular.module('betterpage', [])
     .config(['$locationProvider',function($locationProvider) {
@@ -97,7 +100,8 @@
                         return me.display().length > 128;
                     };
                     this.submit = function() {
-                        var betterform = $scope.betterform;
+                        var betterform = $scope.betterform,
+                        msg = me.display();
                         if (betterform.$invalid || me.overflow()) {
                             angular.forEach($scope.betterform.$error, function(type) {
                                 angular.forEach(type, function (field) {
@@ -106,9 +110,10 @@
                             });
                             return false;
                         }
-                        $http.post('submit.php', {no:me.form.no, msg:me.display()})
+                        $http.post(submiturl, {no:me.form.no, msg:msg})
                         .success(function(data) {
                             if (data.ok) {
+                                $http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
                                 me.prevpage = data.page;
                                 if (me.form.choice === 'ptpage') {
                                     alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
