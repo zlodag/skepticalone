@@ -4,12 +4,24 @@
         <meta charset="UTF-8">
         <title>AngularPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <script type="text/javascript" src="/bower_components/angular/angular.js"></script>
-        <script type="text/javascript" src="betterpage.js"></script>
+        <!--[if gt IE 8]><!-->
+        <script src="/bower_components/angular/angular.js"></script>
+        <!--<![endif]-->
+        <!--[if lte IE 8]>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
+        <![endif]-->
+        <script src="betterpage.js"></script>
         <link rel="stylesheet" type="text/css" href="betterpage.css" />
         <base href="/hospital/ng-betterpage/">
     </head>
     <body ng-app="betterpage">
+        <div>
+        <!--[if gt IE 8]><!-->
+        This version is greater than IE8.
+        <!--<![endif]-->
+        <!--[if lte IE 8]>
+        This version is less than or equal to IE8.
+        <![endif]-->
         <form ng-submit="page.submit(betterform)" name="betterform" novalidate page-form></form>
 
         <div id="preview">

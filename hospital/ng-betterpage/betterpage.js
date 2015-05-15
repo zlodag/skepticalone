@@ -35,26 +35,26 @@
             controllerAs: 'page',
             controller: ['$http', '$scope','$location', function($http, $scope, $location) {
                     this.reasons = [
-                        {label: "ADDS 3",value: "adds3",group: "High ADDS - specify why"}, 
-                        {label: "ADDS 4",value: "adds4",group: "High ADDS - specify why"}, 
-                        {label: "ADDS 5+",value: "adds5plus",group: "High ADDS - specify why"}, 
-                        {label: "Pain",value: "pain",group: "Concern"}, 
-                        {label: "Wound",value: "wound",group: "Concern"}, 
-                        {label: "Clarify plan",value: "plan",group: "Concern"}, 
-                        {label: "Fluids",value: "fluids",group: "Medication"}, 
-                        {label: "Pain relief",value: "analgesia",group: "Medication"}, 
-                        {label: "Anti-emetic",value: "antiemetic",group: "Medication"}, 
-                        {label: "Sleeping pill",value: "sleep",group: "Medication"}, 
-                        {label: "Laxatives",value: "laxatives",group: "Medication"}, 
-                        {label: "Regular Meds",value: "regmeds",group: "Medication"}, 
-                        {label: "IV line",value: "iv_line",group: "Task"}, 
-                        {label: "Consent",value: "consent",group: "Task"}, 
-                        {label: "Discharge papers",value: "discharge",group: "Task"}, 
-                        {label: "Rechart",value: "rechart",group: "Task"}, 
-                        {label: "Inform (no response needed)",value: "inform",group: "Other - specify below"}, 
-                        {label: "Call urgently!",value: "call_urgent",group: "Other - specify below"}, 
-                        {label: "Come urgenly!",value: "come_urgent",group: "Other - specify below"}, 
-                        {label: "None of the above",value: "custom",group: "Other - specify below"}
+                        {label: "ADDS 3",group: "High ADDS - specify why"}, 
+                        {label: "ADDS 4",group: "High ADDS - specify why"}, 
+                        {label: "ADDS 5+",group: "High ADDS - specify why"}, 
+                        {label: "Pain",group: "Concern"}, 
+                        {label: "Wound",group: "Concern"}, 
+                        {label: "Clarify plan",group: "Concern"}, 
+                        {label: "Fluids",group: "Medication"}, 
+                        {label: "Pain relief",group: "Medication"}, 
+                        {label: "Anti-emetic",group: "Medication"}, 
+                        {label: "Sleeping pill",group: "Medication"}, 
+                        {label: "Laxatives",group: "Medication"}, 
+                        {label: "Regular Meds",group: "Medication"}, 
+                        {label: "IV line",group: "Task"}, 
+                        {label: "Consent",group: "Task"}, 
+                        {label: "Discharge",group: "Task"}, 
+                        {label: "Rechart",group: "Task"}, 
+                        {label: "Inform",group: "Other - specify below"}, 
+                        {label: "Call urgently!",group: "Other - specify below"}, 
+                        {label: "Review urgently!",group: "Other - specify below"}, 
+                        {label: "Custom",group: "Other - specify below"}
                     ];
                     this.choices = [
                         {label: "Page about a patient",value: "ptpage"}, 
@@ -87,7 +87,7 @@
                             (form.nhi ? " " + form.nhi : "") + 
                             (form.patient ? "(" + form.patient + ")" : "") + 
                             ((form.ward || form.bed) ? "[" + ( form.ward || "") + "-" + ( form.bed || "") + "]" : "") + 
-                            (form.why ? " " + form.why : "") + 
+                            (form.why.label ? " " + form.why.label : "") + 
                             (form.details ? " (" + form.details + ")" : "");
                         } else if (form.choice === 'otherpage') {
                             return form.contents || '';

@@ -67,7 +67,7 @@
 <fieldset ng-if="page.form.choice==='ptpage'">
 <legend>Details</legend>
 <div>
-    <select id="why" name="why" ng-model="page.form.why" ng-options="option.value as option.label group by option.group for option in page.reasons" class="whole" required>
+    <select id="why" name="why" ng-model="page.form.why" ng-options="option.label group by option.group for option in page.reasons" class="whole" required>
         <option value="" selected>Reason for page</option>
     </select>
 </div>
