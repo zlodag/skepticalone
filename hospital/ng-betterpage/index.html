@@ -5,7 +5,8 @@
         <title>AngularPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <!--[if gt IE 8]><!-->
-        <script src="/bower_components/angular/angular.js"></script>
+        <!-- <script src="/bower_components/angular/angular.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
         <!--<![endif]-->
         <!--[if lte IE 8]>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
@@ -42,6 +43,12 @@
         This browser is Internet Explorer 8 or worse...
         </div>
         <![endif]-->
-
+        
+        <form action="http://10.134.0.150/cgi-bin/npcgi" method="GET" target="_blank">
+        <input name="no" value="20341" />
+        <textarea name="msg">Testing</textarea>
+        <input type="submit" />
+        <input name="bp" value="1" type="hidden" />
+        </form>
     </body>
 </html>

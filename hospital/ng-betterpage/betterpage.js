@@ -113,7 +113,13 @@
                         $http.post(submiturl, {no:me.form.no, msg:msg})
                         .success(function(data) {
                             if (data.ok) {
-                                $http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
+                                //window.open(pageurl);
+                                //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
+
+                                var xmlhttp=new XMLHttpRequest();
+                                xmlhttp.open("GET",pageurl,true);
+                                xmlhttp.send();
+
                                 me.prevpage = data.page;
                                 if (me.form.choice === 'ptpage') {
                                     alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
