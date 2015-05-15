@@ -117,7 +117,7 @@
                                 //$http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
 
                                 var xmlhttp=new XMLHttpRequest();
-                                xmlhttp.open("GET",pageurl,true);
+                                xmlhttp.open("GET",pageurl + '?bp=1&no=' + parseInt(me.form.no,10) + '&msg=' + encodeURIComponent(msg),true);
                                 xmlhttp.send();
 
                                 me.prevpage = data.page;
