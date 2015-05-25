@@ -31,7 +31,7 @@ $result=$mysqli->query("SELECT * FROM `page_log`");
 while ($row = $result->fetch_assoc()) {
     print ("<tr>");
     foreach (["ts","no","msg","caller","phone","within","patient","nhi","ward","bed","why","details"] as $k) {
-        printf ("<td>%s</td>", $row[$k]);
+        printf ("<td>%s</td>", htmlspecialchars($row[$k]));
     }
     print ("</tr>");
 }
