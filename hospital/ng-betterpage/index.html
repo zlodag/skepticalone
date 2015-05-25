@@ -5,7 +5,7 @@
         <title>AngularPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <!--[if gt IE 8]><!-->
-        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular/angular.min.js"></script>
         <!--<![endif]-->
         <!--[if lte IE 8]>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
@@ -84,7 +84,7 @@
             <fieldset ng-if="page.form.choice==='ptpage'">
             <legend>Details</legend>
             <div>
-                <select id="why" name="why" ng-model="page.form.why" ng-options="option.label group by option.group for option in page.reasons" class="whole" required>
+                <select id="why" name="why" ng-model="page.form.why" ng-options="option.label as option.label group by option.group for option in page.reasons" class="whole" required>
                     <option value="" selected>Reason for page</option>
                 </select>
             </div>

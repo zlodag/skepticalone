@@ -108,16 +108,14 @@
                     });
                     return false;
                 }
-                $http.post(submiturl, {no: me.form.no,msg: msg})
+                $http.post(submiturl, angular.extend({msg:msg},me.form))
                 .success(function(data) {
                     if (data.ok) {
                         //alert(urlstring);
-                        if (!document.addEventListener) {
-                            //using Internet Explorer <= 8...
-                            var urlstring = pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg);
-                            window.open(urlstring);
+                        if (!document.addEventListener) { //using Internet Explorer <= 8...
+                            window.open(pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg));
                         } else {
-                            $http.get(pageurl, {params: {no:me.form.no, msg:msg, bp:1}});
+                            $http.get(pageurl, {params: {bp:1, no:parseInt(me.form.no, 10), msg:msg}});
                         };
                         me.prevpage = data.page;
                         if (me.form.choice === 'ptpage') {

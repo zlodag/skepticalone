@@ -37,7 +37,7 @@ $(function() {
                 text: options.p,
                 'class': 'label label-' + btype
             }).tooltip(), 
-            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + pad(options.pg,3),href: '../betterpage/?no=20' + pad(options.pg,3) + '&' + get_str,target: '_blank'}).tooltip() : null, 
+            pg = options.pg ? $('<a>', {'class': 'glyphicon glyphicon-phone',data: tooltipdata,title: 'pg 20' + pad(options.pg,3),href: '../ng-betterpage/?no=20' + pad(options.pg,3) + '&' + get_str,target: '_blank'}).tooltip() : null, 
             time = $('<time>', {
                 datetime: date.toISOString(),
                 data: tooltipdata,
