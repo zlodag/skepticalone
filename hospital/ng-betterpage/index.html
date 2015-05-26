@@ -6,6 +6,7 @@
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <!--[if gt IE 8]><!-->
         <script src="/bower_components/angular/angular.min.js"></script>
+        <script src="/bower_components/angular-messages/angular-messages.min.js"></script>
         <!--<![endif]-->
         <!--[if lte IE 8]>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
@@ -21,11 +22,13 @@
             <legend>To</legend>
             <div>
                 <label for="no">Pager</label>
-                <input id="no" name="no" ng-model="page.form.no" type="number" ng-pattern="/^20[0-9]{3}$/" required>
+                <input id="no" name="no" ng-model="page.form.no" type="number" min="20000" max="20999" required>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.no.$dirty && betterform.no.$error.required" for="no"><em>Pager number</em> is required</label>
-                <label ng-if="betterform.no.$dirty && betterform.no.$error.pattern" for="no"><em>Pager number</em> must be 20 followed by 3 digits</label>
+            <div ng-if="betterform.no.$dirty" ng-messages="betterform.no.$error">
+                <label ng-message="required"><em>Pager number</em> is required</label>
+                <label ng-message="number"><em>Pager number</em> must be a number</label>
+                <label ng-message="min"><em>Pager number</em> must be 20 followed by 3 digits</label>
+                <label ng-message="max"><em>Pager number</em> must be 20 followed by 3 digits</label>
             </div>
             </fieldset>
 
@@ -37,19 +40,24 @@
                 <label for="phone">Phone</label>
                 <input id="phone" name="phone" ng-model="page.form.phone" ng-pattern="/^[0-9]+$/" required>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.caller.$dirty && betterform.caller.$error.required" for="caller"><em>Name</em> is required</label>
-                <label ng-if="betterform.caller.$dirty && betterform.caller.$error.minlength" for="caller"><em>Name</em> must be at least 2 characters long</label>
-                <label ng-if="betterform.phone.$dirty && betterform.phone.$error.required" for="phone"><em>Phone</em> is required</label>
-                <label ng-if="betterform.phone.$dirty && betterform.phone.$error.pattern" for="phone"><em>Phone</em> must contain only digits</label>
+            <div ng-if="betterform.caller.$dirty" ng-messages="betterform.caller.$error">
+                <label ng-message="required"><em>Name</em> is required</label>
+                <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+            </div>
+            <div ng-if="betterform.phone.$dirty" ng-messages="betterform.phone.$error">
+                <label ng-message="required"><em>Phone</em> is required</label>
+                <label ng-message="pattern"><em>Phone</em> must contain only digits</label>
             </div>
             <div>
                 <label for="reply">Response required? <input id="reply" name="reply" ng-model="page.form.reply" type="checkbox"></label>
-                <label ng-if="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" max="99" min="1" ng-pattern="/^[0-9]+$/"> mins</label>
+                <label ng-show="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" min="1" max="99" ng-pattern="/^[0-9]+$/"> mins</label>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.within.$dirty && betterform.within.$error.required" for="within"><em>Response time</em> is required</label>
-                <label ng-if="betterform.within.$dirty && (betterform.within.$error.max || betterform.within.$error.min || betterform.within.$error.pattern)" for="within"><em>Response time</em> must be an integer between 0 and 100</label>
+            <div ng-if="betterform.within.$dirty" ng-messages="betterform.within.$error">
+                <label ng-message="required"><em>Response time</em> is required</label>
+                <label ng-message="number"><em>Response time</em> must be an number</label>
+                <label ng-message="pattern"><em>Response time</em> must be an integer</label>
+                <label ng-message="min"><em>Response time</em> must be greater than 0</label>
+                <label ng-message="max"><em>Response time</em> must be less than 100</label>
             </div>
             </fieldset>
 
@@ -61,11 +69,13 @@
                 <label for="nhi">NHI</label>
                 <input upper-case id="nhi" name="nhi" ng-model="page.form.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.patient.$dirty && betterform.patient.$error.required" for="patient"><em>Name</em> is required</label>
-                <label ng-if="betterform.patient.$dirty && betterform.patient.$error.minlength" for="patient"><em>Name</em> must be at least 2 characters long</label>
-                <label ng-if="betterform.nhi.$dirty && betterform.nhi.$error.required" for="nhi"><em>NHI</em> is required</label>
-                <label ng-if="betterform.nhi.$dirty && betterform.nhi.$error.pattern" for="nhi"><em>NHI</em> must be valid</label>
+            <div ng-if="betterform.patient.$dirty" ng-messages="betterform.patient.$error">
+                <label ng-message="required"><em>Name</em> is required</label>
+                <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+            </div>
+            <div ng-if="betterform.nhi.$dirty" ng-messages="betterform.nhi.$error">
+                <label ng-message="required"><em>NHI</em> is required</label>
+                <label ng-message="pattern"><em>NHI</em> must be valid</label>
             </div>
             <div>
                 <label for="ward">Ward</label>
@@ -73,11 +83,13 @@
                 <label for="bed">Bed</label>
                 <input upper-case id="bed" name="bed" ng-model="page.form.bed" ng-maxlength="3" required>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.ward.$dirty && betterform.ward.$error.required" for="ward"><em>Ward</em> is required</label>
-                <label ng-if="betterform.ward.$dirty && betterform.ward.$error.maxlength" for="ward"><em>Ward</em> must be 1 to 3 characters long</label>
-                <label ng-if="betterform.bed.$dirty && betterform.bed.$error.required" for="bed"><em>Bed</em> is required</label>
-                <label ng-if="betterform.bed.$dirty && betterform.bed.$error.maxlength" for="bed"><em>Bed</em> must be 1 to 3 characters long</label>
+            <div ng-if="betterform.ward.$dirty" ng-messages="betterform.ward.$error">
+                <label ng-message="required"><em>Ward</em> is required</label>
+                <label ng-message="maxlength"><em>Ward</em> must be 1 to 3 characters long</label>
+            </div>
+            <div ng-if="betterform.bed.$dirty" ng-messages="betterform.bed.$error">
+                <label ng-message="required"><em>Bed</em> is required</label>
+                <label ng-message="maxlength"><em>Bed</em> must be 1 to 3 characters long</label>
             </div>
             </fieldset>
 
@@ -88,8 +100,8 @@
                     <option value="" selected>Reason for page</option>
                 </select>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.why.$dirty && betterform.why.$error.required" for="why"><em>Reason for page</em> is required</label>
+            <div ng-if="betterform.why.$dirty" ng-messages="betterform.why.$error">
+                <label ng-message="required"><em>Reason for page</em> is required</label>
             </div>
             <div>
                 <input id="details" name="details" ng-model="page.form.details" class="whole" placeholder="Specify (optional)">
@@ -101,8 +113,8 @@
             <div>
                 <textarea id="contents" name="contents" ng-model="page.form.contents" class="whole" required></textarea>
             </div>
-            <div class="errors">
-                <label ng-if="betterform.contents.$dirty && betterform.contents.$error.required" for="contents"><em>Contents</em> is required</label>
+            <div ng-if="betterform.contents.$dirty" ng-messages="betterform.contents.$error">
+                <label ng-message="required"><em>Contents</em> is required</label>
             </div>
             </fieldset>
 

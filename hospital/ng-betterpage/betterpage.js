@@ -3,7 +3,7 @@
     pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
     
     "use strict";
-    var app = angular.module('betterpage', [])
+    var app = angular.module('betterpage', ['ngMessages'])
     .directive('titleCase', function() {
         return {
             restrict: 'A',
