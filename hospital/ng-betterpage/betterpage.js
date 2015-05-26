@@ -88,7 +88,7 @@
                     (form.nhi ? " " + form.nhi : "") + 
                     (form.patient ? "(" + form.patient + ")" : "") + 
                     ((form.ward || form.bed) ? "[" + (form.ward || "") + "-" + (form.bed || "") + "]" : "") + 
-                    (form.why.label ? " " + form.why.label : "") + 
+                    (form.why ? " " + form.why : "") + 
                     (form.details ? " (" + form.details + ")" : "");
                 } else if (form.choice === 'otherpage') {
                     return form.contents || '';
