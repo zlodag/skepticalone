@@ -10,33 +10,24 @@ table {border-collapse: collapse;}
 </style>
 </head>
 <body>
-<table><tr>
-<th>Timestamp</th>
-<th>To</th>
-<th>Message</th>
-<th>Caller</th>
-<th>Phone</th>
-<th>Within</th>
-<th>Patient</th>
-<th>NHI</th>
-<th>Ward</th>
-<th>Bed</th>
-<th>Why</th>
-<th>Details</th>
-</tr>
+<table>
 <?php
 date_default_timezone_set("Pacific/Auckland");
 include('../../_connect.php');
 $result=$mysqli->query("SELECT * FROM `page_log`");
+echo "<tr>";
+foreach (["Timestamp","To","Message","Caller","Phone","Within (mins)","Patient","NHI","Ward","Bed","Why","Details"] as $title) {
+    printf("<th>%s</th>", $title);
+}
+echo "</tr>";
 while ($row = $result->fetch_assoc()) {
-    print ("<tr>");
+    echo "<tr>";
     foreach (["ts","no","msg","caller","phone","within","patient","nhi","ward","bed","why","details"] as $k) {
         printf ("<td>%s</td>", htmlspecialchars($row[$k]));
     }
-    print ("</tr>");
+    echo "</tr>";
 }
 ?>
 </table>
 </body>
 </html>
-<?
