@@ -1,98 +1,155 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>BetterPage</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="stylesheet" href="betterpage.css" />
-<script type="text/javascript" src="/bower_components/jquery/dist/jquery.min.js"></script>
-<script type="text/javascript" src="/bower_components/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="betterpage.js"></script>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>BetterPage</title>
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <!--[if gt IE 8]><!-->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-messages.min.js"></script>
+        <!--<![endif]-->
+        <!-- local resources
+        <script src="/bower_components/angular/angular.min.js"></script>
+        <script src="/bower_components/angular-messages/angular-messages.min.js"></script>
+        -->
+        <!--[if lte IE 8]>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.27/angular.js"></script>
+        <![endif]-->
+        <script src="betterpage.js"></script>
+        <link rel="stylesheet" type="text/css" href="betterpage.css" />
+    </head>
+    <body ng-app="betterpage" ng-controller="pageCtrl as page">
+        <form ng-submit="page.submit(betterform)" name="betterform" novalidate>
+            <select name="choice" ng-model="page.form.choice" ng-options="option.value as option.label for option in page.choices"></select>
 
-<select id="choice" name="choice">
-<option value="ptpage" selected>Page about a patient</option>
-<option value="otherpage">Page about something else</option>
-</select>
+            <fieldset>
+            <legend>To</legend>
+            <div>
+                <label for="no">Pager</label>
+                <input id="no" name="no" ng-model="page.form.no" type="number" min="20000" max="20999" required>
+            </div>
+            <div ng-if="betterform.no.$dirty" ng-messages="betterform.no.$error">
+                <label ng-message="required"><em>Pager number</em> is required</label>
+                <label ng-message="number"><em>Pager number</em> must be a number</label>
+                <label ng-message="min"><em>Pager number</em> must be 20 followed by 3 digits</label>
+                <label ng-message="max"><em>Pager number</em> must be 20 followed by 3 digits</label>
+            </div>
+            </fieldset>
 
-<form class="ptpage">
-<fieldset>
-<legend>To</legend>
-    <div>
-<label for="to" class="info">Pager</label>
-<input id="to" name="to" data-readable="Pager number">
-    </div>
-</fieldset>
-<fieldset>
-<legend>From</legend>
-    <div>
-<label for="caller" class="info">Name</label>
-<input id="caller" name="caller" data-readable="Name">
-<label for="phone" class="info">Phone</label>
-<input id="phone" name="phone" data-readable="Phone">
-    </div>
-<div><label for="reply" class="info">Response required? <input id="reply" name="reply" type="checkbox"></label><label for="within" class="info toggle">within <input id="within" name="within" data-readable="Response time"> mins</label></div></fieldset>
-<fieldset>
-<legend>Patient</legend>
-    <div>
-<label for="patient" class="info">Name</label>
-<input id="patient" name="patient" data-readable="Name">
-<label for="nhi" class="info">NHI</label>
-<input id="nhi" name="nhi" data-readable="NHI">
-    </div>
-    <div>
-<label for="ward" class="info">Ward</label>
-<input id="ward" name="ward" data-readable="Ward">
-<label for="bed" class="info">Bed</label>
-<input id="bed" name="bed" data-readable="Bed">
-    </div>
-</fieldset>
-<fieldset>
-<legend>Details</legend>
-    <div>
-<select id="why" name="why" class="whole" data-readable="Reason for page">
-<option value="" selected>Reason for page</option>
-<optgroup label="High ADDS - specify why"><option value="adds3">ADDS 3</option><option value="adds4">ADDS 4</option><option value="adds5plus">ADDS 5+</option></optgroup><optgroup label="Concern"><option value="pain">Pain</option><option value="wound">Wound</option><option value="plan">Clarify plan</option></optgroup><optgroup label="Medication"><option value="fluids">Fluids</option><option value="analgesia">Pain relief</option><option value="antiemetic">Anti-emetic</option><option value="sleep">Sleeping pill</option><option value="laxatives">Laxatives</option><option value="regmeds">Regular Meds</option></optgroup><optgroup label="Task"><option value="iv_line">IV line</option><option value="consent">Consent</option><option value="discharge">Discharge papers</option><option value="rechart">Rechart</option></optgroup><optgroup label="Other - specify below"><option value="inform">Inform (no response needed)</option><option value="call_urgent">Call urgently!</option><option value="come_urgent">Come urgently!</option><option value="custom">None of the above</option></optgroup>
-</select>
-    </div>
-    <div>
-<input id="details" name="details" class="whole" placeholder="Specify (optional)">
-    </div>
-</fieldset>
-<input type="submit" value="Send">
-</form>
+            <fieldset ng-if="page.form.choice==='ptpage'">
+            <legend>From</legend>
+            <div>
+                <label for="caller">Name</label>
+                <input title-case id="caller" name="caller" ng-model="page.form.caller" ng-minlength="2" required>
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" ng-model="page.form.phone" ng-pattern="/^[0-9]+$/" required>
+            </div>
+            <div ng-if="betterform.caller.$dirty" ng-messages="betterform.caller.$error">
+                <label ng-message="required"><em>Name</em> is required</label>
+                <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+            </div>
+            <div ng-if="betterform.phone.$dirty" ng-messages="betterform.phone.$error">
+                <label ng-message="required"><em>Phone</em> is required</label>
+                <label ng-message="pattern"><em>Phone</em> must contain only digits</label>
+            </div>
+            <div>
+                <label for="reply">Response required? <input id="reply" name="reply" ng-model="page.form.reply" type="checkbox"></label>
+                <label ng-show="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" min="1" max="99" ng-pattern="/^[0-9]+$/"> mins</label>
+            </div>
+            <div ng-if="betterform.within.$dirty" ng-messages="betterform.within.$error">
+                <label ng-message="required"><em>Response time</em> is required</label>
+                <label ng-message="number"><em>Response time</em> must be an number</label>
+                <label ng-message="pattern"><em>Response time</em> must be an integer</label>
+                <label ng-message="min"><em>Response time</em> must be greater than 0</label>
+                <label ng-message="max"><em>Response time</em> must be less than 100</label>
+            </div>
+            </fieldset>
 
-<form class="otherpage">
-<fieldset>
-<legend>To</legend>
-    <div>
-<label for="to_other" class="info">Pager</label>
-<input id="to_other" name="to_other" data-readable="Pager number">
-    </div>
-</fieldset>
-<fieldset>
-<legend>Contents</legend>
-    <div>
-<textarea id="contents" name="contents" class="whole" data-readable="Contents"></textarea>
-    </div>
-</fieldset>
-    <div>
-<input type="submit" value="Send">
-    </div>
-</form>
+            <fieldset ng-if="page.form.choice==='ptpage'">
+            <legend>Patient</legend>
+            <div>
+                <label for="patient">Name</label>
+                <input title-case id="patient" name="patient" ng-model="page.form.patient" ng-minlength="2" required>
+                <label for="nhi">NHI</label>
+                <input upper-case id="nhi" name="nhi" ng-model="page.form.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required>
+            </div>
+            <div ng-if="betterform.patient.$dirty" ng-messages="betterform.patient.$error">
+                <label ng-message="required"><em>Name</em> is required</label>
+                <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+            </div>
+            <div ng-if="betterform.nhi.$dirty" ng-messages="betterform.nhi.$error">
+                <label ng-message="required"><em>NHI</em> is required</label>
+                <label ng-message="pattern"><em>NHI</em> must be valid</label>
+            </div>
+            <div>
+                <label for="ward">Ward</label>
+                <input upper-case id="ward" name="ward" ng-model="page.form.ward" ng-maxlength="3" required>
+                <label for="bed">Bed</label>
+                <input upper-case id="bed" name="bed" ng-model="page.form.bed" ng-maxlength="3" required>
+            </div>
+            <div ng-if="betterform.ward.$dirty" ng-messages="betterform.ward.$error">
+                <label ng-message="required"><em>Ward</em> is required</label>
+                <label ng-message="maxlength"><em>Ward</em> must be 1 to 3 characters long</label>
+            </div>
+            <div ng-if="betterform.bed.$dirty" ng-messages="betterform.bed.$error">
+                <label ng-message="required"><em>Bed</em> is required</label>
+                <label ng-message="maxlength"><em>Bed</em> must be 1 to 3 characters long</label>
+            </div>
+            </fieldset>
 
-<div id="preview">
-<label>Preview</label>
-<code class="ptpage">###:<span class="phone"></span><span class="within"></span><span class="caller"></span><span class="nhi"></span><span class="patient"></span><span class="location"></span><span class="why"></span><span class="details"></span></code>
-<code class="otherpage">###:<span class="contents"></span></code>
-<label><span></span>/128 characters</label>
-</div>
+            <fieldset ng-if="page.form.choice==='ptpage'">
+            <legend>Details</legend>
+            <div>
+                <select id="why" name="why" ng-model="page.form.why" ng-options="option.label as option.label group by option.group for option in page.reasons" class="whole" required>
+                    <option value="" selected>Reason for page</option>
+                </select>
+            </div>
+            <div ng-if="betterform.why.$dirty" ng-messages="betterform.why.$error">
+                <label ng-message="required"><em>Reason for page</em> is required</label>
+            </div>
+            <div>
+                <input id="details" name="details" ng-model="page.form.details" class="whole" placeholder="Specify (optional)">
+            </div>
+            </fieldset>
 
-<div id="outcome">
-<div></div>
-<a href="pages.txt" target="_blank">Page Log</a>
-</div>
+            <fieldset ng-if="page.form.choice==='otherpage'">
+            <legend>Contents</legend>
+            <div>
+                <textarea id="contents" name="contents" ng-model="page.form.contents" class="whole" required></textarea>
+            </div>
+            <div ng-if="betterform.contents.$dirty" ng-messages="betterform.contents.$error">
+                <label ng-message="required"><em>Contents</em> is required</label>
+            </div>
+            </fieldset>
 
-</body>
+            <input ng-disabled="page.overflow()" type="submit" value="{{ page.overflow() ? 'Character limit exceeded' : 'Send' }}" />
+        </form>
+
+        <div id="preview">
+            <label>Preview</label>
+            <pre ng-bind="'###:' + page.display()"></pre>
+            <label ng-bind="page.display().length + '/128 characters'"></label>
+        </div>
+
+        <div id="outcome">
+        <div ng-if="page.prevpage">
+        <label>Successful submission of form!</label>
+        <pre ng-bind="'###:' + page.prevpage"></pre>
+        </div>
+        <a href="logs.php" target="_blank">Page Log</a>
+        </div>
+
+        <!--[if lte IE 8]>
+        <style>
+        pre, pre+label {
+            width: 160px;
+            padding: 8px;
+        }
+        </style>
+        <div>
+        This browser is Internet Explorer 8 or worse...
+        </div>
+        <![endif]-->
+        
+    </body>
 </html>
