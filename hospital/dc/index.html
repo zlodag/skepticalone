@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Angular Discharge Summary</title>
+        <title>Discharge Summary</title>
         <script src="/bower_components/jquery/dist/jquery.js"></script>
         <script src="/bower_components/jquery-ui/jquery-ui.js"></script>
         <script src="/bower_components/angular/angular.js"></script>
@@ -90,7 +90,7 @@
                                         <dt>Date of admission</dt>
                                         <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
                                         <dt>Date of discharge</dt>
-                                        <dd id="ddate"><input ui-date="dateOptions" ng-model="admission.discharge_date" type="text" readonly="true"/></dd>
+                                        <dd id="ddate"><input ui-date="dateOptions" ng-model="admission.discharge_date" type="text" readonly/></dd>
                                         <dt>Admission duration</dt>
                                         <dd id="los" ng-bind="admission.los()"></dd>
                                     </dl>
@@ -229,7 +229,7 @@
                 <div class="panel-heading">
                         <a data-toggle="collapse" data-parent="#accordion" href="#prescription">Prescription</a>
                 </div>
-                <div id="prescription" class="panel-collapse collapse in">
+                <div id="prescription" class="panel-collapse collapse">
                         <div class="panel-body">
                                 <div>
                                         <ul class="pull-left">
@@ -260,7 +260,7 @@
                         <a data-toggle="collapse" data-parent="#accordion" href="#sauthority">Current special authority numbers</a>
                 </div>
                 <div id="sauthority" class="panel-collapse collapse">
-                        <table id="medtable" class="table">
+                        <table class="table">
                                 <tr>
                                         <th>Drug</th>
                                         <th>SA number</th>
