@@ -1,68 +1,6 @@
-body>* {
-    clear: both;
-}
-div {
-    margin: 10px;
-}
-fieldset {
-    margin-bottom: 10px;
-    border: none;
-}
-.right {
-    float: right;
-    text-align: right;
-}
-.left {
-    float: left;
-}
-textarea {
-    width: 100%;
-    min-height: 100px;
-}
-#diagnoses button {
-    margin-left: 5px;
-}
-input.diagnosis {
-    width: 20em;
-}
-table {
-    border-collapse: separate;
-    border-spacing: 5px;
-}
-th {
-    border: 1px solid black;
-}
-:required,td>input {
-    background-color: lightyellow;
-}
-.cont .sig2, .stop .sig2, .stop .include, .stop .mitte, .new .sig1, .hidden {
-    visibility: hidden;
-    border: none;
-}
-ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-li {
-    margin: 10px 0;
-}
-#replace {
-    max-width: 30em;
-    background-color: #BAFEFF;
-    padding: 10px;
-    display: none;
-}
-
-.btn {
-    margin-right: 8px;
-}
-
 .angular-ui-tree-handle {
-    background: #f8faff;
     border: 1px solid #dae2ea;
-    color: #7c9eb2;
-    padding: 10px 10px;
+    padding: 0 5px;
 }
 
 .angular-ui-tree-handle:hover {
@@ -78,12 +16,30 @@ li {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-
-
-.group-title {
-    background-color: #687074 !important;
-    color: #FFF !important;
+#demographics dt {
+    float: left;
+    clear: both;
 }
-li[collapsed="true"] > ol {
-    display: none;
+#demographics dd {
+    text-align: right;
+    float: right;
+}
+#demographics dd>ul {
+    padding: 0;
+    list-style-type: none;
+}
+#prescription hr {
+    clear:both;
+}
+#prescription ul {
+    padding: 0;
+    list-style-type: none;
+}
+#prescription li.drug {
+    margin: 10px 0;
+}
+textarea {
+    width: 100%;
+    resize: vertical;
+    height: 200px;
 }
