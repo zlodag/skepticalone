@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    var app = angular.module('dcsummary', ['ui.date', 'ui.tree']);
+    var app = angular.module('dcsummary', ['ui.bootstrap','ui.tree']);
     app.controller('body', ['$scope', function($scope) {
             $scope.currentUser = {
                 name: 'John Watson',
@@ -8,16 +8,11 @@
                 mcnz: 12345
             };
             $scope.date = new Date();
-            $scope.dateOptions = {
-                dateFormat: 'DD, MM d, yy',
-                showButtonPanel: true
-            };
             $scope.patient = {
                 name: {first: 'Eric Arthur',last: 'Blair'},
                 address: ['221b Baker Street', 'Fairfield', 'Hamilton 3214','New Zealand'],
                 phone: '027 999 4321',
                 dob: new Date(1957, 1, 10),
-                //dob: new Date(2013, 4, 30),
                 nhi: 'LKJ1234'
             };
             var duration = moment.duration(new Date() - $scope.patient.dob),
@@ -47,11 +42,24 @@
                 service: 'General Medicine',
                 ward: 'A2',
                 admission_date: new Date(2015, 4, 23),
-                discharge_date: new Date(),
+                discharge_date: null,
                 los: function() {
                     var days = Math.floor(moment.duration($scope.admission.discharge_date - $scope.admission.admission_date).asDays());
                     return days === 1 ? '1 day' :  days + ' days';
                 }
+            };
+            $scope.today = function() {
+                $scope.discharge_date = new Date();
+            };
+            $scope.clear = function () {
+                $scope.discharge_date = null;
+            };
+
+            $scope.open = function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+
+                $scope.opened = true;
             };
             $scope.hospital = {
                 name: 'Waikato Hospital',
@@ -66,10 +74,7 @@
                 newItem : function(listname) {
                     var selector = '#' + listname;
                     $scope.diagnoses[listname].push({str: '',extras: []});
-                    $(selector).collapse('show');
-                    $('.panel-collapse.in:not(' + selector + ')').collapse('hide');
 
-                    //$('#' + listname).collapse('show');
                 },
                 newSubItem : function(scope) {
                     scope.$modelValue.extras.push({str: ''});
@@ -92,8 +97,6 @@
                         status : 'cont',
                         include : true
                     });
-                    $('#medications').collapse('show');
-                    $('.panel-collapse.in:not(#medications)').collapse('hide');
                 }
             };
             $scope.presentation = "Came to hospital via ambulance.\nChest crackles heard.\nCT head performed.";
