@@ -4,280 +4,237 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Discharge Summary</title>
-        <script src="/bower_components/jquery/dist/jquery.js"></script>
-        <script src="/bower_components/jquery-ui/jquery-ui.js"></script>
-        <script src="/bower_components/angular/angular.js"></script>
-        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
-        <script src="/bower_components/angular-ui-date/src/date.js"></script>
-        <script src="/bower_components/moment/min/moment.min.js"></script>
-        <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
         <script src="dc.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
+        <link rel="stylesheet" href="dc.css">
+        <!--
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+        <script src="/bower_components/moment/min/moment.min.js"></script>
         <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css">
-        <link rel="stylesheet" type="text/css" href="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
-        <link rel="stylesheet" type="text/css" href="dc.css">
+        -->
     </head>
     <body ng-app="dcsummary" ng-controller="body">
     <div class="container">
         <h1>Discharge Summary</h1>
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#user">Current user</a>
+
+        <accordion close-others="true">
+            <accordion-group heading="Current user">
+                <dl>
+                    <dt>Name</dt><dd><input ng-model="currentUser.name"/></dd>
+                    <dt>Able to prescribe?</dt><dd><input ng-model="currentUser.isPrescriber" type="checkbox" /></dd>
+                    <dt ng-if="currentUser.isPrescriber">MCNZ</dt><dd ng-if="currentUser.isPrescriber"><input ng-model="currentUser.mcnz" /></dd>
+                </dl>
+            </accordion-group>
+            <accordion-group heading="Demographics">
+                <div class="row">
+                    <dl id="patient" class="col-sm-4 bg-primary">
+                        <dt>Patient</dt>
+                        <dd ng-bind="patient.name.first + ' ' + patient.name.last"></dd>
+                        <dt>Address</dt>
+                        <dd>
+                            <ul>
+                            <li ng-repeat="line in patient.address" ng-bind="line"></li>
+                            </ul>
+                        </dd>
+                        <dt>Phone</dt>
+                        <dd ng-bind="patient.phone"></dd> 
+                        <dt>Date of birth</dt>
+                        <dd id="dob" ng-bind="patient.dob | date:'longDate'"></dd> 
+                        <dt>Age</dt>
+                        <dd id="age" ng-bind="patient.age"></dd> 
+                        <dt>NHI</dt>
+                        <dd id="nhi" ng-bind="patient.nhi"></dd> 
+                    </dl>
+                    <dl id="gp" class="col-sm-4 bg-info">
+                        <dt>GP</dt>
+                        <dd ng-bind="gp.name"></dd>
+                        <dt>Address</dt>
+                        <dd>
+                            <ul>
+                            <li ng-repeat="line in gp.address" ng-bind="line"></li>
+                            </ul>
+                        </dd>
+                        <dt>Phone</dt>
+                        <dd ng-bind="gp.phone"></dd> 
+                        <dt>Fax</dt>
+                        <dd ng-bind="gp.fax"></dd> 
+                    </dl>
+                    <dl id="hospital" class="col-sm-4 bg-warning">
+                        <dt>Hospital</dt>
+                        <dd ng-bind="hospital.name"></dd>
+                        <dt>Address</dt>
+                        <dd>
+                            <ul>
+                                <li ng-repeat="line in hospital.address" ng-bind="line"></li>
+                            </ul>
+                        </dd>
+                    </dl>
                 </div>
-                <div id="user" class="panel-collapse collapse">
-                        <div class="panel-body">
-                        <dl>
-                                <dt>Name</dt><dd><input ng-model="currentUser.name"/></dd>
-                                <dt>Able to prescribe?</dt><dd><input ng-model="currentUser.isPrescriber" type="checkbox" /></dd>
-                                <dt>MCNZ</dt><dd ng-if="currentUser.isPrescriber"><input ng-model="currentUser.mcnz" /></dd>
-                        </dl>
-                        </div>
+                <div class="row bg-success">
+                    <dl id="dates" class="col-sm-4">
+                        <dt>Date of admission</dt>
+                        <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
+                        <dt>Date of discharge</dt>
+                        <dd id="ddate">
+                        {{admission.discharge_date | date:'fullDate'}}
+                        <datepicker ng-model="admission.discharge_date" starting-day="1" show-weeks="false"></datepicker>
+                        </dd>
+                        <dt ng-show="admission.discharge_date">Admission duration</dt>
+                        <dd id="los" ng-show="admission.discharge_date" ng-bind="admission.los()"></dd>
+                    </dl>
+                    <dl id="admission" class="col-sm-4 col-sm-offset-4">
+                        <dt>Clinician</dt>
+                        <dd id="clinician" ng-bind="admission.clinician"></dd>
+                        <dt>Service</dt>
+                        <dd id="service" ng-bind="admission.service"></dd>
+                        <dt>Ward</dt>
+                        <dd id="ward" ng-bind="admission.ward"></dd>
+                    </dl>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#demographics">Demographics</a>
-                </div>
-                <div id="demographics" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <div class="row">
-                                    <dl id="patient" class="col-sm-4 bg-primary">
-                                        <dt>Patient</dt>
-                                        <dd ng-bind="patient.name.first + ' ' + patient.name.last"></dd>
-                                        <dt>Address</dt>
-                                        <dd>
-                                            <ul>
-                                            <li ng-repeat="line in patient.address" ng-bind="line"></li>
-                                            </ul>
-                                        </dd>
-                                        <dt>Phone</dt>
-                                        <dd ng-bind="patient.phone"></dd> 
-                                        <dt>Date of birth</dt>
-                                        <dd id="dob" ng-bind="patient.dob | date:'longDate'"></dd> 
-                                        <dt>Age</dt>
-                                        <dd id="age" ng-bind="patient.age"></dd> 
-                                        <dt>NHI</dt>
-                                        <dd id="nhi" ng-bind="patient.nhi"></dd> 
-                                    </dl>
-                                    <dl id="gp" class="col-sm-4 bg-info">
-                                        <dt>GP</dt>
-                                        <dd ng-bind="gp.name"></dd>
-                                        <dt>Address</dt>
-                                        <dd>
-                                            <ul>
-                                            <li ng-repeat="line in gp.address" ng-bind="line"></li>
-                                            </ul>
-                                        </dd>
-                                        <dt>Phone</dt>
-                                        <dd ng-bind="gp.phone"></dd> 
-                                        <dt>Fax</dt>
-                                        <dd ng-bind="gp.fax"></dd> 
-                                    </dl>
-                                    <dl id="hospital" class="col-sm-4 bg-warning">
-                                        <dt>Hospital</dt>
-                                        <dd ng-bind="hospital.name"></dd>
-                                        <dt>Address</dt>
-                                        <dd>
-                                            <ul>
-                                                <li ng-repeat="line in hospital.address" ng-bind="line"></li>
-                                            </ul>
-                                        </dd>
-                                    </dl>
+            </accordion-group>
+            <accordion-group>
+                <accordion-heading>
+                    Diagnoses
+                    <span class="badge">{{diagnoses.current.length || ''}}</span>
+                </accordion-heading>
+                <a class="btn btn-success btn-xs" ng-click="functions.newItem('current')"><span class="glyphicon glyphicon-plus"></span></a>
+                <ol ui-tree ui-tree-nodes ng-model="diagnoses.current" class="list-group">
+                    <li ng-repeat="diagnosis in diagnoses.current" ui-tree-node class="list-group-item">
+                            <div ui-tree-handle class="bg-info">
+                                <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
+                                <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,1)"><span class="glyphicon glyphicon-remove"></span></a>
+                                <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                            </div>
+                            <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
+                                <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
+                                <div ui-tree-handle class="bg-success">
+                                    <input class="extra" data-nodrag ng-model="extra.str"/>
+                                    <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
                                 </div>
-                                <div class="row bg-success">
-                                    <dl id="dates" class="col-sm-4">
-                                        <dt>Date of admission</dt>
-                                        <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
-                                        <dt>Date of discharge</dt>
-                                        <dd id="ddate"><input ui-date="dateOptions" ng-model="admission.discharge_date" type="text" readonly/></dd>
-                                        <dt>Admission duration</dt>
-                                        <dd id="los" ng-bind="admission.los()"></dd>
-                                    </dl>
-                                    <dl id="admission" class="col-sm-4 col-sm-offset-4">
-                                        <dt>Clinician</dt>
-                                        <dd id="clinician" ng-bind="admission.clinician"></dd>
-                                        <dt>Service</dt>
-                                        <dd id="service" ng-bind="admission.service"></dd>
-                                        <dt>Ward</dt>
-                                        <dd id="ward" ng-bind="admission.ward"></dd>
-                                    </dl>
+                            </ol>
+                    </li>
+                </ol>
+            </accordion-group>
+            <accordion-group>
+                <accordion-heading>
+                    Background
+                    <span class="badge">{{diagnoses.background.length || ''}}</span>
+                </accordion-heading>
+                <a class="btn btn-success btn-xs" ng-click="functions.newItem('background')"><span class="glyphicon glyphicon-plus"></span></a>
+                <ol ui-tree ui-tree-nodes ng-model="diagnoses.background" class="list-group">
+                    <li ng-repeat="diagnosis in diagnoses.background" ui-tree-node class="list-group-item">
+                            <div ui-tree-handle class="bg-info">
+                                <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
+                                <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,0)"><span class="glyphicon glyphicon-remove"></span></a>
+                                <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                            </div>
+                            <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
+                                <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
+                                <div ui-tree-handle class="bg-success">
+                                    <input class="extra" data-nodrag ng-model="extra.str"/>
+                                    <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
                                 </div>
-                        </div>
+                            </ol>
+                    </li>
+                </ol>
+            </accordion-group>
+            <accordion-group heading="Presentation">
+                <textarea ng-model="presentation" placeholder="History/Examination/Investigations" required></textarea>
+            </accordion-group>
+            <accordion-group heading="Inpatient progress">
+                <textarea ng-model="progress" placeholder="Treatment/Response/Further issues" required></textarea>
+            </accordion-group>
+            <accordion-group heading="Plan">
+                <textarea ng-model="plan" required></textarea>
+            </accordion-group>
+            <accordion-group heading="Advice to patient">
+                <textarea ng-model="advice" placeholder="Optional"></textarea>
+            </accordion-group>
+            <accordion-group ng-show="currentUser.isPrescriber">
+                <accordion-heading>
+                    Medications
+                    <span class="badge">{{drugs.length || ''}}</span>
+                </accordion-heading>
+                <a class="btn btn-success btn-xs" ng-click="functions.newDrug(this)"><span class="glyphicon glyphicon-plus"></span></a>
+                <table id="medtable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Drug</th>
+                            <th>Admission</th>
+                            <th></th>
+                            <th>Discharge</th>
+                            <th>&#8478;</th>
+                            <th>Amount</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="medtable_body">
+                        <tr ng-repeat="drug in drugs" class="{{drug.status}}">
+                            <td><input ng-model="drug.rx"/></td>
+                            <td><input ng-hide="drug.status === 'new'" ng-model="drug.admission"/></td>
+                            <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status"></select></td>
+                            <td><input ng-hide="drug.status === 'cont' || drug.status === 'stop'" ng-model="drug.discharge"/></td>
+                            <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
+                            <td><input ng-hide="drug.status === 'stop' || !drug.include" ng-model="drug.mitte"/></td>
+                            <td><a class="btn btn-danger btn-xs" ng-click="drugs.pop($index)"><span class="glyphicon glyphicon-remove"></span></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </accordion-group>
+            <accordion-group ng-show="currentUser.isPrescriber" heading="Prescriptions">
+                <div class="clearfix">
+                    <ul class="pull-left">
+                        <li ng-bind="patient.name.first + ' ' + patient.name.last"></li>
+                        <li ng-repeat="line in patient.address" ng-bind="line"></li>
+                    </ul>
+                    <ul class="pull-right">
+                        <li ng-bind="currentUser.name"></li>
+                        <li ng-bind="'MCNZ: ' + currentUser.mcnz"></li>
+                        <li ng-bind="hospital.name"></li>
+                        <li ng-repeat="line in hospital.address" ng-bind="line"></li>
+                    </ul>
                 </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#current">Diagnoses</a> <a class="btn btn-success btn-xs" ng-click="functions.newItem('current')"><span class="glyphicon glyphicon-plus"></span></a> <span class="badge">{{diagnoses.current.length || ''}}</span>
+                <hr />
+                <ul>
+                    <li ng-repeat="drug in drugs | filter : rxFilter" class="drug">℞: {{drug.rx}}<br>Sig: {{drug.status === 'cont' ? drug.admission : drug.discharge }}<br>Mitte: {{ drug.mitte }}</li>
+                </ul>
+                <hr />
+                <div>
+                    <div class="pull-left">Signed:</div>
+                    <div class="pull-right" ng-bind="date | date:'fullDate'"></div>
                 </div>
-                <div id="current" class="panel-collapse collapse" ui-tree>
-                        <ol ui-tree-nodes ng-model="diagnoses.current" class="list-group">
-                            <li ng-repeat="diagnosis in diagnoses.current" ui-tree-node class="list-group-item">
-                                    <div ui-tree-handle class="bg-info">
-                                        <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
-                                        <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,1)"><span class="glyphicon glyphicon-remove"></span></a>
-                                        <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
-                                    </div>
-                                    <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
-                                        <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
-                                        <div ui-tree-handle class="bg-success">
-                                            <input class="extra" data-nodrag ng-model="extra.str"/>
-                                            <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
-                                        </div>
-                                    </ol>
-                            </li>
-                        </ol>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#background">Background</a> <a class="btn btn-success btn-xs" ng-click="functions.newItem('background')"><span class="glyphicon glyphicon-plus"></span></a> <span class="badge">{{diagnoses.background.length || ''}}</span>
-                </div>
-                <div id="background" class="panel-collapse collapse" ui-tree>
-                        <ol ui-tree-nodes ng-model="diagnoses.background" class="list-group">
-                            <li ng-repeat="diagnosis in diagnoses.background" ui-tree-node class="list-group-item">
-                                    <div ui-tree-handle class="bg-info">
-                                        <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
-                                        <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,0)"><span class="glyphicon glyphicon-remove"></span></a>
-                                        <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
-                                    </div>
-                                    <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
-                                        <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
-                                        <div ui-tree-handle class="bg-success">
-                                            <input class="extra" data-nodrag ng-model="extra.str"/>
-                                            <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
-                                        </div>
-                                    </ol>
-                            </li>
-                        </ol>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#presentation">Presentation</a>
-                </div>
-                <div id="presentation" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <textarea ng-model="presentation" placeholder="History/Examination/Investigations" required></textarea>
-                        </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#progress">Inpatient progress</a>
-                </div>
-                <div id="progress" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <textarea ng-model="progress" placeholder="Treatment/Response/Further issues" required></textarea>
-                        </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#plan">Plan</a>
-                </div>
-                <div id="plan" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <textarea ng-model="plan" required></textarea>
-                        </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#advice">Advice to patient</a>
-                </div>
-                <div id="advice" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <textarea ng-model="advice" placeholder="Optional"></textarea>
-                        </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#medications">Medications</a> <a class="btn btn-success btn-xs" ng-click="functions.newDrug(this)"><span class="glyphicon glyphicon-plus"></span></a> <span class="badge">{{drugs.length || ''}}</span>
-                </div>
-                <div id="medications" class="panel-collapse collapse">
-                        <table id="medtable" class="table">
-                            <thead>
-                                <tr>
-                                    <th>Drug</th>
-                                    <th>Admission</th>
-                                    <th></th>
-                                    <th>Discharge</th>
-                                    <th>&#8478;</th>
-                                    <th>Amount</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody id="medtable_body">
-                                <tr ng-repeat="drug in drugs" class="{{drug.status}}">
-                                    <td><input ng-model="drug.rx"/></td>
-                                    <td><input ng-hide="drug.status === 'new'" ng-model="drug.admission"/></td>
-                                    <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status"></select></td>
-                                    <td><input ng-hide="drug.status === 'cont' || drug.status === 'stop'" ng-model="drug.discharge"/></td>
-                                    <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
-                                    <td><input ng-hide="drug.status === 'stop' || !drug.include" ng-model="drug.mitte"/></td>
-                                    <td><a class="btn btn-danger btn-xs" ng-click="drugs.pop($index)"><span class="glyphicon glyphicon-remove"></span></a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                </div>
-            </div>
-            <div ng-show="currentUser.isPrescriber" class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#prescription">Prescription</a>
-                </div>
-                <div id="prescription" class="panel-collapse collapse">
-                        <div class="panel-body">
-                                <div>
-                                        <ul class="pull-left">
-                                        <li ng-bind="patient.name.first + ' ' + patient.name.last"></li>
-                                        <li ng-repeat="line in patient.address" ng-bind="line"></li>
-                                        </ul>
-                                        <ul class="pull-right">
-                                        <li ng-bind="currentUser.name"></li>
-                                        <li ng-bind="'MCNZ: ' + currentUser.mcnz"></li>
-                                        <li ng-bind="hospital.name"></li>
-                                        <li ng-repeat="line in hospital.address" ng-bind="line"></li>
-                                        </ul>
-                                </div>
-                                <hr />
-                                <ul>
-                                        <li ng-repeat="drug in drugs | filter : rxFilter" class="drug">℞: {{drug.rx}}<br>Sig: {{drug.status === 'cont' ? drug.admission : drug.discharge }}<br>Mitte: {{ drug.mitte }}</li>
-                                </ul>
-                                <hr />
-                                <div>
-                                        <div class="pull-left">Signed:</div>
-                                        <div class="pull-right" ng-bind="date | date:'fullDate'"></div>
-                                </div>
-                        </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                        <a data-toggle="collapse" data-parent="#accordion" href="#sauthority">Current special authority numbers</a>
-                </div>
-                <div id="sauthority" class="panel-collapse collapse">
-                        <table class="table">
-                                <tr>
-                                        <th>Drug</th>
-                                        <th>SA number</th>
-                                        <th>Expiry</th>
-                                </tr>
-                                <tr ng-repeat="item in specialAuthority">
-                                        <td ng-bind="item.name"></td>
-                                        <td ng-bind="item.number"></td>
-                                        <td ng-bind="item.expiry"></td>
-                                </tr>
-                        </table>
-                </div>
-            </div>
-        </div>
-        <div class="btn-group dropup">
+            </accordion-group>
+            <accordion-group ng-show="currentUser.isPrescriber">
+                <accordion-heading>
+                    Current special authority numbers
+                    <span class="badge">{{specialAuthority.length || ''}}</span>
+                </accordion-heading>
+                <table class="table">
+                        <tr>
+                                <th>Drug</th>
+                                <th>SA number</th>
+                                <th>Expiry</th>
+                        </tr>
+                        <tr ng-repeat="item in specialAuthority">
+                                <td ng-bind="item.name"></td>
+                                <td ng-bind="item.number"></td>
+                                <td ng-bind="item.expiry"></td>
+                        </tr>
+                </table>
+            </accordion-group>
+        </accordion>
+
+        <div class="btn-group dropup" dropdown>
           <button type="button" class="btn btn-default">Sign off and print</button>
-          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
@@ -287,7 +244,7 @@
             <li><a href="#">Sign off and exit</a></li>
           </ul>
         </div>
-    <!--<p><em><a href="http://validator.w3.org/check?uri=referer">[Validate HTML5]</a></em></p>-->
+
     </div>
     </body>
 </html>
