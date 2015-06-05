@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    var app = angular.module('dcsummary', ['ui.bootstrap','ui.tree']);
+    var app = angular.module('dcsummary', ['ngAnimate','ui.bootstrap','ui.tree']);
     app.controller('body', ['$scope', function($scope) {
             $scope.currentUser = {
                 name: 'John Watson',
