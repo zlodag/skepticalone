@@ -23,7 +23,6 @@
     <body ng-app="dcsummary" ng-controller="body">
     <div class="container">
         <h1>Discharge Summary</h1>
-        <p>
         <form class="form-inline">
           <div class="form-group">
             <label for="selectUser">Current user</label>
@@ -43,7 +42,6 @@
             <input ng-model="currentUser.mcnz" class="form-control" id="userMCNZ" type="number" placeholder="MCNZ"/>
           </div>
         </form>
-        </p>
         <accordion close-others="true" ng-form name="dcForm">
             <accordion-group heading="Demographics">
                 <div class="row">

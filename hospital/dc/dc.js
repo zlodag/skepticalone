@@ -115,9 +115,7 @@
             };
             $scope.functions = {
                 newItem: function(listname) {
-                    var selector = '#' + listname;
                     $scope.diagnoses[listname].push({str: '',extras: []});
-                
                 },
                 newSubItem: function(scope) {
                     scope.$modelValue.extras.push({str: ''});
