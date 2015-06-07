@@ -16,32 +16,20 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-#demographics dt {
-    float: left;
-    clear: both;
-}
-#demographics dd {
-    text-align: right;
-    float: right;
-}
-#demographics dd>ul {
+div[heading='Prescriptions'] ul, div[heading='Demographics'] ul {
     padding: 0;
     list-style-type: none;
 }
-#prescription hr {
-    clear:both;
-}
-#prescription ul {
-    padding: 0;
-    list-style-type: none;
-}
-#prescription li.drug {
+div[heading='Prescriptions'] li.prescription {
     margin: 10px 0;
 }
 textarea {
-    width: 100%;
     resize: vertical;
-    height: 200px;
+}
+#medtable input[type='text']:optional {
+    display:none;
+}
+input.ng-invalid, textarea.ng-invalid {
+    background-color:lightyellow;
 }
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-

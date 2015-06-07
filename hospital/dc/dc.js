@@ -1,39 +1,74 @@
 (function() {
     "use strict";
-    var app = angular.module('dcsummary', ['ngAnimate','ui.bootstrap','ui.tree']);
+    var app = angular.module('dcsummary', ['ngAnimate', 'ui.bootstrap', 'ui.tree']);
+    app.filter('drugsStartingWith', function() {
+        return function(items, startswith) {
+            var matching_items = [];
+            if (items && startswith) {
+                for (var i = 0; i < items.length; i++) {
+                    if (RegExp('^' + startswith,'i').test(items[i])) {
+                        matching_items.push(items[i]);
+                    }
+                }
+                return matching_items.sort();
+            }
+            else {return items;}
+        }
+    });
     app.controller('body', ['$scope', function($scope) {
-            $scope.currentUser = {
-                name: 'John Watson',
-                isPrescriber: true,
-                mcnz: 12345
+            $scope.users = {
+                doctor: {
+                    name: 'John Watson',
+                    isPrescriber: true,
+                    mcnz: 12345
+                },
+                nurse: {
+                    name: 'Jean Ratched',
+                    isPrescriber: false
+                },
+                physio: {
+                    name: 'Bruce Banner',
+                    isPrescriber: false
+                }
             };
+            $scope.currentUser = $scope.users.doctor;
             $scope.date = new Date();
             $scope.patient = {
                 name: {first: 'Eric Arthur',last: 'Blair'},
-                address: ['221b Baker Street', 'Fairfield', 'Hamilton 3214','New Zealand'],
+                address: ['221b Baker Street', 'Fairfield', 'Hamilton 3214', 'New Zealand'],
                 phone: '027 999 4321',
                 dob: new Date(1957, 1, 10),
                 nhi: 'LKJ1234'
             };
-            var duration = moment.duration(new Date() - $scope.patient.dob),
+            var duration = moment.duration(new Date() - $scope.patient.dob), 
             i = Math.floor(duration.asYears());
-            if (i >= 2) {$scope.patient.age = i + ' years';}
+            if (i >= 2) {
+                $scope.patient.age = i + ' years';
+            } 
             else {
                 i = Math.floor(duration.asMonths());
-                if (i >= 3) {$scope.patient.age = i + ' months';}
+                if (i >= 3) {
+                    $scope.patient.age = i + ' months';
+                } 
                 else {
                     i = Math.floor(duration.asWeeks());
-                    if (i >= 2) {$scope.patient.age = i + ' weeks';}
+                    if (i >= 2) {
+                        $scope.patient.age = i + ' weeks';
+                    } 
                     else {
                         i = Math.floor(duration.asDays());
-                        if (i === 1) {$scope.patient.age = '1 day';}
-                        else {$scope.patient.age = i + ' days';}
+                        if (i === 1) {
+                            $scope.patient.age = '1 day';
+                        } 
+                        else {
+                            $scope.patient.age = i + ' days';
+                        }
                     }
                 }
             }
             $scope.gp = {
                 name: 'Dr G P Smith',
-                address: ['1600 Pennsylvania Avenue', 'Flagstaff', 'Hamilton 3210','New Zealand'],
+                address: ['1600 Pennsylvania Avenue', 'Flagstaff', 'Hamilton 3210', 'New Zealand'],
                 phone: '07 555 1234',
                 fax: '07 432 7654'
             };
@@ -42,45 +77,53 @@
                 service: 'General Medicine',
                 ward: 'A2',
                 admission_date: new Date(2015, 4, 23),
-                discharge_date: null,
+                discharge_date: new Date(),
                 los: function() {
                     var days = Math.floor(moment.duration($scope.admission.discharge_date - $scope.admission.admission_date).asDays());
-                    return days === 1 ? '1 day' :  days + ' days';
+                    return days === 1 ? '1 day' : days + ' days';
                 }
             };
             $scope.today = function() {
                 $scope.discharge_date = new Date();
             };
-            $scope.clear = function () {
-                $scope.discharge_date = null;
-            };
-
             $scope.open = function($event) {
                 $event.preventDefault();
                 $event.stopPropagation();
-
-                $scope.opened = true;
+                
+                $scope.calendar.opened = true;
             };
+            
+            $scope.calendar = {
+                opened: false,
+                options: {
+                    formatYear: 'yy',
+                    startingDay: 1,
+                    showWeeks: 'false',
+                    maxMode: 'day'
+                }
+            };
+            
+            
             $scope.hospital = {
                 name: 'Waikato Hospital',
                 address: [
-                    'Pembroke Street',
-                    'Private Bag 3200',
-                    'Hamilton 3240',
+                    'Pembroke Street', 
+                    'Private Bag 3200', 
+                    'Hamilton 3240', 
                     'New Zealand'
                 ]
             };
             $scope.functions = {
-                newItem : function(listname) {
+                newItem: function(listname) {
                     var selector = '#' + listname;
                     $scope.diagnoses[listname].push({str: '',extras: []});
-
+                
                 },
-                newSubItem : function(scope) {
+                newSubItem: function(scope) {
                     scope.$modelValue.extras.push({str: ''});
                     scope.expand();
                 },
-                conditionalRemove : function(scope, minlength) {
+                conditionalRemove: function(scope, minlength) {
                     if (scope.$parentNodesScope.$modelValue.length > minlength) {
                         scope.removeNode();
                     } else {
@@ -88,14 +131,14 @@
                         scope.$modelValue.extras = [];
                     }
                 },
-                newDrug : function() {
+                newDrug: function() {
                     $scope.drugs.push({
                         rx: '',
-                        admission : '',
-                        discharge : '',
-                        mitte : '',
-                        status : 'cont',
-                        include : true
+                        admission: '',
+                        discharge: '',
+                        mitte: '',
+                        status: 'cont',
+                        include: true
                     });
                 }
             };
@@ -107,55 +150,87 @@
                 {
                     label: 'Continued',
                     short: 'cont'
-                },
+                }, 
                 {
                     label: 'Stopped',
                     short: 'stop'
-                },
+                }, 
                 {
                     label: 'Changed',
                     short: 'change'
-                },
+                }, 
                 {
                     label: 'New',
                     short: 'new'
-                },
+                }, 
             ];
             $scope.rxFilter = function(drug) {
-                return drug.include && drug.status != 'stop';
+                if (!drug.include || !drug.mitte || !drug.rx || drug.status === 'stop') {
+                    return false;
+                }
+                switch (drug.status) {
+                    case 'cont':
+                        if (!drug.admission) {
+                            return false;
+                        }
+                        break;
+                    case 'change':
+                        if (!drug.admission || !drug.discharge) {
+                            return false;
+                        }
+                        break;
+                    case 'new':
+                        if (!drug.discharge) {
+                            return false;
+                        }
+                        break;
+                }
+                return true;
             };
+            $scope.drugNames = [
+                'paracetamol', 
+                'aspirin',
+                'amlodipine',
+                'atenolol',
+                'atorvastatin',
+                'azithromycin',
+                'diazepam', 
+                'codeine', 
+                'amoxicillin', 
+                'allopurinol'
+            ];
             $scope.drugs = [
                 {
                     rx: 'prednisone',
-                    admission : '5mg PO mane',
-                    discharge : '',
-                    mitte : '',
-                    status : 'cont',
-                    include : false
-                },
+                    admission: '5mg PO mane',
+                    discharge: '',
+                    mitte: '',
+                    status: 'cont',
+                    include: false
+                }, 
                 {
                     rx: 'amoxicillin',
-                    admission : '500mg PO TDS',
-                    discharge : '',
-                    mitte : '',
-                    status : 'stop',
-                    include : true
-                },
+                    admission: '500mg PO TDS',
+                    discharge: '',
+                    mitte: '',
+                    status: 'stop',
+                    include: true
+                }, 
                 {
                     rx: 'allopurinol',
-                    admission : '300mg PO mane',
-                    discharge : '600mg PO mane',
-                    mitte : '2 weeks',
-                    status : 'change',
-                    include : true
-                },
+                    admission: '300mg PO mane',
+                    discharge: '600mg PO mane',
+                    mitte: '2 weeks',
+                    status: 'change',
+                    include: true
+                }, 
                 {
                     rx: 'thyroxine',
-                    admission : '',
-                    discharge : '50mcg PO mane',
-                    mitte : '2 weeks',
-                    status : 'new',
-                    include : true
+                    admission: '',
+                    discharge: '50mcg PO mane',
+                    mitte: '2 weeks',
+                    status: 'new',
+                    include: true
                 }
             ];
             $scope.specialAuthority = [
@@ -163,12 +238,12 @@
                     name: 'Ticagrelor',
                     number: 123456789,
                     expiry: 'June 2015'
-                },
+                }, 
                 {
                     name: 'Enoxaparin',
                     number: 759472542,
                     expiry: 'May 2017'
-                },
+                }, 
                 {
                     name: 'peg-GCSF',
                     number: 649845623,
@@ -180,21 +255,21 @@
                     {
                         str: 'NSTEMI',
                         extras: [
-                            {str: 'TIMI 3'},
+                            {str: 'TIMI 3'}, 
                             {str: 'PCI to RCA'}
                         ]
-                    },
+                    }, 
                     {
                         str: 'AKI',
                         extras: []
-                    },
+                    }, 
                     {
                         str: 'UTI',
                         extras: [
                             {str: 'Multi-resistant E. coli'}
                         ]
                     }
-
+                
                 ],
                 background: [
                     {

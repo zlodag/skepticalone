@@ -23,17 +23,31 @@
     <body ng-app="dcsummary" ng-controller="body">
     <div class="container">
         <h1>Discharge Summary</h1>
-        <accordion close-others="true">
-            <accordion-group heading="Current user">
-                <dl>
-                    <dt>Name</dt><dd><input ng-model="currentUser.name"/></dd>
-                    <dt>Able to prescribe?</dt><dd><input ng-model="currentUser.isPrescriber" type="checkbox" /></dd>
-                    <dt ng-if="currentUser.isPrescriber">MCNZ</dt><dd ng-if="currentUser.isPrescriber"><input ng-model="currentUser.mcnz" /></dd>
-                </dl>
-            </accordion-group>
+        <p>
+        <form class="form-inline">
+          <div class="form-group">
+            <label for="selectUser">Current user</label>
+            <div id="selectUser" class="btn-group">
+                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.doctor">Doctor</label>
+                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.nurse">Nurse</label>
+                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.physio">Physio</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <input ng-model="currentUser.name" class="form-control" id="userName" placeholder="Name" />
+          </div>
+          <div class="form-group">
+            <button type="button" class="btn btn-default" ng-model="currentUser.isPrescriber" btn-checkbox >Prescriber</button>
+          </div>
+          <div ng-if="currentUser.isPrescriber" class="form-group">
+            <input ng-model="currentUser.mcnz" class="form-control" id="userMCNZ" type="number" placeholder="MCNZ"/>
+          </div>
+        </form>
+        </p>
+        <accordion close-others="true" ng-form name="dcForm">
             <accordion-group heading="Demographics">
                 <div class="row">
-                    <dl id="patient" class="col-sm-4 bg-primary">
+                    <dl id="patient" class="col-sm-4">
                         <dt>Patient</dt>
                         <dd ng-bind="patient.name.first + ' ' + patient.name.last"></dd>
                         <dt>Address</dt>
@@ -51,7 +65,7 @@
                         <dt>NHI</dt>
                         <dd id="nhi" ng-bind="patient.nhi"></dd> 
                     </dl>
-                    <dl id="gp" class="col-sm-4 bg-info">
+                    <dl id="gp" class="col-sm-4">
                         <dt>GP</dt>
                         <dd ng-bind="gp.name"></dd>
                         <dt>Address</dt>
@@ -65,7 +79,7 @@
                         <dt>Fax</dt>
                         <dd ng-bind="gp.fax"></dd> 
                     </dl>
-                    <dl id="hospital" class="col-sm-4 bg-warning">
+                    <dl id="hospital" class="col-sm-4">
                         <dt>Hospital</dt>
                         <dd ng-bind="hospital.name"></dd>
                         <dt>Address</dt>
@@ -76,17 +90,18 @@
                         </dd>
                     </dl>
                 </div>
-                <div class="row bg-success">
+                <div class="row">
                     <dl id="dates" class="col-sm-4">
                         <dt>Date of admission</dt>
                         <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
                         <dt>Date of discharge</dt>
-                        <dd id="ddate">
-                        {{admission.discharge_date | date:'fullDate'}}
-                        <datepicker ng-model="admission.discharge_date" starting-day="1" show-weeks="false"></datepicker>
+                        <dd id="ddate"
+                         datepicker-popup ng-model="admission.discharge_date" is-open="calendar.opened" datepicker-options="calendar.options" min-date="admission.admission_date" show-button-bar="false">
+                        <span ng-bind="admission.discharge_date | date:'fullDate'"></span>
+                        <button type="button" class="btn btn-default" ng-click="open($event)"><span class="glyphicon glyphicon-calendar"></span></button>
                         </dd>
                         <dt ng-show="admission.discharge_date">Admission duration</dt>
-                        <dd id="los" ng-show="admission.discharge_date" ng-bind="admission.los()"></dd>
+                        <dd ng-show="admission.discharge_date" ng-bind="admission.los()"></dd>
                     </dl>
                     <dl id="admission" class="col-sm-4 col-sm-offset-4">
                         <dt>Clinician</dt>
@@ -146,19 +161,19 @@
                     </li>
                 </ol>
             </accordion-group>
-            <accordion-group heading="Presentation">
-                <textarea ng-model="presentation" placeholder="History/Examination/Investigations" required></textarea>
+            <accordion-group heading="Presentation" ng-form name="presentationForm" ng-class="{'panel-warning':presentationForm.$invalid}">
+                <textarea ng-model="presentation" placeholder="History/Examination/Investigations" class="form-control" rows="10" required></textarea>
             </accordion-group>
-            <accordion-group heading="Inpatient progress">
-                <textarea ng-model="progress" placeholder="Treatment/Response/Further issues" required></textarea>
+            <accordion-group heading="Inpatient progress" ng-form name="progressForm" ng-class="{'panel-warning':progressForm.$invalid}">
+                <textarea ng-model="progress" placeholder="Treatment/Response/Further issues" class="form-control" rows="10" required></textarea>
             </accordion-group>
-            <accordion-group heading="Plan">
-                <textarea ng-model="plan" required></textarea>
+            <accordion-group heading="Plan" ng-form name="planForm" ng-class="{'panel-warning':planForm.$invalid}">
+                <textarea ng-model="plan" class="form-control" rows="10" required></textarea>
             </accordion-group>
             <accordion-group heading="Advice to patient">
-                <textarea ng-model="advice" placeholder="Optional"></textarea>
+                <textarea ng-model="advice" placeholder="Optional" class="form-control" rows="10"></textarea>
             </accordion-group>
-            <accordion-group ng-show="currentUser.isPrescriber">
+            <accordion-group ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
                 <accordion-heading>
                     Medications
                     <span class="badge">{{drugs.length || ''}}</span>
@@ -176,15 +191,15 @@
                             <th></th>
                         </tr>
                     </thead>
-                    <tbody id="medtable_body">
-                        <tr ng-repeat="drug in drugs" class="{{drug.status}}">
-                            <td><input ng-model="drug.rx"/></td>
-                            <td><input ng-hide="drug.status === 'new'" ng-model="drug.admission"/></td>
-                            <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status"></select></td>
-                            <td><input ng-hide="drug.status === 'cont' || drug.status === 'stop'" ng-model="drug.discharge"/></td>
+                    <tbody>
+                        <tr ng-repeat="drug in drugs" ng-class="{{drug.status}}" class="drug" ng-form>
+                            <td><input class="form-control" required ng-model="drug.rx" typeahead="drug for drug in drugNames | drugsStartingWith:$viewValue | limitTo:5" type="text"/></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text"/></td>
+                            <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status" required></select></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text"/></td>
                             <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
-                            <td><input ng-hide="drug.status === 'stop' || !drug.include" ng-model="drug.mitte"/></td>
-                            <td><a class="btn btn-danger btn-xs" ng-click="drugs.pop($index)"><span class="glyphicon glyphicon-remove"></span></a></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
+                            <td><a class="btn btn-danger btn-xs" ng-click="drugs.splice($index,1)"><span class="glyphicon glyphicon-remove"></span></a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -195,7 +210,7 @@
                         <li ng-bind="patient.name.first + ' ' + patient.name.last"></li>
                         <li ng-repeat="line in patient.address" ng-bind="line"></li>
                     </ul>
-                    <ul class="pull-right">
+                    <ul class="pull-right text-right">
                         <li ng-bind="currentUser.name"></li>
                         <li ng-bind="'MCNZ: ' + currentUser.mcnz"></li>
                         <li ng-bind="hospital.name"></li>
@@ -204,7 +219,7 @@
                 </div>
                 <hr />
                 <ul>
-                    <li ng-repeat="drug in drugs | filter : rxFilter" class="drug">℞: {{drug.rx}}<br>Sig: {{drug.status === 'cont' ? drug.admission : drug.discharge }}<br>Mitte: {{ drug.mitte }}</li>
+                    <li ng-repeat="drug in drugs | filter : rxFilter" class="prescription">℞: {{drug.rx}}<br>Sig: {{drug.status === 'cont' ? drug.admission : drug.discharge }}<br>Mitte: {{ drug.mitte }}</li>
                 </ul>
                 <hr />
                 <div>
@@ -232,7 +247,7 @@
             </accordion-group>
         </accordion>
 
-        <div class="btn-group dropup" dropdown>
+        <div ng-show="dcForm.$valid" class="btn-group dropup" dropdown>
           <button type="button" class="btn btn-default">Sign off and print</button>
           <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
             <span class="caret"></span>
