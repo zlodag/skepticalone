@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Rx</title>
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="rx.js"></script>
+</head>
+<body ng-app="calculator" ng-strict-di>
+    <div ng-controller="drugCtrl">
+        <input ng-model="str" /><br />
+        <p>Translation: {{ parsed().str }}</p>
+        <pre ng-bind="parsed().full | json"></pre>
+    </div>
+</body>
+</html>
