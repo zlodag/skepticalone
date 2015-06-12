@@ -56,6 +56,7 @@ function getrows() {
             $completed_pg,
             $completed_s,
             $completed_r);
+        $obj['tasks'] = [];
         while ($stmt->fetch()) {
             $obj['tasks'][] = [
                 $pk,
