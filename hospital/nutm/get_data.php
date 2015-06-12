@@ -1,9 +1,15 @@
 <?php
 if ($_REQUEST["data"] === "csv") {
 
+    date_default_timezone_set('Pacific/Auckland');
+    $date = getdate();
     $password = 'waikato';
     $report = 625;
-    $params = ['Lo' => $password, 'Rpt' => $report];
+    $params = ['Lo' => $password, 'Rpt' => $report,
+        'Day' => $date['mday'],
+        'Month' => $date['mon'],
+        'Year' => $date['year']
+        ];
     $file = 'http://www.amion.com/cgi-bin/ocs?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
     //$file = 'data.csv';
 
@@ -91,7 +97,6 @@ function getrows() {
     </style>
     </head><body>
     <?php
-    $time = new DateTime();
 
 } else
 */
