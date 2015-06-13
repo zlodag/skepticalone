@@ -26,7 +26,7 @@
             <legend>To</legend>
             <div>
                 <label for="no">Pager</label>
-                <input id="no" name="no" ng-model="page.form.no" type="number" min="20000" max="20999" required>
+                <input id="no" name="no" ng-model="page.form.no" type="number" min="20000" max="20999" required />
             </div>
             <div ng-if="betterform.no.$dirty" ng-messages="betterform.no.$error">
                 <label ng-message="required"><em>Pager number</em> is required</label>
@@ -40,9 +40,9 @@
             <legend>From</legend>
             <div>
                 <label for="caller">Name</label>
-                <input title-case id="caller" name="caller" ng-model="page.form.caller" ng-minlength="2" required>
+                <input title-case id="caller" name="caller" ng-model="page.form.caller" ng-minlength="2" required />
                 <label for="phone">Phone</label>
-                <input id="phone" name="phone" ng-model="page.form.phone" ng-pattern="/^[0-9]+$/" required>
+                <input id="phone" name="phone" ng-model="page.form.phone" ng-pattern="/^[0-9]+$/" required />
             </div>
             <div ng-if="betterform.caller.$dirty" ng-messages="betterform.caller.$error">
                 <label ng-message="required"><em>Name</em> is required</label>
@@ -53,8 +53,8 @@
                 <label ng-message="pattern"><em>Phone</em> must contain only digits</label>
             </div>
             <div>
-                <label for="reply">Response required? <input id="reply" name="reply" ng-model="page.form.reply" type="checkbox"></label>
-                <label ng-show="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" min="1" max="99" ng-pattern="/^[0-9]+$/"> mins</label>
+                <label for="reply">Response required? <input id="reply" name="reply" ng-model="page.form.reply" type="checkbox" /></label>
+                <label ng-show="page.form.reply" for="within">within <input id="within" name="within" type="number" ng-model="page.form.within" ng-required="page.form.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" /> mins</label>
             </div>
             <div ng-if="betterform.within.$dirty" ng-messages="betterform.within.$error">
                 <label ng-message="required"><em>Response time</em> is required</label>
@@ -69,9 +69,9 @@
             <legend>Patient</legend>
             <div>
                 <label for="patient">Name</label>
-                <input title-case id="patient" name="patient" ng-model="page.form.patient" ng-minlength="2" required>
+                <input title-case id="patient" name="patient" ng-model="page.form.patient" ng-minlength="2" required />
                 <label for="nhi">NHI</label>
-                <input upper-case id="nhi" name="nhi" ng-model="page.form.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required>
+                <input upper-case id="nhi" name="nhi" ng-model="page.form.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />
             </div>
             <div ng-if="betterform.patient.$dirty" ng-messages="betterform.patient.$error">
                 <label ng-message="required"><em>Name</em> is required</label>
@@ -83,9 +83,9 @@
             </div>
             <div>
                 <label for="ward">Ward</label>
-                <input upper-case id="ward" name="ward" ng-model="page.form.ward" ng-maxlength="3" required>
+                <input upper-case id="ward" name="ward" ng-model="page.form.ward" ng-maxlength="3" required />
                 <label for="bed">Bed</label>
-                <input upper-case id="bed" name="bed" ng-model="page.form.bed" ng-maxlength="3" required>
+                <input upper-case id="bed" name="bed" ng-model="page.form.bed" ng-maxlength="3" required />
             </div>
             <div ng-if="betterform.ward.$dirty" ng-messages="betterform.ward.$error">
                 <label ng-message="required"><em>Ward</em> is required</label>
@@ -100,7 +100,7 @@
             <fieldset ng-if="page.form.choice==='ptpage'">
             <legend>Details</legend>
             <div>
-                <select id="why" name="why" ng-model="page.form.why" ng-options="option.label as option.label group by option.group for option in page.reasons" class="whole" required>
+                <select id="why" name="why" ng-model="page.form.why" ng-options="option as option.label group by option.group for option in page.reasons" class="whole" required>
                     <option value="" selected>Reason for page</option>
                 </select>
             </div>
@@ -108,7 +108,7 @@
                 <label ng-message="required"><em>Reason for page</em> is required</label>
             </div>
             <div>
-                <input id="details" name="details" ng-model="page.form.details" class="whole" placeholder="Specify (optional)">
+                <input id="details" name="details" ng-model="page.form.details" class="whole" placeholder="Specify (optional)" />
             </div>
             </fieldset>
 
@@ -120,11 +120,14 @@
             <div ng-if="betterform.contents.$dirty" ng-messages="betterform.contents.$error">
                 <label ng-message="required"><em>Contents</em> is required</label>
             </div>
+            <div>
+                <label for="private">Do not log this page <input id="private" name="private" ng-model="page.form.private" type="checkbox" /></label>
+            </div>
             </fieldset>
 
             <input ng-disabled="page.overflow()" type="submit" value="{{ page.overflow() ? 'Character limit exceeded' : 'Send' }}" />
         </form>
-
+        
         <div id="preview">
             <label>Preview</label>
             <pre ng-bind="'###:' + page.display()"></pre>
@@ -132,9 +135,11 @@
         </div>
 
         <div id="outcome">
-        <div ng-if="page.prevpage">
+        <div ng-if="page.prevpage.msg">
         <label>Successful submission of form!</label>
-        <pre ng-bind="'###:' + page.prevpage"></pre>
+        <pre ng-bind="'###:' + page.prevpage.msg"></pre>
+        <label ng-bind="'Beep code: ' + page.prevpage.beep"></label>
+        <label ng-bind="page.prevpage.private ? 'Not logged' : 'Logged'"></label>
         </div>
         <a href="logs.php" target="_blank">Page Log</a>
         </div>

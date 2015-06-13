@@ -14,7 +14,7 @@ function test_input($key) {
     global $feed;
     global $maxlength;
     if (!array_key_exists($key, $feed)) {
-        if ($key === "no" || $key === "msg") {
+        if ($key === "no" || $key === "msg" || $key === "bp") {
             $valid = false;
             $errors[] = [$key,sprintf('"%s" was not submitted in feed', $key)];
         }
@@ -32,6 +32,12 @@ function test_input($key) {
             if (!preg_match("/^20[0-9]{3}$/", $data)) {
                 $valid = false;
                 $errors[] = [$key,sprintf('Parameter: <em>%s</em> must be 20 followed by 3 digits - "%s" submitted', $key, $data)];
+            }
+            break;
+        case "bp":
+            if (!preg_match("/^[0-9]+$/", $data)) {
+                $valid = false;
+                $errors[] = [$key,sprintf('Parameter: <em>%s</em> must be a number - "%s" submitted', $key, $data)];
             }
             break;
         case "msg":
@@ -52,43 +58,50 @@ function test_input($key) {
 
 $no = test_input("no");
 $msg = test_input("msg");
+$beep = test_input("bp");
+$private = test_input("choice") === "otherpage" && $feed->private === true;
 if ($valid) {
 
     //write to text file
+    /*
     $t = time();
-    $logmessage = sprintf("%s To: %s %s\n", date("Y-m-d H:i:s", $t), $no, $msg); 
+    $logmessage = sprintf("%s Beep:%d To: %s %s\n", date("Y-m-d H:i:s", $t), $beep, $no, $msg); 
     file_put_contents ($filename, $logmessage, FILE_APPEND | LOCK_EX);
+    */
+    if (!$private) { 
+        
+        //submit to database
+        include('../../_connect.php');
+        $stmt=$mysqli->prepare("INSERT INTO `page_log` (`no`,`msg`,
+        `caller`,
+        `phone`,
+        `within`,
+        `patient`,
+        `nhi`,
+        `ward`,
+        `bed`,
+        `why`,
+        `details`
+        ) VALUES (?,?,
+        ?,?,?,?,?,?,?,?,?)");
+        $stmt->bind_param('issiissssss', $no, $msg,
+        test_input("caller"),
+        test_input("phone"),
+        test_input("within"),
+        test_input("patient"),
+        test_input("nhi"),
+        test_input("ward"),
+        test_input("bed"),
+        test_input("why"),
+        test_input("details")
+        );
+        $stmt->execute();
+        $stmt->close();
 
-    //submit to database
-    include('../../_connect.php');
-    $stmt=$mysqli->prepare("INSERT INTO `page_log` (`no`,`msg`,
-    `caller`,
-    `phone`,
-    `within`,
-    `patient`,
-    `nhi`,
-    `ward`,
-    `bed`,
-    `why`,
-    `details`
-    ) VALUES (?,?,
-    ?,?,?,?,?,?,?,?,?)");
-    $stmt->bind_param('issiissssss', $no, $msg,
-    test_input("caller"),
-    test_input("phone"),
-    test_input("within"),
-    test_input("patient"),
-    test_input("nhi"),
-    test_input("ward"),
-    test_input("bed"),
-    test_input("why"),
-    test_input("details")
-    );
-    $stmt->execute();
-    $stmt->close();
+    }
 
     //return status to browser
-    echo json_encode(['ok'=>true,'page'=>$msg]);
+    echo json_encode(['ok'=>true,'page'=>['msg'=>$msg,'beep'=>$beep,'private'=>$private]]);
 } else {
     echo json_encode(['ok'=>false,'errors'=>$errors]);
 }

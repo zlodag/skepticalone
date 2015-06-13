@@ -14,7 +14,7 @@ table {border-collapse: collapse;}
 <?php
 date_default_timezone_set("Pacific/Auckland");
 include('../../_connect.php');
-$result=$mysqli->query("SELECT * FROM `page_log`");
+$result=$mysqli->query("SELECT * FROM `page_log` ORDER BY `ts` DESC");
 echo "<tr>";
 foreach (["Timestamp","To","Message","Caller","Phone","Within (mins)","Patient","NHI","Ward","Bed","Why","Details"] as $title) {
     printf("<th>%s</th>", $title);

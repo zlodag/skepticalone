@@ -30,34 +30,39 @@
 })
     .controller('pageCtrl', ['$http', '$scope', function($http, $scope) {
             this.reasons = [
-                {label: "ADDS 3",group: "High ADDS - specify why"}, 
-                {label: "ADDS 4",group: "High ADDS - specify why"}, 
-                {label: "ADDS 5+",group: "High ADDS - specify why"}, 
-                {label: "Pain",group: "Concern"},
-                {label: "Nausea",group: "Concern"},
-                {label: "Urinary retention",group: "Concern"}, 
-                {label: "Wound",group: "Concern"}, 
-                {label: "Clarify plan",group: "Concern"}, 
-                {label: "Fluids",group: "Medication"}, 
-                {label: "Sleeping pill",group: "Medication"}, 
-                {label: "Laxatives",group: "Medication"}, 
-                {label: "Regular Meds",group: "Medication"}, 
-                {label: "IV line/bloods",group: "Task"},
-                {label: "Review result",group: "Task"},
-                {label: "Admit",group: "Task"}, 
-                {label: "Discharge",group: "Task"}, 
-                {label: "Rechart",group: "Task"},
-                {label: "Consent",group: "Task"}, 
-                {label: "Inform",group: "Other - specify below"}, 
-                {label: "Call urgently!",group: "Other - specify below"}, 
-                {label: "Review urgently!",group: "Other - specify below"}, 
-                {label: "Custom",group: "Other - specify below"}
+                {label: "ADDS 3", beep: 1, group: "High ADDS - specify why"}, 
+                {label: "ADDS 4", beep: 1, group: "High ADDS - specify why"}, 
+                {label: "ADDS 5+", beep: 1, group: "High ADDS - specify why"}, 
+                {label: "Pain", beep: 2, group: "Concern"},
+                {label: "Short of breath", beep: 2, group: "Concern"},
+                {label: "Nausea", beep: 2, group: "Concern"},
+                {label: "Urinary retention", beep: 2, group: "Concern"}, 
+                {label: "Wound", beep: 2, group: "Concern"}, 
+                {label: "Clarify plan", beep: 2, group: "Concern"}, 
+                {label: "Fluids", beep: 3, group: "Medication"}, 
+                {label: "Sleeping pill", beep: 3, group: "Medication"}, 
+                {label: "Laxatives", beep: 3, group: "Medication"}, 
+                {label: "Regular Meds", beep: 3, group: "Medication"}, 
+                {label: "IV line/bloods", beep: 4, group: "Task"},
+                {label: "Review result", beep: 4, group: "Task"},
+                {label: "Admit", beep: 4, group: "Task"}, 
+                {label: "Discharge", beep: 4, group: "Task"}, 
+                {label: "Rechart", beep: 4, group: "Task"},
+                {label: "Consent", beep: 4, group: "Task"}, 
+                {label: "Inform", beep: 5, group: "Other - specify below"}, 
+                {label: "Call urgently!", beep: 5, group: "Other - specify below"}, 
+                {label: "Review urgently!", beep: 5, group: "Other - specify below"}, 
+                {label: "Custom", beep: 5, group: "Other - specify below"}
             ];
             this.choices = [
                 {label: "Page about a patient",value: "ptpage"}, 
                 {label: "Page about something else",value: "otherpage"}
             ];
-            this.prevpage = '';
+            this.prevpage = {
+                msg: '',
+                beep: null,
+                private: null
+            };
             this.get = {};
             var queries = window.location.search.substring(1).split("&");
             for (var i = 0; i < queries.length; i++) {
@@ -71,7 +76,8 @@
                 within: null,
                 why: '',
                 details: '',
-                contents: ''
+                contents: '',
+                private: false
             }, {
                 no: parseInt(this.get.no, 10) || null,
                 patient: this.get.patient,
@@ -90,7 +96,7 @@
                     (form.nhi ? " " + form.nhi : "") + 
                     (form.patient ? "(" + form.patient + ")" : "") + 
                     ((form.ward || form.bed) ? "[" + (form.ward || "") + "-" + (form.bed || "") + "]" : "") + 
-                    (form.why ? " " + form.why : "") + 
+                    (form.why ? " " + form.why.label : "") + 
                     (form.details ? " (" + form.details + ")" : "");
                 } else if (form.choice === 'otherpage') {
                     return form.contents || '';
@@ -101,7 +107,9 @@
             };
             this.submit = function() {
                 var betterform = $scope.betterform, 
-                msg = me.display();
+                msg = me.display(),
+                beep = me.form.choice === 'ptpage' ? me.form.why.beep : 1,
+                number = parseInt(me.form.no, 10);
                 if (betterform.$invalid || me.overflow()) {
                     angular.forEach($scope.betterform.$error, function(type) {
                         angular.forEach(type, function(field) {
@@ -110,14 +118,14 @@
                     });
                     return false;
                 }
-                $http.post(submiturl, angular.extend({msg:msg},me.form))
+                $http.post(submiturl, angular.extend({msg:msg, bp:beep}, me.form, {why:me.form.why.label}))
                 .success(function(data) {
                     if (data.ok) {
                         //alert(urlstring);
                         if (!document.addEventListener) { //using Internet Explorer <= 8...
-                            window.open(pageurl + '?bp=1&no=' + parseInt(me.form.no, 10) + '&msg=' + encodeURIComponent(msg));
+                            window.open(pageurl + '?bp=' + beep + '&no=' + number + '&msg=' + encodeURIComponent(msg));
                         } else {
-                            $http.get(pageurl, {params: {bp:1, no:parseInt(me.form.no, 10), msg:msg}});
+                            $http.get(pageurl, {params: {bp: beep, no:number, msg:msg}});
                         };
                         me.prevpage = data.page;
                         if (me.form.choice === 'ptpage') {
