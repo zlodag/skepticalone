@@ -1,21 +1,7 @@
 (function() {
     "use strict";
-    var app = angular.module('dcsummary', ['ngAnimate', 'ui.bootstrap', 'ui.tree']);
-    app.filter('drugsStartingWith', function() {
-        return function(items, startswith) {
-            var matching_items = [];
-            if (items && startswith) {
-                for (var i = 0; i < items.length; i++) {
-                    if (RegExp('^' + startswith,'i').test(items[i])) {
-                        matching_items.push(items[i]);
-                    }
-                }
-                return matching_items.sort();
-            }
-            else {return items;}
-        }
-    });
-    app.controller('body', ['$scope', function($scope) {
+    var app = angular.module('dcsummary', ['ngAnimate', 'ui.bootstrap', 'ui.tree','rxModule']);
+    app.controller('dcCtrl', ['$scope', function($scope) {
             $scope.users = {
                 doctor: {
                     name: 'John Watson',
@@ -128,40 +114,12 @@
                         scope.$modelValue.str = '';
                         scope.$modelValue.extras = [];
                     }
-                },
-                newDrug: function() {
-                    $scope.drugs.push({
-                        rx: '',
-                        admission: '',
-                        discharge: '',
-                        mitte: '',
-                        status: 'cont',
-                        include: true
-                    });
                 }
             };
             $scope.presentation = "Came to hospital via ambulance.\nChest crackles heard.\nCT head performed.";
             $scope.progress = "Treated for common cold.\nDeveloped acute psychosis.\nSettled with IV fluids.";
             $scope.plan = "Started metformin.\nNot to drive for 6 months.\nOncology follow up in 2 years.";
             $scope.advice = "Keep well hydrated.\nAvoid fatty foods.";
-            $scope.drugStatusList = [
-                {
-                    label: 'Continued',
-                    short: 'cont'
-                }, 
-                {
-                    label: 'Stopped',
-                    short: 'stop'
-                }, 
-                {
-                    label: 'Changed',
-                    short: 'change'
-                }, 
-                {
-                    label: 'New',
-                    short: 'new'
-                }, 
-            ];
             $scope.rxFilter = function(drug) {
                 if (!drug.include || !drug.mitte || !drug.rx || drug.status === 'stop') {
                     return false;
@@ -185,18 +143,6 @@
                 }
                 return true;
             };
-            $scope.drugNames = [
-                'paracetamol', 
-                'aspirin',
-                'amlodipine',
-                'atenolol',
-                'atorvastatin',
-                'azithromycin',
-                'diazepam', 
-                'codeine', 
-                'amoxicillin', 
-                'allopurinol'
-            ];
             $scope.drugs = [
                 {
                     rx: 'prednisone',

@@ -4,12 +4,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Discharge Summary</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
-        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
-        <script src="dc.js"></script>
+        <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>-->
+        <script src="/bower_components/angular/angular.js">
+</script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.min.js">
+</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js">
+</script>
+        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js">
+</script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js">
+</script>
+        <script src="friendlyrx.js">
+</script>
+        <script src="dc.js">
+</script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
         <link rel="stylesheet" href="dc.css">
@@ -20,7 +29,7 @@
         <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
         -->
     </head>
-    <body ng-app="dcsummary" ng-controller="body">
+    <body ng-app="dcsummary" ng-strict-di ng-controller="dcCtrl">
     <div class="container">
         <h1>Discharge Summary</h1>
         <form class="form-inline">
@@ -171,10 +180,9 @@
             <accordion-group heading="Advice to patient">
                 <textarea ng-model="advice" placeholder="Optional" class="form-control" rows="10"></textarea>
             </accordion-group>
-            <accordion-group ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
-                <accordion-heading>
-                    Medications
-                    <span class="badge">{{drugs.length || ''}}</span>
+            
+            <accordion-group dc-medications ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
+                <accordion-heading>Medications <span class="badge">{{drugs.length || ''}}</span>
                 </accordion-heading>
                 <a class="btn btn-success btn-xs" ng-click="functions.newDrug(this)"><span class="glyphicon glyphicon-plus"></span></a>
                 <table id="medtable" class="table">
@@ -192,9 +200,9 @@
                     <tbody>
                         <tr ng-repeat="drug in drugs" ng-class="{{drug.status}}" class="drug" ng-form>
                             <td><input class="form-control" required ng-model="drug.rx" typeahead="drug for drug in drugNames | drugsStartingWith:$viewValue | limitTo:5" type="text"/></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text"/></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text" popover="{{parse(drug.admission)}}" popover-trigger="focus" popover-placement="right"/></td>
                             <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status" required></select></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text"/></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text" popover="{{parse(drug.discharge)}}" popover-trigger="focus" popover-placement="right"/></td>
                             <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
                             <td><input class="form-control" ng-required="drug.status !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
                             <td><a class="btn btn-danger btn-xs" ng-click="drugs.splice($index,1)"><span class="glyphicon glyphicon-remove"></span></a></td>
@@ -202,6 +210,7 @@
                     </tbody>
                 </table>
             </accordion-group>
+
             <accordion-group ng-show="currentUser.isPrescriber" heading="Prescriptions">
                 <div class="clearfix">
                     <ul class="pull-left">
@@ -217,7 +226,7 @@
                 </div>
                 <hr />
                 <ul>
-                    <li ng-repeat="drug in drugs | filter : rxFilter" class="prescription">℞: {{drug.rx}}<br>Sig: {{drug.status === 'cont' ? drug.admission : drug.discharge }}<br>Mitte: {{ drug.mitte }}</li>
+                    <li ng-repeat="drug in drugs | filter : rxFilter" class="prescription">℞: {{drug.rx}}<br>Sig: {{functions.sig(drug)}}<br>Mitte: {{ drug.mitte }}</li>
                 </ul>
                 <hr />
                 <div>
