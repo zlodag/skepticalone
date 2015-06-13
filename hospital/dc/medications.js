@@ -76,43 +76,46 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
         },
         route: {
             po: 'orally',
+            get o(){return this.po;},
             pr: 'rectally',
             pv: 'vaginally',
             subcut: 'subcutaneously',
+            get sc(){return this.subcut;},
             im: 'intramuscularly',
             iv: 'intravenously',
             sublingual: 'under the tongue',
+            get sl(){return this.sublingual;},
+            neb: 'nebulised',
+            top: 'to the skin'
         },
         frequency: {
             daily: 'daily',
+            get od(){return this.daily;},
             mane: 'in the morning',
-            
+            get am(){return this.mane;},
+            pm: 'in the afternoon',
+            midi: 'at midday',
             nocte: 'at night',
-            bd: 'two times a day',
+            bd: 'twice a day',
+            get bid(){return this.bd;},
+            get bds(){return this.bd;},
             tds: 'three times a day',
+            get tid(){return this.tds;},
             qid: 'four times a day',
-            prn: 'as required'
+            get qds(){return this.qid;},
+            prn: 'as required',
+            stat: 'immediately'
         }
     };
-    angular.extend(maps.route, {
-        o: maps.route.po,
-        sc: maps.route.subcut,
-        sl: maps.route.sublingual
-    });
-    angular.extend(maps.frequency, {
-        od: maps.frequency.daily,
-        bid: maps.frequency.bd,
-        bds: maps.frequency.bd,
-        tid: maps.frequency.tds,
-        qds: maps.frequency.qid
-    });
     var allmaps = angular.extend({}, maps.route, maps.frequency, maps.unit), 
-    timeunits = {h: 'hour',d: 'day',m: 'month'};
-    angular.extend(timeunits, {
-        '/24': timeunits.h,
-        '/7': timeunits.d,
-        '/12': timeunits.m
-    });
+    timeunits = {
+        h: 'hour',
+        get '/24'(){return this.h;},
+        d: 'day',
+        get '/7'(){return this.d;},
+        m: 'month',
+        get '/12'(){return this.m;}
+    };
     return function(str) {
         if (str === undefined)
             return '…';
@@ -126,7 +129,7 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
                 return (q ? 'every ' : '') + 
                 (single ? timeunits[u] : n + ' ' + timeunits[u] + 's');
             })
-            .replace(/[^\/]+/g, function(match) {
+            .replace(/[\w]+/g, function(match) {
                 var stripped = match.replace(/\./g, '').toLowerCase();
                 if (allmaps.hasOwnProperty(stripped)) {
                     return allmaps[stripped];
