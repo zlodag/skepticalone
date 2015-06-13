@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-    var app = angular.module('dcsummary', ['ngAnimate', 'ui.bootstrap', 'ui.tree','rxModule']);
+    var app = angular.module('dcsummary', ['ui.bootstrap', 'ui.tree', 'medicationsModule', 'prescriptionsModule']);
     app.controller('dcCtrl', ['$scope', function($scope) {
             $scope.users = {
                 doctor: {
@@ -58,6 +58,15 @@
                 phone: '07 555 1234',
                 fax: '07 432 7654'
             };
+            $scope.hospital = {
+                name: 'Waikato Hospital',
+                address: [
+                    'Pembroke Street', 
+                    'Private Bag 3200', 
+                    'Hamilton 3240', 
+                    'New Zealand'
+                ]
+            };
             $scope.admission = {
                 clinician: 'Blue Team',
                 service: 'General Medicine',
@@ -69,15 +78,6 @@
                     return days === 1 ? '1 day' : days + ' days';
                 }
             };
-            $scope.today = function() {
-                $scope.discharge_date = new Date();
-            };
-            $scope.open = function($event) {
-                $event.preventDefault();
-                $event.stopPropagation();
-                
-                $scope.calendar.opened = true;
-            };
             
             $scope.calendar = {
                 opened: false,
@@ -88,17 +88,13 @@
                     maxMode: 'day'
                 }
             };
-            
-            
-            $scope.hospital = {
-                name: 'Waikato Hospital',
-                address: [
-                    'Pembroke Street', 
-                    'Private Bag 3200', 
-                    'Hamilton 3240', 
-                    'New Zealand'
-                ]
+            $scope.open = function($event) {
+                $event.preventDefault();
+                $event.stopPropagation();
+                
+                $scope.calendar.opened = true;
             };
+            
             $scope.functions = {
                 newItem: function(listname) {
                     $scope.diagnoses[listname].push({str: '',extras: []});
@@ -116,84 +112,6 @@
                     }
                 }
             };
-            $scope.presentation = "Came to hospital via ambulance.\nChest crackles heard.\nCT head performed.";
-            $scope.progress = "Treated for common cold.\nDeveloped acute psychosis.\nSettled with IV fluids.";
-            $scope.plan = "Started metformin.\nNot to drive for 6 months.\nOncology follow up in 2 years.";
-            $scope.advice = "Keep well hydrated.\nAvoid fatty foods.";
-            $scope.rxFilter = function(drug) {
-                if (!drug.include || !drug.mitte || !drug.rx || drug.status === 'stop') {
-                    return false;
-                }
-                switch (drug.status) {
-                    case 'cont':
-                        if (!drug.admission) {
-                            return false;
-                        }
-                        break;
-                    case 'change':
-                        if (!drug.admission || !drug.discharge) {
-                            return false;
-                        }
-                        break;
-                    case 'new':
-                        if (!drug.discharge) {
-                            return false;
-                        }
-                        break;
-                }
-                return true;
-            };
-            $scope.drugs = [
-                {
-                    rx: 'prednisone',
-                    admission: '5mg PO mane',
-                    discharge: '',
-                    mitte: '',
-                    status: 'cont',
-                    include: false
-                }, 
-                {
-                    rx: 'amoxicillin',
-                    admission: '500mg PO TDS',
-                    discharge: '',
-                    mitte: '',
-                    status: 'stop',
-                    include: true
-                }, 
-                {
-                    rx: 'allopurinol',
-                    admission: '300mg PO mane',
-                    discharge: '600mg PO mane',
-                    mitte: '2 weeks',
-                    status: 'change',
-                    include: true
-                }, 
-                {
-                    rx: 'thyroxine',
-                    admission: '',
-                    discharge: '50mcg PO mane',
-                    mitte: '2 weeks',
-                    status: 'new',
-                    include: true
-                }
-            ];
-            $scope.specialAuthority = [
-                {
-                    name: 'Ticagrelor',
-                    number: 123456789,
-                    expiry: 'June 2015'
-                }, 
-                {
-                    name: 'Enoxaparin',
-                    number: 759472542,
-                    expiry: 'May 2017'
-                }, 
-                {
-                    name: 'peg-GCSF',
-                    number: 649845623,
-                    expiry: 'Lifetime'
-                }
-            ];
             $scope.diagnoses = {
                 current: [
                     {
@@ -275,5 +193,60 @@
                         extras: []
                     }
                 ]};
+            $scope.presentation = "Came to hospital via ambulance.\nChest crackles heard.\nCT head performed.";
+            $scope.progress = "Treated for common cold.\nDeveloped acute psychosis.\nSettled with IV fluids.";
+            $scope.plan = "Started metformin.\nNot to drive for 6 months.\nOncology follow up in 2 years.";
+            $scope.advice = "Keep well hydrated.\nAvoid fatty foods.";
+            $scope.drugs = [
+                {
+                    rx: 'prednisone',
+                    admission: '5mg PO mane',
+                    discharge: '',
+                    mitte: '',
+                    status: 'cont',
+                    include: false
+                }, 
+                {
+                    rx: 'amoxicillin',
+                    admission: '500mg PO TDS',
+                    discharge: '',
+                    mitte: '',
+                    status: 'stop',
+                    include: true
+                }, 
+                {
+                    rx: 'allopurinol',
+                    admission: '300mg PO mane',
+                    discharge: '600mg PO mane',
+                    mitte: '2 weeks',
+                    status: 'change',
+                    include: true
+                }, 
+                {
+                    rx: 'thyroxine',
+                    admission: '',
+                    discharge: '50mcg PO mane',
+                    mitte: '2 weeks',
+                    status: 'new',
+                    include: true
+                }
+            ];
+            $scope.specialAuthority = [
+                {
+                    name: 'Ticagrelor',
+                    number: 123456789,
+                    expiry: 'June 2015'
+                }, 
+                {
+                    name: 'Enoxaparin',
+                    number: 759472542,
+                    expiry: 'May 2017'
+                }, 
+                {
+                    name: 'peg-GCSF',
+                    number: 649845623,
+                    expiry: 'Lifetime'
+                }
+            ];
         }]);
 })();

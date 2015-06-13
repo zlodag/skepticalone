@@ -15,7 +15,9 @@
 </script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js">
 </script>
-        <script src="friendlyrx.js">
+        <script src="medications.js">
+</script>
+        <script src="prescriptions.js">
 </script>
         <script src="dc.js">
 </script>
@@ -52,7 +54,7 @@
           </div>
         </form>
         <accordion close-others="true" ng-form name="dcForm">
-            <accordion-group heading="Demographics">
+            <accordion-group id="demographics" heading="Demographics">
                 <div class="row">
                     <dl id="patient" class="col-sm-4">
                         <dt>Patient</dt>
@@ -184,7 +186,7 @@
             <accordion-group dc-medications ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
                 <accordion-heading>Medications <span class="badge">{{drugs.length || ''}}</span>
                 </accordion-heading>
-                <a class="btn btn-success btn-xs" ng-click="functions.newDrug(this)"><span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-success btn-xs" ng-click="newDrug()"><span class="glyphicon glyphicon-plus"></span></a>
                 <table id="medtable" class="table">
                     <thead>
                         <tr>
@@ -211,7 +213,9 @@
                 </table>
             </accordion-group>
 
-            <accordion-group ng-show="currentUser.isPrescriber" heading="Prescriptions">
+            <accordion-group dc-prescriptions id="prescriptions" ng-show="currentUser.isPrescriber">
+                <accordion-heading>Prescriptions <span class="badge">{{filtered.length || ''}}</span>
+                </accordion-heading>
                 <div class="clearfix">
                     <ul class="pull-left">
                         <li ng-bind="patient.name.first + ' ' + patient.name.last"></li>
@@ -226,7 +230,7 @@
                 </div>
                 <hr />
                 <ul>
-                    <li ng-repeat="drug in drugs | filter : rxFilter" class="prescription">℞: {{drug.rx}}<br>Sig: {{functions.sig(drug)}}<br>Mitte: {{ drug.mitte }}</li>
+                    <li ng-repeat="drug in filtered = (drugs | rxFilter)" class="prescription">℞: {{drug.rx}}<br>Sig: {{getSig(drug)}}<br>Mitte: {{ drug.mitte }}</li>
                 </ul>
                 <hr />
                 <div>

@@ -1,25 +1,19 @@
-var app = angular.module('rxModule', ['ngAnimate', 'ui.bootstrap'])
+var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
 .directive('dcMedications', function() {
     return {
         restrict: 'A',
         require: '^dcCtrl',
         controller: ['$scope', 'rxFactory', function($scope, rxFactory) {
-                $scope.drugs = $scope.$parent.drugs;
                 $scope.parse = rxFactory;
-                $scope.functions = {
-                    sig: function(drug) {
-                        return drug.status === 'cont' ? drug.admission : drug.discharge;
-                    },
-                    newDrug: function() {
-                        $scope.drugs.push({
-                            rx: '',
-                            admission: '',
-                            discharge: '',
-                            mitte: '',
-                            status: 'cont',
-                            include: true
-                        });
-                    }
+                $scope.newDrug = function() {
+                    $scope.drugs.push({
+                        rx: '', 
+                        admission: '',
+                        discharge: '',
+                        mitte: '',
+                        status: 'cont',
+                        include: true
+                    });
                 };
                 $scope.drugStatusList = [
                     {

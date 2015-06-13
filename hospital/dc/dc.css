@@ -16,11 +16,11 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-div[heading='Prescriptions'] ul, div[heading='Demographics'] ul {
+#prescriptions ul, #demographics ul {
     padding: 0;
     list-style-type: none;
 }
-div[heading='Prescriptions'] li.prescription {
+#prescriptions li.prescription {
     margin: 10px 0;
 }
 textarea {
