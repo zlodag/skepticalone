@@ -67,10 +67,14 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
 .factory('rxFactory', function() {
     var maps = {
         unit: {
+            u: 'unit',
             g: 'gram',
             mg: 'milligram',
             mcg: 'microgram',
             ng: 'nanogram',
+            l: 'litre',
+            ml: 'mL',
+            ul: 'microlitre',
             tab: 'tablet',
             cap: 'capsule'
         },
@@ -105,9 +109,13 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
             get qds(){return this.qid;},
             prn: 'as required',
             stat: 'immediately'
+        },
+        terms: {
+            max: 'maximum',
+            min: 'minimum'
         }
     };
-    var allmaps = angular.extend({}, maps.route, maps.frequency, maps.unit), 
+    var allmaps = angular.extend({}, maps.route, maps.frequency, maps.unit,maps.terms), 
     timeunits = {
         h: 'hour',
         get '/24'(){return this.h;},
@@ -123,19 +131,31 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
         var final = [];
         for (var i = 0; i < each.length; i++) {
             final.push(each[i]
-            .replace(/(q?)([\d-]+)(\/(?:24|7|12)|h|d|m)(?!\w)/gi, function(match, q, n, u) {
-                u = u.toLowerCase();
-                var single = (n === "1");
-                return (q ? 'every ' : '') + 
-                (single ? timeunits[u] : n + ' ' + timeunits[u] + 's');
-            })
-            .replace(/[\w]+/g, function(match) {
-                var stripped = match.replace(/\./g, '').toLowerCase();
-                if (allmaps.hasOwnProperty(stripped)) {
-                    return allmaps[stripped];
-                }
-                return match;
-            })
+                .replace(/(q?)([\d-]+)(h|d|m|\/(?:24|7|12))?(?!\w)/gi, function(match, q, n, u){
+                    if(u) {u = u.toLowerCase();}
+                    var single = (n === "1"),
+                    validunit = timeunits.hasOwnProperty(u);
+                    return (q ? 'every ':'') + 
+                    (single ? (validunit ? ' ' + timeunits[u] : '') : n + (validunit ? ' ' + timeunits[u] + 's': ''));
+                })
+                .replace(/([\d-]*)([a-zA-Z\.]+)/g, function(match, n, w, s) {
+                    var stripped = w.replace(/\./g, '').toLowerCase();
+                    if (allmaps.hasOwnProperty(stripped)) {
+                        var p = allmaps[stripped],
+                        single = true;
+                    } else if (stripped.substr(-1) === "s" && allmaps.hasOwnProperty(stripped.slice(0,-1))) {
+                        var p = allmaps[stripped.slice(0,-1)],
+                        single = false;
+                    } else {return match;}
+                    var str = '';
+                    if (n){
+                        if (single && n !== '1'){single = false;}
+                        str += n + ' ';
+                    }
+                    if (single && s === 's'){single = false;}
+                    str += p + (single ? '' : 's');
+                    return str;
+                })
             );
         }
         return final.join(' ');
