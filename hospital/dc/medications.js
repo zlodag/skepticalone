@@ -125,7 +125,7 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
         get '/12'(){return this.m;}
     };
     return function(str) {
-        if (str === undefined)
+        if (!str)
             return '…';
         var each = str.split(' ');
         var final = [];

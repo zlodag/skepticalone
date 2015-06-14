@@ -186,8 +186,8 @@
             <accordion-group dc-medications ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
                 <accordion-heading>Medications <span class="badge">{{drugs.length || ''}}</span>
                 </accordion-heading>
-                <a class="btn btn-success btn-xs" ng-click="newDrug()"><span class="glyphicon glyphicon-plus"></span></a>
-                <table id="medtable" class="table">
+                <a class="btn btn-success btn-xs" ng-click="newDrug()"><span class="glyphicon glyphicon-plus"></span> Add a medication</a>
+                <table id="medtable" class="table" ng-show="drugs.length">
                     <thead>
                         <tr>
                             <th>Drug</th>
@@ -207,7 +207,7 @@
                             <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text" popover="{{parse(drug.discharge)}}" popover-trigger="focus" popover-placement="right"/></td>
                             <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
                             <td><input class="form-control" ng-required="drug.status !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
-                            <td><a class="btn btn-danger btn-xs" ng-click="drugs.splice($index,1)"><span class="glyphicon glyphicon-remove"></span></a></td>
+                            <td><button type="button" ng-click="drugs.splice($index,1)" class="close"><span class="glyphicon glyphicon-remove"></span></button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -216,6 +216,10 @@
             <accordion-group dc-prescriptions id="prescriptions" ng-show="currentUser.isPrescriber">
                 <accordion-heading>Prescriptions <span class="badge">{{filtered.length || ''}}</span>
                 </accordion-heading>
+                <div ng-hide="filtered.length">
+                        No valid prescriptions&hellip;
+                </div>
+                <div ng-show="filtered.length">
                 <div class="clearfix">
                     <ul class="pull-left">
                         <li ng-bind="patient.name.first + ' ' + patient.name.last"></li>
@@ -237,6 +241,7 @@
                     <div class="pull-left">Signed:</div>
                     <div class="pull-right" ng-bind="date | date:'fullDate'"></div>
                 </div>
+                </div>
             </accordion-group>
             <accordion-group ng-show="currentUser.isPrescriber">
                 <accordion-heading>
@@ -257,20 +262,20 @@
                 </table>
             </accordion-group>
         </accordion>
-
-        <div ng-show="dcForm.$valid" class="btn-group dropup" dropdown>
-          <button type="button" class="btn btn-default">Sign off and print</button>
-          <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
-            <span class="caret"></span>
-          </button>
+        <div class="btn-group dropup" dropdown>
+          <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>Save <span class="caret"></span></button>
           <ul class="dropdown-menu">
             <li><a href="#">Save and print</a></li>
             <li><a href="#">Save and exit</a></li>
-            <li class="divider"></li>
+          </ul>
+        </div>
+        <div class="btn-group dropup" dropdown>
+          <button type="button" ng-disabled="dcForm.$invalid" class="btn btn-default dropdown-toggle" dropdown-toggle>Sign off <span class="caret"></span></button>
+          <ul class="dropdown-menu">
+            <li><a href="#">Sign off and print</a></li>
             <li><a href="#">Sign off and exit</a></li>
           </ul>
         </div>
-
     </div>
     </body>
 </html>
