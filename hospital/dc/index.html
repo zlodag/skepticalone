@@ -4,23 +4,15 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Discharge Summary</title>
-        <!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>-->
-        <script src="/bower_components/angular/angular.js">
-</script>
-        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.min.js">
-</script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js">
-</script>
-        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js">
-</script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js">
-</script>
-        <script src="medications.js">
-</script>
-        <script src="prescriptions.js">
-</script>
-        <script src="dc.js">
-</script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular-animate.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+        <script src="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+        <script src="data.js"></script>
+        <script src="filters.js"></script>
+        <script src="directives.js"></script>
+        <script src="dc.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
         <link rel="stylesheet" href="dc.css">
@@ -31,26 +23,29 @@
         <link rel="stylesheet" type="text/css" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
         -->
     </head>
-    <body ng-app="dcsummary" ng-strict-di ng-controller="dcCtrl">
-    <div class="container">
+    <body ng-app="dcMain" ng-strict-di>
+    <div class="container" ng-controller="dcController">
         <h1>Discharge Summary</h1>
         <form class="form-inline">
+          <!--
           <div class="form-group">
-            <label for="selectUser">Current user</label>
             <div id="selectUser" class="btn-group">
-                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.doctor">Doctor</label>
-                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.nurse">Nurse</label>
-                <label class="btn btn-primary" ng-model="currentUser" btn-radio="users.physio">Physio</label>
+                <label class="btn btn-primary" ng-model="userName" btn-radio="'doctor'">Doctor</label>
+                <label class="btn btn-primary" ng-model="userName" btn-radio="'nurse'">Nurse</label>
+                <label class="btn btn-primary" ng-model="userName" btn-radio="'physio'">Physio</label>
             </div>
           </div>
+          -->
           <div class="form-group">
-            <input ng-model="currentUser.name" class="form-control" id="userName" placeholder="Name" />
+            <label for="userName">Current user</label>
+            <input ng-model="user.name" class="form-control" id="userName" placeholder="Name" />
           </div>
           <div class="form-group">
-            <button type="button" class="btn btn-default" ng-model="currentUser.isPrescriber" btn-checkbox >Prescriber</button>
+            <button type="button" class="btn btn-default" ng-model="user.isPrescriber" btn-checkbox >Prescriber</button>
           </div>
-          <div ng-if="currentUser.isPrescriber" class="form-group">
-            <input ng-model="currentUser.mcnz" class="form-control" id="userMCNZ" type="number" placeholder="MCNZ"/>
+          <div ng-if="user.isPrescriber" class="form-group">
+            <label for="userMCNZ">MCNZ</label>
+            <input ng-model="user.mcnz" class="form-control" id="userMCNZ" type="number" placeholder="MCNZ"/>
           </div>
         </form>
         <accordion close-others="true" ng-form name="dcForm">
@@ -104,13 +99,16 @@
                         <dt>Date of admission</dt>
                         <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
                         <dt>Date of discharge</dt>
-                        <dd id="ddate"
-                         datepicker-popup ng-model="admission.discharge_date" is-open="calendar.opened" datepicker-options="calendar.options" min-date="admission.admission_date" show-button-bar="false">
+                        <dd id="ddate" datepicker-popup dc-calendar
+                         ng-model="admission.discharge_date"
+                         is-open="isOpened"
+                         min-date="admission.admission_date"
+                         >
                         <span ng-bind="admission.discharge_date | date:'fullDate'"></span>
-                        <button type="button" class="btn btn-default" ng-click="open($event)"><span class="glyphicon glyphicon-calendar"></span></button>
+                        <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><span class="glyphicon glyphicon-calendar"></span></button>
                         </dd>
                         <dt ng-show="admission.discharge_date">Admission duration</dt>
-                        <dd ng-show="admission.discharge_date" ng-bind="admission.los()"></dd>
+                        <dd ng-show="admission.discharge_date" ng-bind="admission.los"></dd>
                     </dl>
                     <dl id="admission" class="col-sm-4 col-sm-offset-4">
                         <dt>Clinician</dt>
@@ -127,48 +125,70 @@
                     Diagnoses
                     <span class="badge">{{diagnoses.current.length || ''}}</span>
                 </accordion-heading>
-                <a class="btn btn-success btn-xs" ng-click="functions.newItem('current')"><span class="glyphicon glyphicon-plus"></span></a>
-                <ol ui-tree ui-tree-nodes ng-model="diagnoses.current" class="list-group">
-                    <li ng-repeat="diagnosis in diagnoses.current" ui-tree-node class="list-group-item">
-                            <div ui-tree-handle class="bg-info">
-                                <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
-                                <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,1)"><span class="glyphicon glyphicon-remove"></span></a>
-                                <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                <div ui-tree>
+                <a class="btn btn-success" ng-click="functions.newItem('current')"><span class="glyphicon glyphicon-plus"></span> Add a diagnosis</a>
+                <a class="btn btn-info" ng-click="this.collapseAll()"><span class="glyphicon glyphicon-minus"></span> Collapse all</a>
+                <a class="btn btn-info" ng-click="this.expandAll()"><span class="glyphicon glyphicon-plus"></span> Expand all</a>
+                <ol ui-tree-nodes="" ng-model="diagnoses.current">
+                    <li class="diagnosis" ng-repeat="diagnosis in diagnoses.current" ui-tree-node collapsed="true">
+                            <div ui-tree-handle class="input-group">
+                                <span class="input-group-addon" ng-bind="$index + 1"></span>
+                                <input class="form-control" type="text" ng-model="diagnosis.str"/>
+                                <span class="input-group-btn">
+                                <a ng-if="diagnosis.extras.length" data-nodrag class="btn btn-info" ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                                <a class="btn btn-success" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-danger" data-nodrag ng-click="functions.conditionalRemove(this,1)"><span class="glyphicon glyphicon-remove"></span></a>
+                                </span>
                             </div>
-                            <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
+                            <ol ui-tree-nodes="" ng-model="diagnosis.extras">
                                 <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
-                                <div ui-tree-handle class="bg-success">
-                                    <input class="extra" data-nodrag ng-model="extra.str"/>
-                                    <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
+                                <div ui-tree-handle class="input-group">
+                                    <span class="input-group-addon">{{'abcdefghijklmnopqrstuvwxyz'[$index]}}</span>
+                                    <input class="form-control" type="text" ng-model="extra.str"/>
+                                    <span class="input-group-btn">
+                                    <a class="btn btn-danger" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
+                                    </span>
                                 </div>
+                                </li>
                             </ol>
                     </li>
                 </ol>
+                </div>               
             </accordion-group>
             <accordion-group>
                 <accordion-heading>
                     Background
                     <span class="badge">{{diagnoses.background.length || ''}}</span>
                 </accordion-heading>
-                <a class="btn btn-success btn-xs" ng-click="functions.newItem('background')"><span class="glyphicon glyphicon-plus"></span></a>
-                <ol ui-tree ui-tree-nodes ng-model="diagnoses.background" class="list-group">
-                    <li ng-repeat="diagnosis in diagnoses.background" ui-tree-node class="list-group-item">
-                            <div ui-tree-handle class="bg-info">
-                                <input class="diagnosis" data-nodrag ng-model="diagnosis.str"/>
-                                <a class="btn btn-danger btn-xs" data-nodrag ng-click="functions.conditionalRemove(this,0)"><span class="glyphicon glyphicon-remove"></span></a>
-                                <a class="btn btn-success btn-xs" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
-                                <a ng-if="diagnosis.extras.length" class="btn btn-info btn-xs" data-nodrag ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                <div ui-tree>
+                <a class="btn btn-success" ng-click="functions.newItem('background')"><span class="glyphicon glyphicon-plus"></span> Add a diagnosis</a>
+                <a class="btn btn-info" ng-click="this.collapseAll()"><span class="glyphicon glyphicon-minus"></span> Collapse all</a>
+                <a class="btn btn-info" ng-click="this.expandAll()"><span class="glyphicon glyphicon-plus"></span> Expand all</a>
+                <ol ui-tree-nodes="" ng-model="diagnoses.background">
+                    <li class="diagnosis" ng-repeat="diagnosis in diagnoses.background" ui-tree-node collapsed="true">
+                            <div ui-tree-handle class="input-group">
+                                <span class="input-group-addon" ng-bind="$index + 1"></span>
+                                <input class="form-control" type="text" ng-model="diagnosis.str"/>
+                                <span class="input-group-btn">
+                                <a ng-if="diagnosis.extras.length" data-nodrag class="btn btn-info" ng-click="this.toggle()"><span class="glyphicon" ng-class="{'glyphicon-plus': collapsed, 'glyphicon-minus': !collapsed}"></span></a>
+                                <a class="btn btn-success" data-nodrag ng-click="functions.newSubItem(this)"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a class="btn btn-danger" data-nodrag ng-click="functions.conditionalRemove(this,0)"><span class="glyphicon glyphicon-remove"></span></a>
+                                </span>
                             </div>
-                            <ol ui-tree-nodes ng-model="diagnosis.extras" ng-class="{hidden: collapsed}">
+                            <ol ui-tree-nodes="" ng-model="diagnosis.extras">
                                 <li ng-repeat="extra in diagnosis.extras" ui-tree-node>
-                                <div ui-tree-handle class="bg-success">
-                                    <input class="extra" data-nodrag ng-model="extra.str"/>
-                                    <a class="btn btn-danger btn-xs" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
+                                <div ui-tree-handle class="input-group">
+                                    <span class="input-group-addon">{{'abcdefghijklmnopqrstuvwxyz'[$index]}}</span>
+                                    <input class="form-control" type="text" ng-model="extra.str"/>
+                                    <span class="input-group-btn">
+                                    <a class="btn btn-danger" data-nodrag ng-click="this.remove()"><span class="glyphicon glyphicon-remove"></span></a>
+                                    </span>
                                 </div>
+                                </li>
                             </ol>
                     </li>
                 </ol>
+                </div>
             </accordion-group>
             <accordion-group heading="Presentation" ng-form name="presentationForm" ng-class="{'panel-warning':presentationForm.$invalid}">
                 <textarea ng-model="presentation" placeholder="History/Examination/Investigations" class="form-control" rows="10" required></textarea>
@@ -183,7 +203,7 @@
                 <textarea ng-model="advice" placeholder="Optional" class="form-control" rows="10"></textarea>
             </accordion-group>
             
-            <accordion-group dc-medications ng-show="currentUser.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
+            <accordion-group dc-medications ng-show="user.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
                 <accordion-heading>Medications <span class="badge">{{drugs.length || ''}}</span>
                 </accordion-heading>
                 <a class="btn btn-success btn-xs" ng-click="newDrug()"><span class="glyphicon glyphicon-plus"></span> Add a medication</a>
@@ -213,12 +233,10 @@
                 </table>
             </accordion-group>
 
-            <accordion-group dc-prescriptions id="prescriptions" ng-show="currentUser.isPrescriber">
+            <accordion-group dc-prescriptions id="prescriptions" ng-show="user.isPrescriber">
                 <accordion-heading>Prescriptions <span class="badge">{{filtered.length || ''}}</span>
                 </accordion-heading>
-                <div ng-hide="filtered.length">
-                        No valid prescriptions&hellip;
-                </div>
+                <div ng-hide="filtered.length">No valid prescriptions &hellip;</div>
                 <div ng-show="filtered.length">
                 <div class="clearfix">
                     <ul class="pull-left">
@@ -226,15 +244,15 @@
                         <li ng-repeat="line in patient.address" ng-bind="line"></li>
                     </ul>
                     <ul class="pull-right text-right">
-                        <li ng-bind="currentUser.name"></li>
-                        <li ng-bind="'MCNZ: ' + currentUser.mcnz"></li>
+                        <li ng-bind="user.name"></li>
+                        <li ng-bind="'MCNZ: ' + user.mcnz"></li>
                         <li ng-bind="hospital.name"></li>
                         <li ng-repeat="line in hospital.address" ng-bind="line"></li>
                     </ul>
                 </div>
                 <hr />
                 <ul>
-                    <li ng-repeat="drug in filtered = (drugs | rxFilter)" class="prescription">℞: {{drug.rx}}<br>Sig: {{getSig(drug)}}<br>Mitte: {{ drug.mitte }}</li>
+                    <li ng-repeat="drug in filtered = (drugs | rxFilter)" class="prescription">℞: {{drug.rx}}<br>Sig: {{getSig()}}<br>Mitte: {{ drug.mitte }}</li>
                 </ul>
                 <hr />
                 <div>
@@ -243,7 +261,7 @@
                 </div>
                 </div>
             </accordion-group>
-            <accordion-group ng-show="currentUser.isPrescriber">
+            <accordion-group ng-show="user.isPrescriber">
                 <accordion-heading>
                     Current special authority numbers
                     <span class="badge">{{specialAuthority.length || ''}}</span>

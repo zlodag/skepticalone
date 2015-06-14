@@ -1,5 +1,5 @@
 describe('Prescriptions', function() {
-    beforeEach(module('prescriptionsModule'));
+    beforeEach(module('dcFilters'));
     beforeEach(inject(function(_$filter_){
         // The injector unwraps the underscores (_) from around the parameter names when matching
         rxFilter = _$filter_('rxFilter');
