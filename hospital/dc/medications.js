@@ -1,10 +1,9 @@
-var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
+var app = angular.module('medicationsModule', [])
 .directive('dcMedications', function() {
     return {
         restrict: 'A',
         require: '^dcCtrl',
-        controller: ['$scope', 'rxFactory', function($scope, rxFactory) {
-                $scope.parse = rxFactory;
+        controller: ['$scope', function($scope) {
                 $scope.newDrug = function() {
                     $scope.drugs.push({
                         rx: '', 
@@ -64,7 +63,7 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
         }
     }
 })
-.factory('rxFactory', function() {
+.filter('friendlyRx', function() {
     var maps = {
         unit: {
             u: 'unit',
@@ -131,12 +130,22 @@ var app = angular.module('medicationsModule', ['ngAnimate', 'ui.bootstrap'])
         var final = [];
         for (var i = 0; i < each.length; i++) {
             final.push(each[i]
-                .replace(/(q?)([\d-]+)(h|d|m|\/(?:24|7|12))?(?!\w)/gi, function(match, q, n, u){
+                .replace(/(q?)([\d-]+)(h|d|m|\/(?:24|7|12)(?!\/\d))?(?!\w)/gi, function(match, q, n, u){
+                    var single = true;
                     if(u) {u = u.toLowerCase();}
-                    var single = (n === "1"),
-                    validunit = timeunits.hasOwnProperty(u);
-                    return (q ? 'every ':'') + 
-                    (single ? (validunit ? ' ' + timeunits[u] : '') : n + (validunit ? ' ' + timeunits[u] + 's': ''));
+                    if(single && n !=="1" ) {single = false;}
+                    validunit = timeunits.hasOwnProperty(u),
+                    arr = [];
+                    if (q) {
+                        arr.push('every');
+                    }
+                    if (n) {
+                        arr.push(n);
+                    }
+                    if (validunit) {
+                        arr.push(timeunits[u] + (single ? '' : 's'));
+                    }
+                    return arr.join(' ');
                 })
                 .replace(/([\d-]*)([a-zA-Z\.]+)/g, function(match, n, w, s) {
                     var stripped = w.replace(/\./g, '').toLowerCase();

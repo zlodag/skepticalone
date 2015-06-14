@@ -202,9 +202,9 @@
                     <tbody>
                         <tr ng-repeat="drug in drugs" ng-class="{{drug.status}}" class="drug" ng-form>
                             <td><input class="form-control" required ng-model="drug.rx" typeahead="drug for drug in drugNames | drugsStartingWith:$viewValue | limitTo:5" type="text"/></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text" popover="{{parse(drug.admission)}}" popover-trigger="focus" popover-placement="right"/></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text" popover="{{drug.admission | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
                             <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status" required></select></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text" popover="{{parse(drug.discharge)}}" popover-trigger="focus" popover-placement="right"/></td>
+                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text" popover="{{drug.discharge | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
                             <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
                             <td><input class="form-control" ng-required="drug.status !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
                             <td><button type="button" ng-click="drugs.splice($index,1)" class="close"><span class="glyphicon glyphicon-remove"></span></button></td>
