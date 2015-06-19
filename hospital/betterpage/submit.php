@@ -59,7 +59,7 @@ function test_input($key) {
 $no = test_input("no");
 $msg = test_input("msg");
 $beep = test_input("bp");
-$private = test_input("choice") === "otherpage" && $feed->private === true;
+$private = ($feed->ptpage === false && $feed->private === true);
 if ($valid) {
 
     //write to text file

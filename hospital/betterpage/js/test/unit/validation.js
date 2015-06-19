@@ -1,90 +1,29 @@
-describe('Validation', function() {
-    beforeEach(module('dcFilters'));
+describe('Validate controller', function() {
+    beforeEach(module('betterpageFilters'));
+
     beforeEach(inject(function(_$filter_){
-        // The injector unwraps the underscores (_) from around the parameter names when matching
-        rxFilter = _$filter_('rxFilter');
-        drugs = [
-            {
-                rx: '',
-                admission: '',
-                discharge: '',
-                mitte: '',
-                status: '',
-                include: false
-            },
-            {
-                rx: 'prednisone',
-                admission: '5mg PO mane',
-                discharge: '',
-                mitte: '',
-                status: 'cont',
-                include: false
-            }, 
-            {
-                rx: 'amoxicillin',
-                admission: '500mg PO TDS',
-                discharge: '',
-                mitte: '',
-                status: 'stop',
-                include: true
-            }, 
-            {
-                rx: 'allopurinol',
-                admission: '300mg PO mane',
-                discharge: '600mg PO mane',
-                mitte: '',
-                status: 'change',
-                include: true
-            }, 
-            {
-                rx: 'thyroxine',
-                admission: '',
-                discharge: '',
-                mitte: '2 weeks',
-                status: 'new',
-                include: true
-            }
-        ];
+        betterpageGenerator = _$filter_('betterpageGenerator');
     }));
-    it('handles invalid and initial data', function() {
-        expect(rxFilter()).toEqual([]);
-        expect(rxFilter('')).toEqual([]);
-        expect(rxFilter([])).toEqual([]);
-        expect(rxFilter(drugs)).toEqual([]);
-    });
-    it('handles requirements for valid prescriptions', function() {
-        drugs[0].rx = 'amiodarone';
-        drugs[0].admission = '300mg po mane';
-        drugs[0].discharge = '100mg po mane';
-        drugs[0].mitte = '2 weeks';
-        drugs[0].include = true;
-        expect(rxFilter(drugs).length).toEqual(0);
-        var drug = drugs[0],
-        discerner = function(drug,status,list) {
-            drug.status = status;
-            if (status === "stop") {
-                expect(rxFilter([drug]).length).toEqual(0);
-            } else {
-                expect(rxFilter([drug]).length).toEqual(1);
-            }
-            for (var i = 0,p,copy; i < list.length; i++) {
-                copy = angular.copy(drug);
-                p = list[i];
-                switch(p) {
-                    case 'rx':
-                    case 'admission':
-                    case 'discharge':
-                    case 'mitte':
-                        copy[p] = ''; break;
-                    case 'include':
-                        copy.include = false; break;
-                }
-                expect(rxFilter([copy]).length).toEqual(0);
-            }
-        };
-        discerner(drug,'change',['rx','admission','discharge','mitte','include']);
-        discerner(drug,'new',['rx','discharge','mitte','include']);
-        discerner(drug,'cont',['rx','admission','mitte','include']);
-        discerner(drug,'stop',[]);
+
+    describe('Betterpage message generator', function() {
+        it('generates an appropriate page message', function() {
+            var data = {
+                ptpage : false,
+                caller: 'Janey Spriggs',
+                phone: '0279876543',
+                patient: 'Sprocket the Rocket',
+                nhi : 'ABC1234',
+                ward: 'A4',
+                bed: '14',
+                reply : true,
+                within : 5,
+                why: {label: "Regular Meds",beep: 3,group: "Medication"},
+                details: 'Can you please chart morphine?',
+                contents : 'Please get back to me urgently...'
+            };
+            expect(betterpageGenerator(data)).toEqual('Please get back to me urgently...');
+            data.ptpage = true;
+            expect(betterpageGenerator(data)).toEqual('0279876543<5m(Janey Spriggs) ABC1234(Sprocket the Rocket)[A4-14] Regular Meds (Can you please chart morphine?)');
+        });
     });
 });
