@@ -156,6 +156,25 @@ var app = angular.module('dcFilters', [])
         return final.join(' ');
     };
 })
+.filter('validFilter', function() {
+    return function(items) {
+        if (!Array.isArray(items)) {
+            return [];
+        }
+        var matching_items = [];
+        for (var i = 0; i < items.length; i++) {
+            var drug = items[i];
+            if (drug.rx && (
+            (drug.status.short === 'cont' && drug.admission) || 
+            (drug.status.short === 'new' && drug.discharge) || 
+            (drug.status.short === 'change' && drug.admission && drug.discharge)
+            )) {
+                matching_items.push(drug);
+            }
+        }
+        return matching_items;
+    };
+})
 .filter('rxFilter', function() {
     return function(items) {
         if (!Array.isArray(items)) {
@@ -164,11 +183,7 @@ var app = angular.module('dcFilters', [])
         var matching_items = [];
         for (var i = 0; i < items.length; i++) {
             var drug = items[i];
-            if (drug.rx && drug.include && drug.mitte && (
-            (drug.status === 'cont' && drug.admission) || 
-            (drug.status === 'new' && drug.discharge) || 
-            (drug.status === 'change' && drug.admission && drug.discharge)
-            )) {
+            if (drug.include && drug.mitte && drug.status.short !== 'stop') {
                 matching_items.push(drug);
             }
         }

@@ -3,54 +3,28 @@ describe('Prescriptions', function() {
     beforeEach(inject(function(_$filter_){
         // The injector unwraps the underscores (_) from around the parameter names when matching
         rxFilter = _$filter_('rxFilter');
+        validFilter = _$filter_('validFilter');
+
         drugs = [
-            {
-                rx: '',
-                admission: '',
-                discharge: '',
-                mitte: '',
-                status: '',
-                include: false
-            },
-            {
-                rx: 'prednisone',
-                admission: '5mg PO mane',
-                discharge: '',
-                mitte: '',
-                status: 'cont',
-                include: false
-            }, 
-            {
-                rx: 'amoxicillin',
-                admission: '500mg PO TDS',
-                discharge: '',
-                mitte: '',
-                status: 'stop',
-                include: true
-            }, 
-            {
-                rx: 'allopurinol',
-                admission: '300mg PO mane',
-                discharge: '600mg PO mane',
-                mitte: '',
-                status: 'change',
-                include: true
-            }, 
-            {
-                rx: 'thyroxine',
-                admission: '',
-                discharge: '',
-                mitte: '2 weeks',
-                status: 'new',
-                include: true
-            }
-        ];
+                {
+                    rx: '',
+                    admission: '',
+                    discharge: '',
+                    mitte: '',
+                    status: {
+                        label: '',
+                        short: ''
+                    },
+                    include: false
+                }
+                
+            ];
     }));
     it('handles invalid and initial data', function() {
-        expect(rxFilter()).toEqual([]);
-        expect(rxFilter('')).toEqual([]);
-        expect(rxFilter([])).toEqual([]);
-        expect(rxFilter(drugs)).toEqual([]);
+        expect(validFilter()).toEqual([]);
+        expect(validFilter('')).toEqual([]);
+        expect(validFilter([])).toEqual([]);
+        expect(rxFilter(validFilter(drugs))).toEqual([]);
     });
     it('handles requirements for valid prescriptions', function() {
         drugs[0].rx = 'amiodarone';
@@ -58,14 +32,14 @@ describe('Prescriptions', function() {
         drugs[0].discharge = '100mg po mane';
         drugs[0].mitte = '2 weeks';
         drugs[0].include = true;
-        expect(rxFilter(drugs).length).toEqual(0);
+        expect(rxFilter(validFilter(drugs))).toEqual([]);
         var drug = drugs[0],
         discerner = function(drug,status,list) {
-            drug.status = status;
+            drug.status.short = status;
             if (status === "stop") {
-                expect(rxFilter([drug]).length).toEqual(0);
+                expect(rxFilter(validFilter([drug])).length).toEqual(0);
             } else {
-                expect(rxFilter([drug]).length).toEqual(1);
+                expect(rxFilter(validFilter([drug])).length).toEqual(1);
             }
             for (var i = 0,p,copy; i < list.length; i++) {
                 copy = angular.copy(drug);
@@ -79,7 +53,7 @@ describe('Prescriptions', function() {
                     case 'include':
                         copy.include = false; break;
                 }
-                expect(rxFilter([copy]).length).toEqual(0);
+                expect(rxFilter(validFilter([copy])).length).toEqual(0);
             }
         };
         discerner(drug,'change',['rx','admission','discharge','mitte','include']);

@@ -13,6 +13,7 @@
         <script src="filters.js"></script>
         <script src="directives.js"></script>
         <script src="dc.js"></script>
+        <script src="preview.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <link rel="stylesheet" href="/bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
         <link rel="stylesheet" href="dc.css">
@@ -24,7 +25,9 @@
         -->
     </head>
     <body ng-app="dcMain" ng-strict-di>
+
     <div class="container" ng-controller="dcController">
+    
         <h1>Discharge Summary</h1>
         <form class="form-inline">
           <!--
@@ -51,7 +54,7 @@
         <accordion close-others="true" ng-form name="dcForm">
             <accordion-group id="demographics" heading="Demographics">
                 <div class="row">
-                    <dl id="patient" class="col-sm-4">
+                    <dl id="patient" class="col-sm-4 dl-horizontal">
                         <dt>Patient</dt>
                         <dd ng-bind="patient.name.first + ' ' + patient.name.last"></dd>
                         <dt>Address</dt>
@@ -69,7 +72,7 @@
                         <dt>NHI</dt>
                         <dd id="nhi" ng-bind="patient.nhi"></dd> 
                     </dl>
-                    <dl id="gp" class="col-sm-4">
+                    <dl id="gp" class="col-sm-4 dl-horizontal">
                         <dt>GP</dt>
                         <dd ng-bind="gp.name"></dd>
                         <dt>Address</dt>
@@ -83,7 +86,7 @@
                         <dt>Fax</dt>
                         <dd ng-bind="gp.fax"></dd> 
                     </dl>
-                    <dl id="hospital" class="col-sm-4">
+                    <dl id="hospital" class="col-sm-4 dl-horizontal">
                         <dt>Hospital</dt>
                         <dd ng-bind="hospital.name"></dd>
                         <dt>Address</dt>
@@ -95,7 +98,7 @@
                     </dl>
                 </div>
                 <div class="row">
-                    <dl id="dates" class="col-sm-4">
+                    <dl id="dates" class="col-sm-4 dl-horizontal">
                         <dt>Date of admission</dt>
                         <dd id="adate" ng-bind="admission.admission_date | date:'fullDate'"></dd>
                         <dt>Date of discharge</dt>
@@ -110,7 +113,7 @@
                         <dt ng-show="admission.discharge_date">Admission duration</dt>
                         <dd ng-show="admission.discharge_date" ng-bind="admission.los"></dd>
                     </dl>
-                    <dl id="admission" class="col-sm-4 col-sm-offset-4">
+                    <dl id="admission" class="col-sm-4 col-sm-offset-4 dl-horizontal">
                         <dt>Clinician</dt>
                         <dd id="clinician" ng-bind="admission.clinician"></dd>
                         <dt>Service</dt>
@@ -191,16 +194,16 @@
                 </div>
             </accordion-group>
             <accordion-group heading="Presentation" ng-form name="presentationForm" ng-class="{'panel-warning':presentationForm.$invalid}">
-                <textarea ng-model="presentation" placeholder="History/Examination/Investigations" class="form-control" rows="10" required></textarea>
+                <textarea ng-model="$parent.$parent.$parent.presentation" name="presentation" placeholder="History/Examination/Investigations" class="form-control" rows="10" required></textarea>
             </accordion-group>
             <accordion-group heading="Inpatient progress" ng-form name="progressForm" ng-class="{'panel-warning':progressForm.$invalid}">
-                <textarea ng-model="progress" placeholder="Treatment/Response/Further issues" class="form-control" rows="10" required></textarea>
+                <textarea ng-model="$parent.$parent.$parent.progress" name="progress" placeholder="Treatment/Response/Further issues" class="form-control" rows="10" required></textarea>
             </accordion-group>
             <accordion-group heading="Plan" ng-form name="planForm" ng-class="{'panel-warning':planForm.$invalid}">
-                <textarea ng-model="plan" class="form-control" rows="10" required></textarea>
+                <textarea ng-model="$parent.$parent.$parent.plan" name="plan" class="form-control" rows="10" required></textarea>
             </accordion-group>
             <accordion-group heading="Advice to patient">
-                <textarea ng-model="advice" placeholder="Optional" class="form-control" rows="10"></textarea>
+                <textarea ng-model="$parent.$parent.$parent.advice" name="advice" placeholder="Optional" class="form-control" rows="10"></textarea>
             </accordion-group>
             
             <accordion-group dc-medications ng-show="user.isPrescriber" ng-form name="drugForm" ng-class="{'panel-warning':drugForm.$invalid}">
@@ -220,13 +223,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="drug in drugs" ng-class="{{drug.status}}" class="drug" ng-form>
+                        <tr ng-repeat="drug in drugs" ng-class="{{drug.status.short}}" class="drug" ng-form>
                             <td><input class="form-control" required ng-model="drug.rx" typeahead="drug for drug in drugNames | drugsStartingWith:$viewValue | limitTo:5" type="text"/></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'new'" ng-model="drug.admission" type="text" popover="{{drug.admission | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
-                            <td><select ng-options="status.short as status.label for status in drugStatusList" ng-model="drug.status" required></select></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'cont' && drug.status !== 'stop'" ng-model="drug.discharge" type="text" popover="{{drug.discharge | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
-                            <td><input ng-hide="drug.status === 'stop'" ng-model="drug.include" type="checkbox"/></td>
-                            <td><input class="form-control" ng-required="drug.status !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
+                            <td><input class="form-control" ng-required="drug.status.short !== 'new'" ng-model="drug.admission" type="text" popover="{{drug.admission | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
+                            <td><select ng-options="status as status.label for status in drugStatusList track by status.short" ng-model="drug.status" required></select></td>
+                            <td><input class="form-control" ng-required="drug.status.short !== 'cont' && drug.status.short !== 'stop'" ng-model="drug.discharge" type="text" popover="{{drug.discharge | friendlyRx}}" popover-trigger="focus" popover-placement="right"/></td>
+                            <td><input ng-hide="drug.status.short === 'stop'" ng-model="drug.include" type="checkbox"/></td>
+                            <td><input class="form-control" ng-required="drug.status.short !== 'stop' && drug.include" ng-model="drug.mitte" type="text"/></td>
                             <td><button type="button" ng-click="drugs.splice($index,1)" class="close"><span class="glyphicon glyphicon-remove"></span></button></td>
                         </tr>
                     </tbody>
@@ -252,7 +255,7 @@
                 </div>
                 <hr />
                 <ul>
-                    <li ng-repeat="drug in filtered = (drugs | rxFilter)" class="prescription">℞: {{drug.rx}}<br>Sig: {{getSig()}}<br>Mitte: {{ drug.mitte }}</li>
+                    <li ng-repeat="drug in filtered = (drugs | validFilter | rxFilter)" class="prescription">℞: {{drug.rx}}<br>Sig: {{getSig()}}<br>Mitte: {{ drug.mitte }}</li>
                 </ul>
                 <hr />
                 <div>
@@ -294,6 +297,7 @@
             <li><a href="#">Sign off and exit</a></li>
           </ul>
         </div>
+        <button class="btn btn-primary" ng-controller="dcPreview" ng-click="open('lg')">Preview</button>
     </div>
     </body>
 </html>

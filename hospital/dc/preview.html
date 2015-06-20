@@ -1,0 +1,68 @@
+<div class="modal-header">
+    <h3 class="modal-title">Discharge Summary <small>Preview</small></h3>
+</div>
+<div id="preview" class="modal-body">
+    
+    <div ng-repeat="item in diagnosisList">
+        <h4 ng-bind="item[1]"></h4>
+        <ol><li ng-repeat="diagnosis in details.diagnoses[item[0]]">{{diagnosis.str}}<ul><li ng-repeat="extra in diagnosis.extras" ng-bind="extra.str"></li></ul></li></ol>
+    </div>
+
+    <div ng-repeat="item in fieldsList">
+        <h4 ng-bind="item[1]"></h4>
+        <pre ng-bind="details[item[0]]"></pre>
+    </div>
+
+    <div>
+        <h4>Medications</h4>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th>Admission dose</th>
+                    <th></th>
+                    <th>Discharge dose</th>
+                    <th>Prescription</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="drug in details.drugs | validFilter" ng-class="{success: drug.status.short === 'new', warning: drug.status.short === 'change', danger: drug.status.short === 'stop'}">
+                    <td ng-bind="drug.rx"></td>
+                    <td ng-bind="drug.admission"></td>
+                    <td ng-bind="drug.status.label"></td>
+                    <td ng-bind="drug.discharge"></td>
+                    <td><span ng-show="drug.include && drug.mitte"><span class="glyphicon glyphicon-check"></span> <span ng-bind="drug.mitte"></span></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h4>Advice to patient</h4>
+        <pre ng-bind="details.advice"></pre>
+    </div>
+
+    <div>
+        <h4>Patient-friendly medication list</h4>
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th>Drug</th>
+                    <th></th>
+                    <th>Instructions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="drug in details.drugs | validFilter" ng-class="{success: drug.status.short === 'new', warning: drug.status.short === 'change', danger: drug.status.short === 'stop'}">
+                    <td ng-bind="drug.rx"></td>
+                    <td ng-bind="drug.status.label"></td>
+                    <td ng-bind="getSig() | friendlyRx"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+</div>

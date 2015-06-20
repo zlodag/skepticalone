@@ -119,7 +119,10 @@ var app = angular.module('dcData', [])
                     admission: '5mg PO mane',
                     discharge: '',
                     mitte: '',
-                    status: 'cont',
+                    status: {
+                        label: 'Continued',
+                        short: 'cont'
+                    },
                     include: false
                 }, 
                 {
@@ -127,7 +130,10 @@ var app = angular.module('dcData', [])
                     admission: '500mg PO TDS',
                     discharge: '',
                     mitte: '',
-                    status: 'stop',
+                    status: {
+                        label: 'Stopped',
+                        short: 'stop'
+                    },
                     include: true
                 }, 
                 {
@@ -135,7 +141,10 @@ var app = angular.module('dcData', [])
                     admission: '300mg PO mane',
                     discharge: '600mg PO mane',
                     mitte: '2 weeks',
-                    status: 'change',
+                    status: {
+                        label: 'Changed',
+                        short: 'change'
+                    },
                     include: true
                 }, 
                 {
@@ -143,7 +152,10 @@ var app = angular.module('dcData', [])
                     admission: '',
                     discharge: '50mcg PO mane',
                     mitte: '2 weeks',
-                    status: 'new',
+                    status: {
+                        label: 'New',
+                        short: 'new'
+                    },
                     include: true
                 }
             ],

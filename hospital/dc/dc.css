@@ -25,3 +25,7 @@ input.ng-invalid, textarea.ng-invalid {
     background-color:lightyellow;
 }
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+#preview pre {
+    font-family:inherit;
+    background: none;
+}

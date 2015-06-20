@@ -1,12 +1,12 @@
 (function() {
     "use strict";
-    var app = angular.module('dcMain', ['ui.bootstrap', 'ui.tree','ngAnimate','dcData', 'dcFilters', 'dcDirectives'])
-    .config(['datepickerConfig','datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
-        datepickerConfig.showWeeks = false;
-        datepickerConfig.maxMode = 'day';
-        datepickerConfig.startingDay = 1;
-        datepickerPopupConfig.showButtonBar = false;
-    }])
+    var app = angular.module('dcMain', ['ui.bootstrap', 'ui.tree', 'ngAnimate', 'dcData', 'dcFilters', 'dcDirectives'])
+    .config(['datepickerConfig', 'datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
+            datepickerConfig.showWeeks = false;
+            datepickerConfig.maxMode = 'day';
+            datepickerConfig.startingDay = 1;
+            datepickerPopupConfig.showButtonBar = false;
+        }])
     .controller('dcController', ['$scope', 'initFactory', function($scope, initFactory) {
             $scope.date = initFactory.now;
             $scope.user = initFactory.user;

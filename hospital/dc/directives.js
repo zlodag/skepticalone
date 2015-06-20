@@ -4,7 +4,7 @@ var app = angular.module('dcDirectives', ['dcData'])
         restrict: 'A',
         link: function(scope) {
             scope.getSig = function() {
-                return this.drug.status === 'cont' ? this.drug.admission : this.drug.discharge;
+                return this.drug.status.short === 'cont' ? this.drug.admission : this.drug.discharge;
             };
         }
     };
@@ -20,7 +20,10 @@ var app = angular.module('dcDirectives', ['dcData'])
                     admission: '',
                     discharge: '',
                     mitte: '',
-                    status: 'cont',
+                    status: {
+                        label: 'Continued',
+                        short: 'cont'
+                    },
                     include: true
                 });
             };
