@@ -8,7 +8,7 @@
 .angular-ui-tree-node[collapsed="true"]>.angular-ui-tree-nodes{
     display:none;
 }
-#prescriptions ul, #demographics ul {
+#prescriptions ul, .demographics ul {
     padding: 0;
     list-style-type: none;
 }

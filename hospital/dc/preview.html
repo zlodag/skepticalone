@@ -3,6 +3,71 @@
 </div>
 <div id="preview" class="modal-body">
     
+    <div class="row demographics">
+        <dl class="col-sm-4">
+            <dt>Patient</dt>
+            <dd ng-bind="details.patient.name.first + ' ' + details.patient.name.last"></dd>
+            <dt>Address</dt>
+            <dd>
+                <ul>
+                <li ng-repeat="line in details.patient.address" ng-bind="line"></li>
+                </ul>
+            </dd>
+            <dt>Phone</dt>
+            <dd ng-bind="details.patient.phone"></dd> 
+            <dt>Date of birth</dt>
+            <dd ng-bind="details.patient.dob | date:'longDate'"></dd> 
+            <dt>Age</dt>
+            <dd ng-bind="details.patient.age"></dd> 
+            <dt>NHI</dt>
+            <dd ng-bind="details.patient.nhi"></dd> 
+        </dl>
+        <dl class="col-sm-4">
+            <dt>GP</dt>
+            <dd ng-bind="details.gp.name"></dd>
+            <dt>Address</dt>
+            <dd>
+                <ul>
+                <li ng-repeat="line in details.gp.address" ng-bind="line"></li>
+                </ul>
+            </dd>
+            <dt>Phone</dt>
+            <dd ng-bind="details.gp.phone"></dd> 
+            <dt>Fax</dt>
+            <dd ng-bind="details.gp.fax"></dd> 
+        </dl>
+        <dl class="col-sm-4">
+            <dt>Hospital</dt>
+            <dd ng-bind="details.hospital.name"></dd>
+            <dt>Address</dt>
+            <dd>
+                <ul>
+                    <li ng-repeat="line in details.hospital.address" ng-bind="line"></li>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <div class="row" class="demographics">
+        <dl class="col-sm-4">
+            <dt>Date of admission</dt>
+            <dd ng-bind="details.admission.admission_date | date:'fullDate'"></dd>
+            <dt>Date of discharge</dt>
+            <dd ng-bind="details.admission.discharge_date | date:'fullDate'"></dd>
+            <dt ng-show="details.admission.discharge_date">Admission duration</dt>
+            <dd ng-show="details.admission.discharge_date" ng-bind="details.admission.los"></dd>
+        </dl>
+        <dl class="col-sm-4 col-sm-offset-4">
+            <dt>Clinician</dt>
+            <dd ng-bind="details.admission.clinician"></dd>
+            <dt>Service</dt>
+            <dd ng-bind="details.admission.service"></dd>
+            <dt>Ward</dt>
+            <dd ng-bind="details.admission.ward"></dd>
+        </dl>
+    </div>
+
+
+    
     <div ng-repeat="item in diagnosisList">
         <h4 ng-bind="item[1]"></h4>
         <ol><li ng-repeat="diagnosis in details.diagnoses[item[0]]">{{diagnosis.str}}<ul><li ng-repeat="extra in diagnosis.extras" ng-bind="extra.str"></li></ul></li></ol>
@@ -13,7 +78,7 @@
         <pre ng-bind="details[item[0]]"></pre>
     </div>
 
-    <div>
+    <div ng-show="details.user.isPrescriber">
         <h4>Medications</h4>
         <table class="table table-condensed">
             <thead>
@@ -42,7 +107,7 @@
         <pre ng-bind="details.advice"></pre>
     </div>
 
-    <div>
+    <div ng-show="details.user.isPrescriber">
         <h4>Patient-friendly medication list</h4>
         <table class="table table-condensed">
             <thead>
@@ -60,6 +125,15 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div>
+        <dl>
+            <dt>User</dt>
+            <dd ng-bind="details.user.name"></dd>
+            <dt>Date</dt>
+            <dd ng-bind="details.date | date:'fullDate'"></dd>
+        </dl>
     </div>
 
 </div>
