@@ -1,4 +1,23 @@
 angular.module('betterpageDirectives', [])
+.directive('betterpageForm', function() {
+    return {
+        restrict: 'E',
+        controller: 'pageCtrl',
+        templateUrl: 'form.html'
+    };
+})
+.directive('betterpagePreview', function() {
+    return {
+        restrict: 'E',
+        templateUrl: 'preview.html'
+    };
+})
+.directive('betterpageOutcome', function() {
+    return {
+        restrict: 'E',
+        templateUrl: 'outcome.html'
+    };
+})
 .directive('titleCase', function() {
     return {
         restrict: 'A',

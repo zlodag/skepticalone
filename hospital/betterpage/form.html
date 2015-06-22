@@ -1,0 +1,113 @@
+<div class="greybox">
+<form ng-submit="submitPage()" name="betterform" novalidate>
+    <select name="ptpage" ng-model="data.ptpage" ng-options="option.value as option.label for option in choices"></select>
+
+    <fieldset>
+    <legend>To</legend>
+    <div>
+        <label for="no">Pager</label>
+        <input id="no" name="no" ng-model="data.no" type="number" min="20000" max="20999" required />
+    </div>
+    <div ng-if="betterform.no.$touched" ng-messages="betterform.no.$error">
+        <label ng-message="required"><em>Pager number</em> is required</label>
+        <label ng-message="number"><em>Pager number</em> must be a number</label>
+        <label ng-message="min"><em>Pager number</em> must be 20 followed by 3 digits</label>
+        <label ng-message="max"><em>Pager number</em> must be 20 followed by 3 digits</label>
+    </div>
+    </fieldset>
+
+    <fieldset ng-if="data.ptpage">
+    <legend>From</legend>
+    <div>
+        <label for="caller">Name</label>
+        <input title-case id="caller" name="caller" ng-model="data.caller" ng-minlength="2" required />
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" ng-model="data.phone" ng-pattern="/^[0-9]+$/" required />
+    </div>
+    <div ng-if="betterform.caller.$touched" ng-messages="betterform.caller.$error">
+        <label ng-message="required"><em>Name</em> is required</label>
+        <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+    </div>
+    <div ng-if="betterform.phone.$touched" ng-messages="betterform.phone.$error">
+        <label ng-message="required"><em>Phone</em> is required</label>
+        <label ng-message="pattern"><em>Phone</em> must contain only digits</label>
+    </div>
+    <div>
+        <label for="reply">Response required? <input id="reply" name="reply" ng-model="data.reply" type="checkbox" /></label>
+        <label ng-show="data.reply" for="within">within <input id="within" name="within" type="number" ng-model="data.within" ng-required="data.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" /> mins</label>
+    </div>
+    <div ng-if="betterform.within.$touched" ng-messages="betterform.within.$error">
+        <label ng-message="required"><em>Response time</em> is required</label>
+        <label ng-message="number"><em>Response time</em> must be an number</label>
+        <label ng-message="pattern"><em>Response time</em> must be an integer</label>
+        <label ng-message="min"><em>Response time</em> must be greater than 0</label>
+        <label ng-message="max"><em>Response time</em> must be less than 100</label>
+    </div>
+    </fieldset>
+
+    <fieldset ng-if="data.ptpage">
+    <legend>Patient</legend>
+    <div>
+        <label for="patient">Name</label>
+        <input title-case id="patient" name="patient" ng-model="data.patient" ng-minlength="2" required />
+        <label for="nhi">NHI</label>
+        <input upper-case id="nhi" name="nhi" ng-model="data.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />
+    </div>
+    <div ng-if="betterform.patient.$touched" ng-messages="betterform.patient.$error">
+        <label ng-message="required"><em>Name</em> is required</label>
+        <label ng-message="minlength"><em>Name</em> must be at least 2 characters long</label>
+    </div>
+    <div ng-if="betterform.nhi.$touched" ng-messages="betterform.nhi.$error">
+        <label ng-message="required"><em>NHI</em> is required</label>
+        <label ng-message="pattern"><em>NHI</em> must be valid</label>
+    </div>
+    <div>
+        <label for="ward">Ward</label>
+        <input upper-case id="ward" name="ward" ng-model="data.ward" ng-maxlength="3" required />
+        <label for="bed">Bed</label>
+        <input upper-case id="bed" name="bed" ng-model="data.bed" ng-maxlength="3" required />
+    </div>
+    <div ng-if="betterform.ward.$touched" ng-messages="betterform.ward.$error">
+        <label ng-message="required"><em>Ward</em> is required</label>
+        <label ng-message="maxlength"><em>Ward</em> must be 1 to 3 characters long</label>
+    </div>
+    <div ng-if="betterform.bed.$touched" ng-messages="betterform.bed.$error">
+        <label ng-message="required"><em>Bed</em> is required</label>
+        <label ng-message="maxlength"><em>Bed</em> must be 1 to 3 characters long</label>
+    </div>
+    </fieldset>
+
+    <fieldset ng-if="data.ptpage">
+    <legend>Details</legend>
+    <div>
+        <select id="why" name="why" ng-model="data.why" ng-options="option as option.label group by option.group for option in reasons" class="whole" required>
+            <option value="" selected>Reason for page</option>
+        </select>
+    </div>
+    <div ng-if="betterform.why.$touched" ng-messages="betterform.why.$error">
+        <label ng-message="required"><em>Reason for page</em> is required</label>
+    </div>
+    <div>
+        <input id="details" name="details" ng-model="data.details" class="whole" placeholder="Specify (optional)" />
+    </div>
+    </fieldset>
+
+    <fieldset ng-if="!data.ptpage">
+    <legend>Contents</legend>
+    <div>
+        <textarea id="contents" name="contents" ng-model="data.contents" class="whole" required></textarea>
+    </div>
+    <div ng-if="betterform.contents.$touched" ng-messages="betterform.contents.$error">
+        <label ng-message="required"><em>Contents</em> is required</label>
+    </div>
+    <div>
+        <label for="private">Do not log this page <input id="private" name="private" ng-model="data.private" type="checkbox" /></label>
+    </div>
+    </fieldset>
+    <div>
+    <input id="submit" ng-disabled="overflow" type="submit" value="{{ overflow ? 'Character limit exceeded' : 'Send' }}" />
+    <button id="reset" type="button" ng-click="reset()">Reset</button>
+    <button id="log" type="button" ng-click="logs()">Pager Log</button>
+    </div>
+</form>
+</div>

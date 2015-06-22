@@ -1,0 +1,6 @@
+<div class="greybox" ng-if="prevpage.msg">
+    <label>Successful submission of form!</label>
+    <pre ng-bind="'###:' + prevpage.msg"></pre>
+    <label ng-bind="'Beep code: ' + prevpage.beep"></label>
+    <label ng-bind="'Logged: ' + (prevpage.private ? '&#x2717;' : '&#x2713;')"></label>
+</div>
