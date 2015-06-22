@@ -45,7 +45,7 @@ angular.module('betterpageData', ['betterpageFilters'])
             delete this.details;
             delete this.contents;
             var no = parseInt(getParams.no, 10);
-            if (Number.isInteger(no)) {
+            if (no) {
                 this.no = no;
             }
             if (getParams.patient) {
