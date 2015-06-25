@@ -1,4 +1,4 @@
-angular.module('betterpageData', ['betterpageFilters'])
+angular.module('betterpageMain')
 .factory('formhandler', ['$http', function formhandlerFactory($http) {
     return function(data) {
         if (data.ok) {

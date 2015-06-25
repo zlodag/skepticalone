@@ -1,4 +1,4 @@
-angular.module('betterpageFilters', [])
+angular.module('betterpageMain')
 .filter('betterpageGenerator', function() {
     return function(data) {
         if (data.ptpage) {

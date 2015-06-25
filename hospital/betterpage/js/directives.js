@@ -1,8 +1,8 @@
-angular.module('betterpageDirectives', [])
+angular.module('betterpageMain')
 .directive('betterpageForm', function() {
     return {
         restrict: 'E',
-        controller: 'pageCtrl',
+        controller: 'PageController',
         templateUrl: 'form.html'
     };
 })

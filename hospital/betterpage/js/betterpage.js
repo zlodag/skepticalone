@@ -1,7 +1,7 @@
 (function() {
     "use strict";
-    angular.module('betterpageMain', ['ngMessages', 'betterpageData', 'betterpageFilters', 'betterpageDirectives'])
-    .controller('pageCtrl', [
+    angular.module('betterpageMain', ['ngMessages'])
+    .controller('PageController', [
         'betterpageModel', 
         'betterpageReasons', 
         'betterpageChoices', 
