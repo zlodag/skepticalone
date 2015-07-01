@@ -4,20 +4,20 @@
         <meta charset="UTF-8">
         <title>BetterPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
+        <!--
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-messages.min.js"></script>
-        <!--
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular-route.min.js"></script>
-        <script src="/bower_components/angular/angular.min.js"></script>
-        <script src="/bower_components/angular-messages/angular-messages.min.js"></script>
         -->
+        <script src="/bower_components/angular/angular.js"></script>
+        <script src="/bower_components/angular-messages/angular-messages.js"></script>
         <script src="js/betterpage.js"></script>
         <script src="js/data.js"></script>
         <script src="js/filters.js"></script>
         <script src="js/directives.js"></script>
         <link rel="stylesheet" type="text/css" href="css/betterpage.css" />
     </head>
-    <body ng-app="betterpageMain">
+    <body ng-app="betterpageMain" ng-controller="PageController as PageCtrl">
         <betterpage-form></betterpage-form>
         <betterpage-preview></betterpage-preview>
         <betterpage-outcome></betterpage-outcome>
