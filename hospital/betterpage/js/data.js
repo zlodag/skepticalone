@@ -1,25 +1,4 @@
 angular.module('betterpageMain')
-.factory('formhandler', ['$http', function formhandlerFactory($http) {
-        return function(data) {
-            if (data.ok) {
-                //alert(urlstring);
-                if (!document.addEventListener) { //using Internet Explorer <= 8...
-                    window.open(pageurl + '?bp=' + beep + '&no=' + this.no + '&msg=' + encodeURIComponent(msg));
-                } else {
-                    $http.get(pageurl, {params: {bp: beep,no: this.no,msg: msg}});
-                }
-                ;
-                //$scope.prevpage = data.page;
-                if (this.ptpage) {
-                    alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
-                }
-                //angular.extend($scope.data, $scope.initial);
-                return true;
-            } else {
-                return false;
-            }
-        };
-    }])
 .factory('betterpageModel', function betterpageModelFactory() {
         var getParams = {};
         var queries = window.location.search.substring(1).split("&");
@@ -44,40 +23,18 @@ angular.module('betterpageMain')
         }
         function resetItems() {
             this.data = {
-                ptpage: this.data.ptpage,
                 reply: false,
                 private: false,
-                };
-                /*
-                delete this.data.no;
-                delete this.data.phone;
-                delete this.data.caller;
-                delete this.data.within;
-                delete this.data.patient;
-                delete this.data.nhi;
-                delete this.data.ward;
-                delete this.data.bed;
-                delete this.data.why;
-                delete this.data.details;
-                delete this.data.contents;
-                */
-                var no = parseInt(getParams.no, 10);
-                if (no) {
-                    this.data.no = no;
-                }
-                if (getParams.patient) {
-                    this.data.patient = getParams.patient;
-                }
-                if (getParams.nhi) {
-                    this.data.nhi = getParams.nhi;
-                }
-                if (getParams.ward) {
-                    this.data.ward = getParams.ward;
-                }
-                if (getParams.bed) {
-                    this.data.bed = getParams.bed;
-                }
-                //return this.data;
+                ptpage: this.data.ptpage
+            };            
+            var no = parseInt(getParams.no, 10);
+            if (no) {
+                this.data.no = no;
+            }
+            for (list = ['patient','nhi','ward','bed'], i = 0; i < list.length; i++) {
+                var key = list[i];
+                if (getParams[key]) {this.data[key] = getParams[key];}
+            }
         }
         function itemize() {
             var params = {
@@ -113,30 +70,6 @@ angular.module('betterpageMain')
         model.resetItems();
         return model;
     })
-.factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {
-        return function(betterform, data) {
-            var msg = data.msg;
-            if (betterform.$invalid || msg.length > 128) {
-                angular.forEach(betterform.$error, function(type) {
-                    angular.forEach(type, function(field) {
-                        field.$setTouched();
-                    });
-                });
-                return false;
-            }
-            var submiturl = './submit.php', 
-            pageurl = 'http://10.134.0.150/cgi-bin/npcgi', 
-            beep = data.bp, 
-            params = data.params;
-            if (confirm('Send this page from the intranet?')) {
-                var win = window.open(pageurl + '?bp=' + beep + '&no=' + params.no + '&msg=' + encodeURIComponent(msg), '_blank');
-                if (!win) {
-                    alert('Please allow popups for this function to succeed');
-                }
-            }
-            return $http.post(submiturl, angular.extend({msg: msg,bp: beep}, params));
-        };
-    }])
 .constant('betterpageStatic', {
     charLimit: 128,
     choices: [
@@ -168,4 +101,17 @@ angular.module('betterpageMain')
         {label: "Review urgently!",beep: 5,group: "Other - specify below"}, 
         {label: "Custom",beep: 5,group: "Other - specify below"}
     ]
-});
+})
+.factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {
+        return function(items) {
+            var submiturl = './submit.php', 
+            pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
+            if (confirm('Send this page from the intranet?')) {
+                var win = window.open(pageurl + '?bp=' + items.bp + '&no=' + items.no + '&msg=' + encodeURIComponent(items.msg), '_blank');
+                if (!win) {
+                    alert('Please allow popups for this function to succeed');
+                }
+            }
+            return $http.post(submiturl, items);
+        };
+}]);

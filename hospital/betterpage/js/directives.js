@@ -19,8 +19,6 @@ function(
     betterpageModel
 ) {
     function link(scope) {
-        scope.reset = angular.noop;
-        scope.submitPage = angular.noop;
         scope.static = betterpageStatic;
         scope.model = betterpageModel;
         scope.$watchCollection(function(scope){return scope.model.data;}, function() {
@@ -33,15 +31,24 @@ function(
             scope.model.resetItems();
             scope.betterform.$setUntouched();
         };
-        /*
-        scope.submitPage = function() {
+        scope.submit = function() {
                 var items = scope.model.itemize();
-                var promise = betterpageSubmit(scope.betterform, scope.data);
+
+                if (scope.betterform.$invalid || items.msg.length > 128) {
+                    angular.forEach(scope.betterform.$error, function(type) {
+                        angular.forEach(type, function(field) {
+                            field.$setTouched();
+                        });
+                    });
+                    return false;
+                }
+
+                var promise = betterpageSubmit(items);
                 if (promise) {
                     promise.success(function(data, status, headers, config) {
                         if (!data.ok) {return false;}
-                        scope.prevpage = {
-                            beep: config.data.bp,
+                        scope.PageCtrl.prevpage = {
+                            bp: config.data.bp,
                             msg: config.data.msg,
                             private: config.data.private
                         };
@@ -52,7 +59,7 @@ function(
                     });
                 }
             };
-        */
+        
     }
 
     return {

@@ -1,5 +1,5 @@
 <div class="greybox">
-<form ng-submit="submitPage()" name="betterform" novalidate>
+<form ng-submit="submit()" name="betterform" novalidate>
     <select name="ptpage" ng-model="model.data.ptpage" ng-options="option.value as option.label for option in static.choices"></select>
 
     <fieldset>
@@ -106,7 +106,7 @@
     </fieldset>
     <div>
     <input id="submit" ng-disabled="PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
-    <button id="reset" type="button" ng-click="reset()">Reset</button>
+    <button id="reset" ng-click="reset()">Reset</button>
     <button id="log" type="button" page-logs>Pager Log</button>
     </div>
 </form>

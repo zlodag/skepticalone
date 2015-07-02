@@ -1,5 +1,5 @@
 describe('Validate controller', function() {
-    beforeEach(module('betterpageFilters'));
+    beforeEach(module('betterpageMain'));
 
     beforeEach(inject(function(_$filter_){
         betterpageGenerator = _$filter_('betterpageGenerator');

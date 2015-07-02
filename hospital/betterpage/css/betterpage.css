@@ -79,3 +79,6 @@ pre, betterpage-preview pre+label {
     white-space: pre-wrap;
     display: block;
 }
+betterpage-outcome label {
+    display:block;
+}

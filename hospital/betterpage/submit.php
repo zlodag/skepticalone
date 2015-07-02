@@ -58,14 +58,14 @@ function test_input($key) {
 
 $no = test_input("no");
 $msg = test_input("msg");
-$beep = test_input("bp");
+$bp = test_input("bp");
 $private = ($feed->ptpage === false && $feed->private === true);
 if ($valid) {
 
     //write to text file
     /*
     $t = time();
-    $logmessage = sprintf("%s Beep:%d To: %s %s\n", date("Y-m-d H:i:s", $t), $beep, $no, $msg); 
+    $logmessage = sprintf("%s Beep:%d To: %s %s\n", date("Y-m-d H:i:s", $t), $bp, $no, $msg); 
     file_put_contents ($filename, $logmessage, FILE_APPEND | LOCK_EX);
     */
     if (!$private) { 
@@ -101,7 +101,7 @@ if ($valid) {
     }
 
     //return status to browser
-    echo json_encode(['ok'=>true,'page'=>['msg'=>$msg,'beep'=>$beep,'private'=>$private]]);
+    echo json_encode(['ok'=>true,'page'=>['msg'=>$msg,'bp'=>$bp,'private'=>$private]]);
 } else {
     echo json_encode(['ok'=>false,'errors'=>$errors]);
 }
