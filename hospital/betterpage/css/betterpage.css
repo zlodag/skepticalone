@@ -1,7 +1,7 @@
 body {
     margin: 5px;
 }
-body>* {
+ng-view>* {
     float: left;
     margin: 5px;
 }
@@ -82,3 +82,5 @@ pre, betterpage-preview pre+label {
 betterpage-outcome label {
     display:block;
 }
+td,th {border: 1px solid black;}
+table {border-collapse: collapse;}

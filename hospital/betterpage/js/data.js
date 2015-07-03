@@ -1,11 +1,13 @@
 angular.module('betterpageMain')
-.factory('betterpageModel', function betterpageModelFactory() {
+.factory('betterpageModel', ['$location', function betterpageModelFactory($location) {
+        /*
         var getParams = {};
         var queries = window.location.search.substring(1).split("&");
         for (var i = 0; i < queries.length; i++) {
             var temp = queries[i].split('=');
             getParams[temp[0]] = decodeURIComponent(temp[1]);
         }
+        */
         function generateMsg() {
             var data = this.data;
             if (data.ptpage) {
@@ -26,12 +28,16 @@ angular.module('betterpageMain')
                 reply: false,
                 private: false,
                 ptpage: this.data.ptpage
-            };            
-            var no = parseInt(getParams.no, 10);
+            };
+            var getParams = $location.search(),
+            no = parseInt(getParams.no, 10);
             if (no) {
                 this.data.no = no;
             }
-            for (list = ['patient','nhi','ward','bed'], i = 0; i < list.length; i++) {
+            if (getParams.ptpage === false) {
+                this.data.ptpage = false;
+            }
+            for (list = ['caller','phone','patient','nhi','ward','bed'], i = 0; i < list.length; i++) {
                 var key = list[i];
                 if (getParams[key]) {this.data[key] = getParams[key];}
             }
@@ -69,7 +75,10 @@ angular.module('betterpageMain')
         };
         model.resetItems();
         return model;
-    })
+    }])
+.factory('betterpageGetParams', ['$location', function betterpageGetParamsFactory($location) {
+
+}])
 .constant('betterpageStatic', {
     charLimit: 128,
     choices: [
@@ -77,29 +86,30 @@ angular.module('betterpageMain')
         {label: "Page about something else",value: false}
     ],
     reasons: [
-        {label: "ADDS 3",beep: 1,group: "High ADDS - specify why"}, 
-        {label: "ADDS 4",beep: 1,group: "High ADDS - specify why"}, 
-        {label: "ADDS 5+",beep: 1,group: "High ADDS - specify why"}, 
+        // 1: no clinical concern, 2: low 3: medium 4: high priority concern
+        {label: "ADDS 3",beep: 2,group: "High ADDS - specify why"}, 
+        {label: "ADDS 4",beep: 3,group: "High ADDS - specify why"}, 
+        {label: "ADDS 5+",beep: 4,group: "High ADDS - specify why"},
         {label: "Pain",beep: 2,group: "Concern"}, 
-        {label: "Short of breath",beep: 2,group: "Concern"}, 
+        {label: "Short of breath",beep: 3,group: "Concern"}, 
         {label: "Nausea",beep: 2,group: "Concern"}, 
         {label: "Urinary retention",beep: 2,group: "Concern"}, 
         {label: "Wound",beep: 2,group: "Concern"}, 
-        {label: "Clarify plan",beep: 2,group: "Concern"}, 
-        {label: "Fluids",beep: 3,group: "Medication"}, 
-        {label: "Sleeping pill",beep: 3,group: "Medication"}, 
-        {label: "Laxatives",beep: 3,group: "Medication"}, 
-        {label: "Regular Meds",beep: 3,group: "Medication"}, 
-        {label: "IV line/bloods",beep: 4,group: "Task"}, 
-        {label: "Review result",beep: 4,group: "Task"}, 
-        {label: "Admit",beep: 4,group: "Task"}, 
-        {label: "Discharge",beep: 4,group: "Task"}, 
-        {label: "Rechart",beep: 4,group: "Task"}, 
-        {label: "Consent",beep: 4,group: "Task"}, 
-        {label: "Inform",beep: 5,group: "Other - specify below"}, 
-        {label: "Call urgently!",beep: 5,group: "Other - specify below"}, 
-        {label: "Review urgently!",beep: 5,group: "Other - specify below"}, 
-        {label: "Custom",beep: 5,group: "Other - specify below"}
+        {label: "Clarify plan",beep: 1,group: "Concern"}, 
+        {label: "Fluids",beep: 1,group: "Medication"}, 
+        {label: "Sleeping pill",beep: 1,group: "Medication"}, 
+        {label: "Laxatives",beep: 1,group: "Medication"}, 
+        {label: "Regular Meds",beep: 1,group: "Medication"}, 
+        {label: "IV line/bloods",beep: 1,group: "Task"}, 
+        {label: "Review result",beep: 1,group: "Task"}, 
+        {label: "Admit",beep: 1,group: "Task"}, 
+        {label: "Discharge",beep: 1,group: "Task"}, 
+        {label: "Rechart",beep: 1,group: "Task"}, 
+        {label: "Consent",beep: 1,group: "Task"}, 
+        {label: "Inform",beep: 1,group: "Other - specify below"}, 
+        {label: "Call urgently!",beep: 4,group: "Other - specify below"}, 
+        {label: "Review urgently!",beep: 4,group: "Other - specify below"}, 
+        {label: "Custom",beep: 1,group: "Other - specify below"}
     ]
 })
 .factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {

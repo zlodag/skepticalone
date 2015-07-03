@@ -1,0 +1,21 @@
+<p><a href="#/">Return</a></p>
+<table>
+    <tr>
+        <th ng-repeat="header in headers" ng-bind="header"></th>
+    </tr>
+    <tr ng-repeat="page in rows track by $index">
+        <td ng-bind="page.ts"></td>
+        <td ng-bind="page.no"></td>
+        <td ng-bind="page.msg"></td>
+        <td ng-bind="page.caller"></td>
+        <td ng-bind="page.phone"></td>
+        <td ng-bind="page.within"></td>
+        <td ng-bind="page.patient"></td>
+        <td ng-bind="page.nhi"></td>
+        <td ng-bind="page.ward"></td>
+        <td ng-bind="page.bed"></td>
+        <td ng-bind="page.why"></td>
+        <td ng-bind="page.details"></td>
+        <td><button resend-page>Resend</button></td>
+    </tr>
+</table>

@@ -1,10 +1,33 @@
 angular.module('betterpageMain')
-.directive('pageLogs', ['$window', function($window) {
+.directive('pageLog', ['$location', function($location) {
     return {
         restrict: 'A',
         link: function(scope, element) {
             element.on('click',function(){
-                $window.location.href='logs.php';
+                scope.$apply(function() {
+                    $location.path('/pagelog').search({});
+                });
+            });
+        }
+    };
+}])
+.directive('resendPage', ['$location', function($location) {
+    return {
+        restrict: 'A',
+        link: function(scope, element) {
+            element.on('click',function(){
+                scope.$apply(function() {
+                    $location.path('/').search({
+                        no: scope.page.no,
+                        caller: scope.page.caller,
+                        phone: scope.page.phone,
+                        patient: scope.page.patient,
+                        nhi: scope.page.nhi,
+                        ward: scope.page.ward,
+                        bed: scope.page.bed,
+                        ptpage: scope.page.nhi ? true : false
+                        });
+                });
             });
         }
     };
