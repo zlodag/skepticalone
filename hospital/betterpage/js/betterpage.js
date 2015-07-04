@@ -16,6 +16,9 @@
                     controller: 'PageController',
                     controllerAs: 'PageCtrl',
                     template: '<betterpage-form></betterpage-form><betterpage-preview></betterpage-preview><betterpage-outcome></betterpage-outcome>',
+                    resolve: {
+                        model: ['betterpageModel',function(betterpageModel) {return betterpageModel;}]
+                    }
                 });
                 $routeProvider.when('/pagelog', {
                     controller: 'LogController',
@@ -26,7 +29,8 @@
                 });
             }
         ])
-    .controller('PageController', function() {
+    .controller('PageController', ['model',function(model) {
+            this.model = model;
             this.display = '';
             this.overflow = false;
             this.prevpage = {
@@ -34,7 +38,7 @@
                 beep: null,
                 private: null
             };
-        })
+        }])
     .controller('LogController', ['$http','$scope','pagelog',function($http,$scope,pagelog) {
             
             $scope.headers = ['Timestamp','To','Message','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details'];

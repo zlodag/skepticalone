@@ -17,16 +17,18 @@ angular.module('betterpageMain')
         link: function(scope, element) {
             element.on('click',function(){
                 scope.$apply(function() {
-                    $location.path('/').search({
-                        no: scope.page.no,
-                        caller: scope.page.caller,
-                        phone: scope.page.phone,
-                        patient: scope.page.patient,
-                        nhi: scope.page.nhi,
-                        ward: scope.page.ward,
-                        bed: scope.page.bed,
-                        ptpage: scope.page.nhi ? true : false
-                        });
+                    var ptpage = scope.page.nhi ? true : false,
+                    params = {ptpage: ptpage};
+                    if (ptpage) {
+                        params.reply = scope.page.within ? true : false;
+                        params = angular.extend(params, scope.page);
+                        delete params.msg;
+                        delete params.ts;
+                    } else {
+                        params.no = scope.page.no;
+                        params.contents = scope.page.msg;
+                    }
+                    $location.path('/').search(params);
                 });
             });
         }
@@ -35,49 +37,54 @@ angular.module('betterpageMain')
 .directive('betterpageForm', [
     'betterpageStatic',
     'betterpageSubmit',
-    'betterpageModel',
 function(
     betterpageStatic,
-    betterpageSubmit,
-    betterpageModel
+    betterpageSubmit
 ) {
     function link(scope) {
         scope.static = betterpageStatic;
-        scope.model = betterpageModel;
+        scope.model = scope.PageCtrl.model;
         scope.$watchCollection(function(scope){return scope.model.data;}, function() {
             var items = scope.model.itemize();
             scope.PageCtrl.display = items.msg;
             scope.PageCtrl.overflow = (items.msg.length > scope.static.charLimit);
             //scope.temp = newValue;
         });
-        scope.reset = function() {
+        scope.resetPage = function() {
             scope.model.resetItems();
             scope.betterform.$setUntouched();
+            scope.betterform.$setPristine();
         };
-        scope.submit = function() {
-                var items = scope.model.itemize();
-
-                if (scope.betterform.$invalid || items.msg.length > 128) {
+        //scope.$on("$routeChangeSuccess", function(event, next, current) {
+            //scope.model.resetItems();
+        //});
+        scope.submitPage = function() {
+                if (scope.PageCtrl.overflow) {return false;}
+                if (scope.betterform.$invalid) {
                     angular.forEach(scope.betterform.$error, function(type) {
                         angular.forEach(type, function(field) {
                             field.$setTouched();
+                            field.$setDirty();
                         });
                     });
                     return false;
                 }
-
+                var items = scope.model.itemize();
+                items.bp = items.ptpage ? betterpageStatic.reasons[items.why].beep : 1;
+                console.log(items);
                 var promise = betterpageSubmit(items);
                 if (promise) {
                     promise.success(function(data, status, headers, config) {
-                        if (!data.ok) {return false;}
-                        scope.PageCtrl.prevpage = {
-                            bp: config.data.bp,
-                            msg: config.data.msg,
-                            private: config.data.private
-                        };
-                        scope.reset();
-                        if (config.data.ptpage) {
-                            alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
+                        if (data.ok) {
+                            scope.PageCtrl.prevpage = {
+                                bp: config.data.bp,
+                                msg: config.data.msg,
+                                private: config.data.private
+                            };
+                            scope.resetPage();
+                            if (config.data.ptpage) {
+                                alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
+                            }
                         }
                     });
                 }
