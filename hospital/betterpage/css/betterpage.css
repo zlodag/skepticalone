@@ -1,7 +1,7 @@
 body {
     margin: 5px;
 }
-ng-view>* {
+body>* {
     float: left;
     margin: 5px;
 }
@@ -10,13 +10,11 @@ div.greybox {
     background-color: #F4F4F4;
     overflow: auto;
 }
-#log {
+#reset {
     float: right;
-    margin-left:10px;
 }
-#submit,#reset {
+#submit {
     float: left;
-    margin-right:10px;
 }
 fieldset {
     overflow: auto;
@@ -31,8 +29,11 @@ fieldset>div>* {
 fieldset input {
     width: 80px;
 }
-betterpage-outcome {
+betterpage-outcome, betterpage-log {
     clear: left;
+}
+betterpage-log button{
+    display: block;
 }
 #nhi,#ward,#bed {
     text-transform: uppercase;
@@ -82,5 +83,10 @@ pre, betterpage-preview pre+label {
 betterpage-outcome label {
     display:block;
 }
-td,th {border: 1px solid black;}
-table {border-collapse: collapse;}
+td,th {
+    border: 1px solid black;
+    padding: 0 5px;
+    }
+table {
+    margin: 10px 0;
+    border-collapse: collapse;}

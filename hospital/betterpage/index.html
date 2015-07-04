@@ -17,7 +17,10 @@
         <link rel="stylesheet" type="text/css" href="css/betterpage.css" />
         <!--<base href="/hospital/betterpage/">-->
     </head>
-    <body ng-app="betterpageMain">
-    <ng-view></ng-view>
+    <body ng-app="betterpageMain" ng-controller="PageController">
+        <betterpage-form></betterpage-form>
+        <betterpage-preview></betterpage-preview>
+        <betterpage-outcome></betterpage-outcome>
+        <betterpage-log></betterpage-log>
     </body>
 </html>

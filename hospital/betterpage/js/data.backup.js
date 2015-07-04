@@ -1,5 +1,13 @@
 angular.module('betterpageMain')
 .factory('betterpageModel', ['$location', function betterpageModelFactory($location) {
+        /*
+        var getParams = {};
+        var queries = window.location.search.substring(1).split("&");
+        for (var i = 0; i < queries.length; i++) {
+            var temp = queries[i].split('=');
+            getParams[temp[0]] = decodeURIComponent(temp[1]);
+        }
+        */
         function generateMsg() {
             var data = this.data;
             if (data.ptpage) {
@@ -17,21 +25,27 @@ angular.module('betterpageMain')
         }
         function resetItems() {
             var getParams = $location.search();
-            var no = parseInt(getParams.no, 10);
-            if (no) {getParams.no = no;}
-            var within = parseInt(getParams.within, 10);
-            if (within) {getParams.within = within;}
+            getParams.no = parseInt(getParams.no, 10);
+            getParams.within = parseInt(getParams.within, 10);
             this.data = angular.extend({
                 reply: false,
                 private: false,
                 ptpage: this.data.ptpage
             },getParams);
+
+            /*
+            for (list = ['caller','phone','patient','nhi','ward','bed','why','details'], i = 0; i < list.length; i++) {
+                var key = list[i];
+                if (key in getParams) {this.data[key] = getParams[key];}
+            }
+            */
         }
         function itemize() {
             var params = {
                 no: this.data.no,
                 ptpage: this.data.ptpage,
                 msg: this.generateMsg()
+                //bp: (this.data.ptpage && this.data.why) ? this.data.why.beep : 1
             };
             if (this.data.ptpage) {
                 params.phone = this.data.phone;
@@ -49,7 +63,6 @@ angular.module('betterpageMain')
                 params.contents = this.data.contents;
                 params.private = this.data.private;
             }
-            console.log(params);
             return params;
         }
         var model = {
@@ -67,6 +80,34 @@ angular.module('betterpageMain')
         "Page about a patient":true,
         "Page about something else":false
     },
+    /*
+    reasons: [
+        // 1: no clinical concern, 2: low 3: medium 4: high priority concern
+        {label: "ADDS 3",beep: 2,group: "High ADDS - specify why"}, 
+        {label: "ADDS 4",beep: 3,group: "High ADDS - specify why"}, 
+        {label: "ADDS 5+",beep: 4,group: "High ADDS - specify why"},
+        {label: "Pain",beep: 2,group: "Concern"}, 
+        {label: "Short of breath",beep: 3,group: "Concern"}, 
+        {label: "Nausea",beep: 2,group: "Concern"}, 
+        {label: "Urinary retention",beep: 2,group: "Concern"}, 
+        {label: "Wound",beep: 2,group: "Concern"}, 
+        {label: "Clarify plan",beep: 1,group: "Concern"}, 
+        {label: "Fluids",beep: 1,group: "Medication"}, 
+        {label: "Sleeping pill",beep: 1,group: "Medication"}, 
+        {label: "Laxatives",beep: 1,group: "Medication"}, 
+        {label: "Regular Meds",beep: 1,group: "Medication"}, 
+        {label: "IV line/bloods",beep: 1,group: "Task"}, 
+        {label: "Review result",beep: 1,group: "Task"}, 
+        {label: "Admit",beep: 1,group: "Task"}, 
+        {label: "Discharge",beep: 1,group: "Task"}, 
+        {label: "Rechart",beep: 1,group: "Task"}, 
+        {label: "Consent",beep: 1,group: "Task"}, 
+        {label: "Inform",beep: 1,group: "Other - specify below"}, 
+        {label: "Call urgently!",beep: 4,group: "Other - specify below"}, 
+        {label: "Review urgently!",beep: 4,group: "Other - specify below"}, 
+        {label: "Custom",beep: 1,group: "Other - specify below"}
+    ],
+    */
     reasons: {
         // 1: no clinical concern, 2: low 3: medium 4: high priority concern
         "ADDS 3":{beep: 2,group: "High ADDS - specify why"}, 
@@ -92,6 +133,16 @@ angular.module('betterpageMain')
         "Call urgently!":{beep: 4,group: "Other - specify below"}, 
         "Review urgently!":{beep: 4,group: "Other - specify below"}, 
         "Custom":{beep: 1,group: "Other - specify below"}
-    },
-    headers: ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']
-});
+    }
+})
+.factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {
+        return function(items) {
+            var submiturl = './submit.php', 
+            pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
+            if (confirm('Send this page from the intranet?')) {
+                var popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + items.no + '&msg=' + encodeURIComponent(items.msg), '_blank');
+                if (!popup) {alert('Please allow popups for this function to succeed');}
+            }
+            return $http.post(submiturl, items);
+        };
+}]);

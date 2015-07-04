@@ -105,9 +105,8 @@
     </div>
     </fieldset>
     <div>
-    <input id="submit" ng-disabled="PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
-    <button id="reset" type="button" ng-click="resetPage()">Reset</button>
-    <button id="log" type="button" page-log>Page Log</button>
+    <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
+    <button id="reset" type="button" ng-click="reset()">Reset</button>
     </div>
 </form>
 </div>
