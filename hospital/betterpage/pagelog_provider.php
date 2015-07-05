@@ -1,10 +1,14 @@
 <?php
+header('Content-Type: application/json');
+if (array_key_exists('hours',$_GET)) {$hours = intval($_GET['hours']);} else {exit;}
 date_default_timezone_set("Pacific/Auckland");
 include('../../_connect.php');
 $stmt = $mysqli->prepare("
     SELECT UNIX_TIMESTAMP(`ts`),`no`,`msg`,`caller`,`phone`,`within`,`patient`,`nhi`,`ward`,`bed`,`why`,`details`
     FROM `page_log`
+    WHERE `ts` > NOW()-INTERVAL ? HOUR
     ORDER BY `ts` DESC");
+$stmt->bind_param('i',$hours);
 $stmt->execute();
 $stmt->bind_result(
     $ts,
@@ -47,8 +51,3 @@ while($stmt->fetch()) {
 }
 $stmt->close();
 echo json_encode($rows);
-exit;
-echo json_encode($mysqli->query("
-    SELECT `ts`,`no`,`msg`,`caller`,`phone`,`within`,`patient`,`nhi`,`ward`,`bed`,`why`,`details`
-    FROM `page_log`
-    ORDER BY `ts` DESC")->fetch_all(MYSQLI_ASSOC));

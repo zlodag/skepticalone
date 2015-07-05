@@ -49,7 +49,6 @@ angular.module('betterpageMain')
                 params.contents = this.data.contents;
                 params.private = this.data.private;
             }
-            console.log(params);
             return params;
         }
         var model = {

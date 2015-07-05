@@ -1,9 +1,16 @@
-<button ng-click="toggle()" ng-bind="(active ? 'Hide' : 'Show') + ' log'"></button>
-<table ng-show="active && fetched">
+<p>
+    <label for="hours">Messages from last <input id="hours" type="number" ng-model="hours" min="1" max="72" ng-pattern="/^[0-9]+$/" ng-disabled="fetched"/> hours</label>
+    <button ng-click="toggle()" ng-bind="buttonText()" ng-disabled="pending || !hours"></button>
+    <button ng-click="reset()" ng-show="fetched">Reset</button>
+</p>
+<p ng-show="active && fetched && rows.length"><label for="filter">Filter by: </label><input id="filter" type="search" ng-model="filterText" /></p>
+<p ng-show="active && fetched && !rows.length">No messages logged in last {{hours}} hours</p>
+<p ng-show="active && fetched && rows.length && !filtered.length">No messages match the filter</p>
+<table ng-show="active && fetched && filtered.length">
     <tr>
         <th ng-repeat="header in static.headers" ng-bind="header"></th>
     </tr>
-    <tr ng-repeat="page in rows track by $index">
+    <tr ng-repeat="page in rows | filter:filterText as filtered track by $index">
         <td ng-bind="page.ts * 1000 | date : 'dd/MM/yy HH:mm:ss'"></td>
         <td ng-bind="page.data.no"></td>
         <td ng-if="!page.data.ptpage" ng-bind="page.data.contents" colspan="9"></td>
@@ -16,6 +23,6 @@
         <td ng-if="page.data.ptpage" ng-bind="page.data.bed"></td>
         <td ng-if="page.data.ptpage" ng-bind="page.data.why"></td>
         <td ng-if="page.data.ptpage" ng-bind="page.data.details"></td>
-        <td><button copy-page>Copy</button></td>
+        <td><button ng-click="copy(page.data)">Copy</button></td>
     </tr>
 </table>

@@ -24,36 +24,41 @@ angular.module('betterpageMain')
         templateUrl: 'preview.html'
     };
 })
-.directive('betterpageLog', function() {
+.directive('betterpageLog', ['betterpageModel', function(betterpageModel) {
     return {
         restrict: 'E',
         templateUrl: 'pagelog.html',
+        scope: true,
         controller: ['$http','$scope',function($http,$scope) {
-            $scope.rows = [];
-            $scope.fetched = false;
-            $scope.active = false;
+            $scope.reset = function() {
+                $scope.rows = [];
+                $scope.hours = 8;
+                $scope.filterText = '';
+                $scope.fetched = false;
+                $scope.active = false;
+                $scope.pending = false;
+            };
             $scope.toggle = function(){
                 $scope.active = !$scope.active;
                 if ($scope.active && !$scope.fetched) {
-                    $http.get('pagelog_provider.php').success(function(rows){
+                    $scope.pending = true;
+                    $http.get('pagelog_provider.php',{params:{hours: $scope.hours}}).success(function(rows){
                         $scope.rows = rows;
                         $scope.fetched = true;
+                        $scope.pending = false;
                     });
                 }
             };
+            $scope.buttonText = function (){
+                if ($scope.pending){return 'Pending...';}
+                if ($scope.active){return 'Hide';}
+                else {return 'Show';}
+            };
+            $scope.copy = function(data) {
+                betterpageModel.data = data;
+                $scope.active = false;
+            };
+            $scope.reset();
         }]
-    };
-})
-.directive('copyPage', ['$location', function($location) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            element.on('click',function(){
-                scope.$apply(function() {
-                    scope.model.data = scope.page.data;
-                    scope.$parent.active = false;
-                });
-            });
-        }
     };
 }]);
