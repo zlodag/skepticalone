@@ -41,6 +41,9 @@ betterpage-outcome, betterpage-log {
 #why,#details,#contents {
     width: 290px;
 }
+#no {
+    width: 230px;
+}
 label[for="reply"],#reply,label[for="within"],label[for="private"],#private {
     width: inherit;
 }
@@ -83,7 +86,11 @@ betterpage-outcome label {
 td,th {
     border: 1px solid black;
     padding: 0 5px;
-    }
+}
 table {
     margin: 10px 0;
-    border-collapse: collapse;}
+    border-collapse: collapse;
+}
+dl {
+    margin: 0;
+}

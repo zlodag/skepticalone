@@ -1,5 +1,9 @@
 <div class="greybox">
-    <label>Preview</label>
-    <pre ng-bind="display"></pre>
-    <label ng-bind="display.length + '/' + static.charLimit + ' characters'"></label>
+    <dl>
+    <dt>{{model.data.no.length || 'No'}} recipient{{model.data.no.length !== 1 ? 's' : ''}}</dt><dd ng-repeat="no in model.data.no track by $index" ng-bind="no"></dd>
+    <dt>Preview</dt>
+    <dd><pre ng-bind="display"></pre></dd>
+    <dt>Characters</dt>
+    <dd ng-bind="display.length + '/' + static.charLimit"></dd>
+    </dl>
 </div>

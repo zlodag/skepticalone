@@ -119,7 +119,7 @@ function(
         require: 'ngModel',
         link: function(scope, element, attrs, ngModel) {
             ngModel.$parsers.push(function(str) {
-                return str.replace(/(^([a-zA-Z\p{M}]))|([ -][a-zA-Z\p{M}])/g, function(s) {
+                return str.replace(/(^([a-z]))|([ -][a-z])/g, function(s) {
                     return s.toUpperCase();
                 });
             });

@@ -1,18 +1,15 @@
-<div class="greybox">
-<form ng-submit="submitPage()" name="betterform" novalidate>
     <select name="ptpage" ng-model="model.data.ptpage" ng-options="value as label for (label,value) in static.choices"></select>
 
     <fieldset>
     <legend>To</legend>
     <div>
         <label for="no">Pager</label>
-        <input id="no" name="no" ng-model="model.data.no" type="number" min="20000" max="20999" required />
+        <input id="no" name="no" ng-model="model.data.no" required betterpage-no />
     </div>
     <div ng-if="betterform.no.$touched && betterform.no.$dirty" ng-messages="betterform.no.$error">
         <label ng-message="required"><em>Pager number</em> is required</label>
-        <label ng-message="number"><em>Pager number</em> must be a number</label>
-        <label ng-message="min"><em>Pager number</em> must be 20 followed by 3 digits</label>
-        <label ng-message="max"><em>Pager number</em> must be 20 followed by 3 digits</label>
+        <label ng-message="allNumbers"><em>Pager numbers</em> must be integers separated by spaces</label>
+        <label ng-message="pagerNumbers"><em>Pager numbers</em> must be 20 followed by 3 digits</label>
     </div>
     </fieldset>
 
@@ -80,7 +77,7 @@
     <fieldset ng-if="model.data.ptpage">
     <legend>Details</legend>
     <div>
-        <select id="why" name="why" ng-model="model.data.why" ng-options="reason as reason group by extra.group for (reason,extra) in static.reasons" class="whole" required>
+        <select id="why" name="why" ng-model="model.data.why" ng-options="reason as reason group by extra.group for (reason,extra) in reasons" class="whole" required>
             <option value="" selected>Reason for page</option>
         </select>
     </div>
@@ -106,7 +103,5 @@
     </fieldset>
     <div>
     <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
-    <button id="reset" type="button" ng-click="reset()">Reset</button>
+    <button id="reset" type="button" betterpage-reset>Reset</button>
     </div>
-</form>
-</div>

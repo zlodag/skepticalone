@@ -4,7 +4,7 @@
     .config(
         ['$compileProvider', '$locationProvider',
             function ($compileProvider, $locationProvider) {
-                $compileProvider.debugInfoEnabled(false);
+                $compileProvider.debugInfoEnabled(true);
                 $locationProvider.html5Mode({
                   enabled: true,
                   requireBase: false
@@ -16,10 +16,20 @@
             $scope.static = betterpageStatic;
             $scope.display = '';
             $scope.overflow = false;
+            $scope.update = function(){
+                var items = $scope.model.itemize();
+                $scope.display = items.msg;
+                $scope.overflow = (items.msg.length > betterpageStatic.charLimit);
+            };
             $scope.prevpage = {
                 msg: '',
-                beep: null,
-                private: null
+                bp: null,
+                private: null,
+                replace: function(data){
+                    this.msg = data.msg;
+                    this.bp = data.bp;
+                    this.private = data.private;
+                }
             };
         }])
 })();

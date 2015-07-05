@@ -18,7 +18,7 @@
         <!--<base href="/hospital/betterpage/">-->
     </head>
     <body ng-app="betterpageMain" ng-controller="PageController">
-        <betterpage-form></betterpage-form>
+        <betterpage-form ng-form ng-submit="send()" name="betterform" novalidate></betterpage-form>
         <betterpage-preview></betterpage-preview>
         <betterpage-outcome></betterpage-outcome>
         <betterpage-log></betterpage-log>
