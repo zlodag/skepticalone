@@ -1,5 +1,5 @@
 angular.module('betterpageMain')
-.factory('betterpageModel', ['$location', 'betterpageSubmit', function betterpageModelFactory($location,betterpageSubmit) {
+.factory('betterpageModel', ['betterpageParams','betterpageSubmit', 'betterpageReasons',function betterpageModelFactory(betterpageParams,betterpageSubmit,betterpageReasons) {
         function generateMsg() {
             var data = this.data;
             if (data.ptpage) {
@@ -16,17 +16,11 @@ angular.module('betterpageMain')
             }
         }
         function resetItems() {
-            var getParams = $location.search();
-            var no = parseInt(getParams.no, 10);
-            if (no) {getParams.no = no;}
-            var within = parseInt(getParams.within, 10);
-            if (within) {getParams.within = within;}
             this.data = angular.extend({
-                no: [],
                 reply: false,
                 private: false,
                 ptpage: this.data.ptpage
-            },getParams);
+            }, betterpageParams);
         }
         function itemize() {
             var params = {
@@ -53,7 +47,9 @@ angular.module('betterpageMain')
             return params;
         }
         function send() {
-            return betterpageSubmit(this.itemize());
+            var items = this.itemize();
+            items.bp = items.ptpage ? (betterpageReasons[items.why].beep) : 1;
+            return betterpageSubmit(items);
         }
         var model = {
             data: {ptpage:true},
@@ -65,11 +61,25 @@ angular.module('betterpageMain')
         model.resetItems();
         return model;
     }])
+.factory('betterpageParams', ['$location', function betterpageParamsFactory($location) {
+        var getParams = $location.search(),
+        numbers = [];
+        if (angular.isDefined(getParams.no)) {
+            angular.forEach(getParams.no.split(';'),function(str){
+                if (/^20[0-9]{3}$/.test(str)) {numbers.push(parseInt(str,10));}
+            });
+        }
+        getParams.no = numbers;
+        var within = parseInt(getParams.within, 10);
+        if (within) {getParams.within = within;} else {delete getParams.within;}
+        return getParams;
+}])
 .factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {
         return function(items) {
-            var submiturl = './submit.php', 
+            var submiturl = './submit.php',
             pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
-            if (confirm('Send this page from the intranet?')) {
+            //Test feature
+            if (confirm('Attempt to send this page via the intranet?')) {
                 var popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + items.no + '&msg=' + encodeURIComponent(items.msg), '_blank');
                 if (!popup) {alert('Please allow popups for this function to succeed');}
             }
@@ -102,11 +112,9 @@ angular.module('betterpageMain')
     "Review urgently!":{beep: 4,group: "Other - specify below"}, 
     "Custom":{beep: 1,group: "Other - specify below"}
 })
-.constant('betterpageStatic', {
-    charLimit: 128,
-    choices: {
+.constant('betterpageCharLimit', 128)
+.constant('betterpageChoices', {
         "Page about a patient":true,
         "Page about something else":false
-    },
-    headers: ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']
-});
+    })
+.constant('betterpageHeaders', ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']);

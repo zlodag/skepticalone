@@ -1,9 +1,11 @@
 <div class="greybox">
+    <h4>Preview</h4>
     <dl>
-    <dt>{{model.data.no.length || 'No'}} recipient{{model.data.no.length !== 1 ? 's' : ''}}</dt><dd ng-repeat="no in model.data.no track by $index" ng-bind="no"></dd>
-    <dt>Preview</dt>
-    <dd><pre ng-bind="display"></pre></dd>
+    <dt>{{PageCtrl.model.data.no.length || 'No'}} recipient{{PageCtrl.model.data.no.length !== 1 ? 's' : ''}}</dt>
+    <dd ng-repeat="number in PageCtrl.model.data.no track by $index" ng-bind="number"></dd>
+    <dt>Message</dt>
+    <dd><pre ng-bind="PageCtrl.display"></pre></dd>
     <dt>Characters</dt>
-    <dd ng-bind="display.length + '/' + static.charLimit"></dd>
+    <dd ng-bind="PageCtrl.display.length + '/' + PageCtrl.charLimit"></dd>
     </dl>
 </div>

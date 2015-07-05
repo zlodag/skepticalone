@@ -1,10 +1,12 @@
-    <select name="ptpage" ng-model="model.data.ptpage" ng-options="value as label for (label,value) in static.choices"></select>
+<div class="greybox">
+<form ng-submit="FormCtrl.send()" name="betterform" novalidate>
+    <select name="ptpage" ng-model="PageCtrl.model.data.ptpage" ng-options="value as label for (label,value) in FormCtrl.choices"></select>
 
     <fieldset>
     <legend>To</legend>
     <div>
         <label for="no">Pager</label>
-        <input id="no" name="no" ng-model="model.data.no" required betterpage-no />
+        <input id="no" name="no" ng-model="PageCtrl.model.data.no" required betterpage-no />
     </div>
     <div ng-if="betterform.no.$touched && betterform.no.$dirty" ng-messages="betterform.no.$error">
         <label ng-message="required"><em>Pager number</em> is required</label>
@@ -13,13 +15,13 @@
     </div>
     </fieldset>
 
-    <fieldset ng-if="model.data.ptpage">
+    <fieldset ng-if="PageCtrl.model.data.ptpage">
     <legend>From</legend>
     <div>
         <label for="caller">Name</label>
-        <input title-case id="caller" name="caller" ng-model="model.data.caller" ng-minlength="2" required />
+        <input title-case id="caller" name="caller" ng-model="PageCtrl.model.data.caller" ng-minlength="2" required />
         <label for="phone">Phone</label>
-        <input id="phone" name="phone" ng-model="model.data.phone" ng-pattern="/^[0-9]+$/" required />
+        <input id="phone" name="phone" ng-model="PageCtrl.model.data.phone" ng-pattern="/^[0-9]+$/" required />
     </div>
     <div ng-if="betterform.caller.$touched && betterform.caller.$dirty" ng-messages="betterform.caller.$error">
         <label ng-message="required"><em>Name</em> is required</label>
@@ -30,8 +32,8 @@
         <label ng-message="pattern"><em>Phone</em> must contain only digits</label>
     </div>
     <div>
-        <label for="reply">Response required? <input id="reply" name="reply" ng-model="model.data.reply" type="checkbox" /></label>
-        <label ng-show="model.data.reply" for="within">within <input id="within" name="within" type="number" ng-model="model.data.within" ng-required="model.data.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" /> mins</label>
+        <label for="reply">Response required? <input id="reply" name="reply" ng-model="PageCtrl.model.data.reply" type="checkbox" /></label>
+        <label ng-show="PageCtrl.model.data.reply" for="within">within <input id="within" name="within" type="number" ng-model="PageCtrl.model.data.within" ng-required="PageCtrl.model.data.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" /> mins</label>
     </div>
     <div ng-if="betterform.within.$touched && betterform.within.$dirty" ng-messages="betterform.within.$error">
         <label ng-message="required"><em>Response time</em> is required</label>
@@ -42,13 +44,13 @@
     </div>
     </fieldset>
 
-    <fieldset ng-if="model.data.ptpage">
+    <fieldset ng-if="PageCtrl.model.data.ptpage">
     <legend>Patient</legend>
     <div>
         <label for="patient">Name</label>
-        <input title-case id="patient" name="patient" ng-model="model.data.patient" ng-minlength="2" required />
+        <input title-case id="patient" name="patient" ng-model="PageCtrl.model.data.patient" ng-minlength="2" required />
         <label for="nhi">NHI</label>
-        <input upper-case id="nhi" name="nhi" ng-model="model.data.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />
+        <input upper-case id="nhi" name="nhi" ng-model="PageCtrl.model.data.nhi" ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />
     </div>
     <div ng-if="betterform.patient.$touched && betterform.patient.$dirty" ng-messages="betterform.patient.$error">
         <label ng-message="required"><em>Name</em> is required</label>
@@ -60,9 +62,9 @@
     </div>
     <div>
         <label for="ward">Ward</label>
-        <input upper-case id="ward" name="ward" ng-model="model.data.ward" ng-maxlength="3" required />
+        <input upper-case id="ward" name="ward" ng-model="PageCtrl.model.data.ward" ng-maxlength="3" required />
         <label for="bed">Bed</label>
-        <input upper-case id="bed" name="bed" ng-model="model.data.bed" ng-maxlength="3" required />
+        <input upper-case id="bed" name="bed" ng-model="PageCtrl.model.data.bed" ng-maxlength="3" required />
     </div>
     <div ng-if="betterform.ward.$touched && betterform.ward.$dirty" ng-messages="betterform.ward.$error">
         <label ng-message="required"><em>Ward</em> is required</label>
@@ -74,10 +76,10 @@
     </div>
     </fieldset>
 
-    <fieldset ng-if="model.data.ptpage">
+    <fieldset ng-if="PageCtrl.model.data.ptpage">
     <legend>Details</legend>
     <div>
-        <select id="why" name="why" ng-model="model.data.why" ng-options="reason as reason group by extra.group for (reason,extra) in reasons" class="whole" required>
+        <select id="why" name="why" ng-model="PageCtrl.model.data.why" ng-options="reason as reason group by extra.group for (reason,extra) in FormCtrl.reasons" class="whole" required>
             <option value="" selected>Reason for page</option>
         </select>
     </div>
@@ -85,23 +87,25 @@
         <label ng-message="required"><em>Reason for page</em> is required</label>
     </div>
     <div>
-        <input id="details" name="details" ng-model="model.data.details" class="whole" placeholder="Specify (optional)" />
+        <input id="details" name="details" ng-model="PageCtrl.model.data.details" class="whole" placeholder="Specify (optional)" />
     </div>
     </fieldset>
 
-    <fieldset ng-if="!model.data.ptpage">
+    <fieldset ng-if="!PageCtrl.model.data.ptpage">
     <legend>Contents</legend>
     <div>
-        <textarea id="contents" name="contents" ng-model="model.data.contents" class="whole" required></textarea>
+        <textarea id="contents" name="contents" ng-model="PageCtrl.model.data.contents" class="whole" required></textarea>
     </div>
     <div ng-if="betterform.contents.$touched && betterform.contents.$dirty" ng-messages="betterform.contents.$error">
         <label ng-message="required"><em>Contents</em> is required</label>
     </div>
     <div>
-        <label for="private">Do not log this page <input id="private" name="private" ng-model="model.data.private" type="checkbox" /></label>
+        <label for="private">Do not log this page <input id="private" name="private" ng-model="PageCtrl.model.data.private" type="checkbox" /></label>
     </div>
     </fieldset>
     <div>
     <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
-    <button id="reset" type="button" betterpage-reset>Reset</button>
+    <button id="reset" type="button" ng-click="FormCtrl.reset()">Reset</button>
     </div>
+</form>
+</div>

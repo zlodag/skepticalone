@@ -22,16 +22,18 @@ function test_input($key) {
     }
     $data = $feed->$key;
     if ($data === "") {return null;}
-    /*remember to clean data before inserting into DB
+    /*
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
      */
     switch ($key) {
         case "no":
-            if (!preg_match("/^20[0-9]{3}$/", $data)) {
-                $valid = false;
-                $errors[] = [$key,sprintf('Parameter: <em>%s</em> must be 20 followed by 3 digits - "%s" submitted', $key, $data)];
+            foreach($data as $number) {
+                if (!is_int($number) || $number < 20000 || $number >= 30000) {
+                    $valid = false;
+                    $errors[] = [$key,sprintf('Parameter: Each <em>%s</em> must be 20 followed by 3 digits - "%s" submitted', $key, $number)];
+                }
             }
             break;
         case "bp":
@@ -55,21 +57,12 @@ function test_input($key) {
     }
     return $data;
 }
-
 $no = test_input("no");
 $msg = test_input("msg");
 $bp = test_input("bp");
 $private = ($feed->ptpage === false && $feed->private === true);
 if ($valid) {
-
-    //write to text file
-    /*
-    $t = time();
-    $logmessage = sprintf("%s Beep:%d To: %s %s\n", date("Y-m-d H:i:s", $t), $bp, $no, $msg); 
-    file_put_contents ($filename, $logmessage, FILE_APPEND | LOCK_EX);
-    */
     if (!$private) { 
-        
         //submit to database
         include('../../_connect.php');
         $stmt=$mysqli->prepare("INSERT INTO `page_log` (`no`,`msg`,
@@ -84,7 +77,7 @@ if ($valid) {
         `details`
         ) VALUES (?,?,
         ?,?,?,?,?,?,?,?,?)");
-        $stmt->bind_param('issiissssss', $no, $msg,
+        $stmt->bind_param('issiissssss', $number, $msg,
         test_input("caller"),
         test_input("phone"),
         test_input("within"),
@@ -95,14 +88,14 @@ if ($valid) {
         test_input("why"),
         test_input("details")
         );
-        $stmt->execute();
+        foreach($no as $number) {
+            $stmt->execute();
+        }
         $stmt->close();
 
     }
-
     //return status to browser
-    echo json_encode(['ok'=>true,'page'=>['msg'=>$msg,'bp'=>$bp,'private'=>$private]]);
+    echo json_encode(['ok'=>true,'page'=>['no'=>$no,'msg'=>$msg,'bp'=>$bp,'private'=>$private]]);
 } else {
     echo json_encode(['ok'=>false,'errors'=>$errors]);
 }
-?>

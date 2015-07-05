@@ -28,7 +28,7 @@ $rows = [];
 while($stmt->fetch()) {
     $data = [
         "ptpage" => $nhi ? true : false,
-        "no" => $no,
+        "no" => [$no],
     ];
     if ($data["ptpage"]) {
         $data["caller"] = $caller;

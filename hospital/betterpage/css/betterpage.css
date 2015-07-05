@@ -29,7 +29,7 @@ fieldset>div>* {
 fieldset input {
     width: 80px;
 }
-betterpage-outcome, betterpage-log {
+betterpage-log {
     clear: left;
 }
 #nhi,#ward,#bed {
@@ -70,7 +70,7 @@ label[ng-message] {
     display: block;
     text-align: left;
 }
-pre, betterpage-preview pre+label {
+pre {
     background-color: #E8E8E8;
     width: 20ch;
     padding: 1ch;
@@ -79,9 +79,6 @@ pre, betterpage-preview pre+label {
     margin: 5px 0;
     white-space: pre-wrap;
     display: block;
-}
-betterpage-outcome label {
-    display:block;
 }
 td,th {
     border: 1px solid black;
@@ -93,4 +90,7 @@ table {
 }
 dl {
     margin: 0;
+}
+h4 {
+    margin:0 0 10px;
 }

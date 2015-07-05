@@ -1,28 +1,31 @@
 <p>
-    <label for="hours">Messages from last <input id="hours" type="number" ng-model="hours" min="1" max="72" ng-pattern="/^[0-9]+$/" ng-disabled="fetched"/> hours</label>
-    <button ng-click="toggle()" ng-bind="buttonText()" ng-disabled="pending || !hours"></button>
-    <button ng-click="reset()" ng-show="fetched">Reset</button>
+    Messages from last <input id="hours" type="number" ng-model="LogCtrl.hours" min="1" max="72" ng-pattern="/^[0-9]+$/" /> hours
+    <button ng-click="LogCtrl.toggle()" ng-bind="LogCtrl.active ? 'Hide' : 'Show'" ng-disabled="!LogCtrl.fetched && !LogCtrl.hours"></button>
+    <span ng-show="LogCtrl.fetched">retrieved at {{LogCtrl.timestamp | date : 'dd/MM/yy HH:mm:ss'}} <button ng-click="LogCtrl.refresh()">Refresh</button></span>
+    <span ng-show="LogCtrl.active && LogCtrl.pending">Updating...</span>
 </p>
-<p ng-show="active && fetched && rows.length"><label for="filter">Filter by: </label><input id="filter" type="search" ng-model="filterText" /></p>
-<p ng-show="active && fetched && !rows.length">No messages logged in last {{hours}} hours</p>
-<p ng-show="active && fetched && rows.length && !filtered.length">No messages match the filter</p>
-<table ng-show="active && fetched && filtered.length">
-    <tr>
-        <th ng-repeat="header in static.headers" ng-bind="header"></th>
-    </tr>
-    <tr ng-repeat="page in rows | filter:filterText as filtered track by $index">
-        <td ng-bind="page.ts * 1000 | date : 'dd/MM/yy HH:mm:ss'"></td>
-        <td ng-bind="page.data.no"></td>
-        <td ng-if="!page.data.ptpage" ng-bind="page.data.contents" colspan="9"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.caller"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.phone"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.within"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.patient"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.nhi"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.ward"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.bed"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.why"></td>
-        <td ng-if="page.data.ptpage" ng-bind="page.data.details"></td>
-        <td><button ng-click="copy(page.data)">Copy</button></td>
-    </tr>
-</table>
+<div ng-show="LogCtrl.active && LogCtrl.fetched">
+    <p ng-show="LogCtrl.rows.length"><label for="filter">Filter by: </label><input id="filter" type="search" ng-model="LogCtrl.filterText" /></p>
+    <p ng-hide="LogCtrl.rows.length">No messages logged in last {{LogCtrl.hours}} hours</p>
+    <p ng-show="LogCtrl.rows.length && !filtered.length">No messages match the filter</p>
+    <table ng-show="filtered.length">
+        <tr>
+            <th ng-repeat="header in LogCtrl.headers" ng-bind="header"></th>
+        </tr>
+        <tr ng-repeat="page in LogCtrl.rows | filter:LogCtrl.filterText as filtered track by $index">
+            <td ng-bind="page.ts * 1000 | date : 'dd/MM/yy HH:mm:ss'"></td>
+            <td ng-bind="page.data.no[0]"></td>
+            <td ng-if="!page.data.ptpage" ng-bind="page.data.contents" colspan="9"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.caller"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.phone"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.within"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.patient"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.nhi"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.ward"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.bed"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.why"></td>
+            <td ng-if="page.data.ptpage" ng-bind="page.data.details"></td>
+            <td><button ng-click="LogCtrl.copy(page.data)">Copy</button></td>
+        </tr>
+    </table>
+</div>
