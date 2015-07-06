@@ -1,12 +1,12 @@
 <p>
     Messages from last <input id="hours" type="number" ng-model="LogCtrl.hours" min="1" max="72" ng-pattern="/^[0-9]+$/" /> hours
     <button ng-click="LogCtrl.toggle()" ng-bind="LogCtrl.active ? 'Hide' : 'Show'" ng-disabled="!LogCtrl.fetched && !LogCtrl.hours"></button>
-    <span ng-show="LogCtrl.fetched">retrieved at {{LogCtrl.timestamp | date : 'dd/MM/yy HH:mm:ss'}} <button ng-click="LogCtrl.refresh()">Refresh</button></span>
+    <span ng-show="LogCtrl.fetched">retrieved at {{LogCtrl.timestamp | date : 'dd/MM/yy HH:mm:ss'}} <button ng-disabled="!LogCtrl.hours" ng-click="LogCtrl.refresh()">Refresh</button></span>
     <span ng-show="LogCtrl.active && LogCtrl.pending">Updating...</span>
 </p>
 <div ng-show="LogCtrl.active && LogCtrl.fetched">
     <p ng-show="LogCtrl.rows.length"><label for="filter">Filter by: </label><input id="filter" type="search" ng-model="LogCtrl.filterText" /></p>
-    <p ng-hide="LogCtrl.rows.length">No messages logged in last {{LogCtrl.hours}} hours</p>
+    <p ng-hide="LogCtrl.rows.length">No messages logged in last {{LogCtrl.requestHours}} hours</p>
     <p ng-show="LogCtrl.rows.length && !filtered.length">No messages match the filter</p>
     <table ng-show="filtered.length">
         <tr>

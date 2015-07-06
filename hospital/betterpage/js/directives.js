@@ -88,6 +88,7 @@ angular.module('betterpageMain')
                         LogCtrl.rows = rows;
                         LogCtrl.pending = false;
                         LogCtrl.timestamp = new Date();
+                        LogCtrl.requestHours = angular.copy(LogCtrl.hours);
                         LogCtrl.active = true;
                     });
             };
