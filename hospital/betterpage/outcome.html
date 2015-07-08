@@ -1,13 +1,11 @@
-<div class="greybox">
-    <h4>Outcome</h4>
-    <dl>
-    <dt>{{PageCtrl.prevpage.no.length || 'No'}} recipient{{PageCtrl.prevpage.no.length !== 1 ? 's' : ''}}</dt>
-    <dd ng-repeat="number in PageCtrl.prevpage.no track by $index" ng-bind="number"></dd>
-    <dt>Message</dt>
-    <dd><pre ng-bind="PageCtrl.prevpage.msg"></pre></dd>
-    <dt>Beep code</dt>
-    <dd ng-bind="PageCtrl.prevpage.bp"></dd>
-    <dt>Logged</dt>
-    <dd ng-bind="PageCtrl.prevpage.private ? '&#x2717;' : '&#x2713;'"></dd>
-    </dl>
-</div>
+<h4>Outcome</h4>
+<dl>
+<dt>{{PageCtrl.prevpage.no.length || 'No'}} recipient{{PageCtrl.prevpage.no.length !== 1 ? 's' : ''}}</dt>
+<dd ng-repeat="number in PageCtrl.prevpage.no track by $index" ng-bind="number"></dd>
+<dt>Message</dt>
+<dd><samp ng-bind="PageCtrl.prevpage.msg"></samp></dd>
+<dt>Beep code</dt>
+<dd ng-bind="PageCtrl.prevpage.bp"></dd>
+<dt>Logged</dt>
+<dd ng-bind="PageCtrl.prevpage.private ? '&#x2717;' : '&#x2713;'"></dd>
+</dl>

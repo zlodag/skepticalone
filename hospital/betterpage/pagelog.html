@@ -8,7 +8,8 @@
     <p ng-show="LogCtrl.rows.length"><label for="filter">Filter by: </label><input id="filter" type="search" ng-model="LogCtrl.filterText" /></p>
     <p ng-hide="LogCtrl.rows.length">No messages logged in last {{LogCtrl.requestHours}} hours</p>
     <p ng-show="LogCtrl.rows.length && !filtered.length">No messages match the filter</p>
-    <table ng-show="filtered.length">
+    <div class="table-responsive">
+    <table class="table table-condensed table-hover table-bordered table-striped" ng-show="filtered.length">
         <tr>
             <th ng-repeat="header in LogCtrl.headers" ng-bind="header"></th>
         </tr>
@@ -28,4 +29,5 @@
             <td><button ng-click="LogCtrl.copy(page.data)">Copy</button></td>
         </tr>
     </table>
+    </div>
 </div>
