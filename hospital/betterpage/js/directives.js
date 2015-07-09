@@ -180,7 +180,7 @@ angular.module('betterpageMain')
                     if (typeof modelValue[i] !== 'number') {return false;}
                 }
                 return true;
-            }
+            };
             controller.$validators.pagerNumbers = function(modelValue) {
                 if (angular.isUndefined(modelValue)) {return;}
                 for (var i=0;i<modelValue.length;i++) {
@@ -188,8 +188,7 @@ angular.module('betterpageMain')
                     if (typeof value !== 'number' || value < 20000 || value >= 30000) {return false;}
                 }
                 return true;
-            }
-
+            };
         }
     };
 })
