@@ -57,6 +57,7 @@ angular.module('betterpageMain')
 })
 .directive('formInput', function() {
     var data = {
+                ptpage: {e: '<select ng-options="value as label for (label,value) in choices"></select>'},
                 no: {t: 'Pager', e: '<input required betterpage-no />'},
                 caller: {t: 'Name', e: '<input title-case ng-minlength="2" required />'},
                 phone: {t: 'Phone', e: '<input ng-pattern="/^[0-9]+$/" required />'},
@@ -93,6 +94,7 @@ angular.module('betterpageMain')
             return function(scope, element, attrs, controllers) {
                 scope.data = controllers[0].model.data;
                 scope.reasons = controllers[1].reasons;
+                scope.choices = controllers[1].choices;
                 scope.formItem = element.children().children().eq(1).children().controller('ngModel');
                 scope.width = angular.isDefined(attrs.half) ? 1/2 : 1;
                 scope.title = data[attrs.reference].t;
