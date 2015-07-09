@@ -91,8 +91,8 @@ angular.module('betterpageMain')
                 .append(params.c)
             );
             return function(scope, element, attrs, controllers) {
-                scope.data = controller[0].model.data;
-                scope.reasons = controller[1].reasons;
+                scope.data = controllers[0].model.data;
+                scope.reasons = controllers[1].reasons;
                 scope.formItem = element.children().children().eq(1).children().controller('ngModel');
                 scope.width = angular.isDefined(attrs.half) ? 1/2 : 1;
                 scope.title = data[attrs.reference].t;
