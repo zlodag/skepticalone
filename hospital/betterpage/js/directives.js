@@ -79,7 +79,7 @@ angular.module('betterpageMain')
         compile: function compile(tElement, tAttrs) {
             var target = tElement.children().children().eq(1),
             reference = tAttrs.reference,
-            params = data[reference],
+            params = data[reference];
             target.append(
                 angular.element(params.e)
                 .prop('id',reference)
