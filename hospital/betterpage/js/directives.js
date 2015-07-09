@@ -74,7 +74,7 @@ angular.module('betterpageMain')
     return {
         restrict: 'E',
         templateUrl: 'forminput.html',
-        require: ['^^betterpageMain','^^betterpageForm']
+        require: ['^^betterpageMain','^^betterpageForm'],
         scope: {reference:'@'},
         compile: function compile(tElement, tAttrs) {
             var target = tElement.children().children().eq(1),
