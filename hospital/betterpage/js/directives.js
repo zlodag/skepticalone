@@ -57,30 +57,42 @@ angular.module('betterpageMain')
 })
 .directive('formInput', function() {
     var data = {
-                no: {t: 'Pager', e: '<input>', a: {'betterpage-no':''}, p: {required:true}},
-                caller: {t: 'Name', e: '<input>', a: {'title-case':'','ng-minlength':2}, p: {required:true}},
-                phone: {t: 'Phone', e: '<input>', a: {'ng-pattern':/^[0-9]+$/}, p: {required:true}},
-                patient: {t: 'Name', e: '<input>', a: {'title-case':'','ng-minlength':2}, p: {required:true}},
-                nhi: {t: 'NHI', e: '<input>', a: {'upper-case':'','ng-pattern':/^[A-Z]{3}[0-9]{4}$/}, p: {required:true}},
-                ward: {t: 'Ward', e: '<input>', a: {'upper-case':'','ng-maxlength':3}, p: {required:true}},
-                bed: {t: 'Bed', e: '<input>', a: {'upper-case':'','ng-maxlength':3}, p: {required:true}},
+                no: {t: 'Pager', e: '<input required betterpage-no />'},
+                caller: {t: 'Name', e: '<input title-case ng-minlength="2" required />'},
+                phone: {t: 'Phone', e: '<input ng-pattern="/^[0-9]+$/" required />'},
+                reply: {t: 'Response required?', e: '<input type="checkbox" />'},
+                within: {t: 'within', e: '<input type="number" ng-required="data.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" />'},
+                patient: {t: 'Name', e: '<input title-case ng-minlength="2" required />'},
+                nhi: {t: 'NHI', e: '<input upper-case ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />'},
+                ward: {t: 'Ward', e: '<input upper-case ng-maxlength="3" required />'},
+                bed: {t: 'Bed', e: '<input upper-case ng-maxlength="3" required />'},
+                why: {e: '<select ng-options="reason as reason group by extra.group for (reason,extra) in reasons" required><option value="" selected>Reason for page</option></select>'},
+                details: {e: '<input placeholder="Specify (optional)" />'},
+                contents: {e: '<textarea required></textarea>'},
+                'private': {t: 'Do not log this page', e: '<input type="checkbox"/>'}
             };
     return {
         restrict: 'E',
         templateUrl: 'forminput.html',
-        require: '^^betterpageMain',
+        require: ['^^betterpageMain','^^betterpageForm']
         scope: {reference:'@'},
         compile: function compile(tElement, tAttrs) {
             var target = tElement.children().children().eq(1),
             reference = tAttrs.reference,
             params = data[reference],
-            el = angular.element(params.e);
-            if (params.p) {el.prop(params.p);}
-            if (params.v) {el.val(params.v);}
-            if (params.a) {el.attr(params.a);}
-            target.append(el.prop('id',reference).addClass('form-control').attr('ng-model','data[reference]'));
-            return function(scope, element, attrs, controller) {
-                scope.data = controller.model.data;
+            target.append(
+                angular.element(params.e)
+                .prop('id',reference)
+                .attr({
+                    name:reference,
+                    'class': 'form-control',
+                    'ng-model':'data[reference]'
+                })
+                .append(params.c)
+            );
+            return function(scope, element, attrs, controllers) {
+                scope.data = controller[0].model.data;
+                scope.reasons = controller[1].reasons;
                 scope.formItem = element.children().children().eq(1).children().controller('ngModel');
                 scope.width = angular.isDefined(attrs.half) ? 1/2 : 1;
                 scope.title = data[attrs.reference].t;
