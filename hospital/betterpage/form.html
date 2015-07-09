@@ -1,5 +1,7 @@
 <form ng-submit="FormCtrl.send()" name="betterform" class="form-horizontal" novalidate>
-    <select name="ptpage" ng-model="PageCtrl.model.data.ptpage" ng-options="value as label for (label,value) in FormCtrl.choices"></select>
+    <div class="row">
+        <form-input reference="ptpage"></form-input>
+    </div>
 
     <fieldset>
         <legend>To</legend>
@@ -8,49 +10,53 @@
         </div>
     </fieldset>
 
-    <fieldset ng-if="PageCtrl.model.data.ptpage">
-        <legend>From</legend>
-        <div class="row">
-            <form-input reference="caller" half></form-input>
-            <form-input reference="phone" half></form-input>
-        </div>
-        <div class="row">
-            <form-input reference="reply" half></form-input>
-            <form-input reference="within" half></form-input>
-        </div>
-    </fieldset>
-
-    <fieldset ng-if="PageCtrl.model.data.ptpage">
-        <legend>Patient</legend>
-        <div class="row">
-            <form-input reference="patient" half></form-input>
-            <form-input reference="nhi" half></form-input>
-        </div>
-        <div class="row">
-            <form-input reference="ward" half></form-input>
-            <form-input reference="bed" half></form-input>
-        </div>
-    </fieldset>
-
-    <fieldset ng-if="PageCtrl.model.data.ptpage">
-        <legend>Details</legend>
-        <div class="row">
-            <form-input reference="why"></form-input>
-        </div>
-        <div class="row">
-            <form-input reference="details"></form-input>
-        </div>
-    </fieldset>
-
-    <fieldset ng-if="!PageCtrl.model.data.ptpage">
-        <legend>Contents</legend>
-        <div class="row">
-            <form-input reference="contents"></form-input>
-        </div>
-        <div class="row">
-            <form-input reference="private"></form-input>
-        </div>
-    </fieldset>
+    <div ng-if="PageCtrl.model.data.ptpage">
+        <fieldset >
+            <legend>From</legend>
+            <div class="row">
+                <form-input reference="caller" half></form-input>
+                <form-input reference="phone" half></form-input>
+            </div>
+            <div class="row">
+                <form-input reference="reply" half></form-input>
+                <form-input reference="within" half></form-input>
+            </div>
+        </fieldset>
+    
+        <fieldset>
+            <legend>Patient</legend>
+            <div class="row">
+                <form-input reference="patient" half></form-input>
+                <form-input reference="nhi" half></form-input>
+            </div>
+            <div class="row">
+                <form-input reference="ward" half></form-input>
+                <form-input reference="bed" half></form-input>
+            </div>
+        </fieldset>
+    
+        <fieldset>
+            <legend>Details</legend>
+            <div class="row">
+                <form-input reference="why"></form-input>
+            </div>
+            <div class="row">
+                <form-input reference="details"></form-input>
+            </div>
+        </fieldset>
+    </div>
+    
+    <div ng-if="!PageCtrl.model.data.ptpage">
+        <fieldset>
+            <legend>Contents</legend>
+            <div class="row">
+                <form-input reference="contents"></form-input>
+            </div>
+            <div class="row">
+                <form-input reference="private"></form-input>
+            </div>
+        </fieldset>
+    </div>
 
     <div class="form-group">
         <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
