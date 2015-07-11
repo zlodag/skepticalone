@@ -77,6 +77,9 @@ angular.module('betterpageMain')
             container = tElement.children().eq(0),
             params = betterpageTextInputs[reference],
             element = container.children().eq(0);
+            if (reference === 'within') {
+                container.attr('ng-show','data.reply');
+            }
             element.prop({
                 type:(reference === 'within' ? 'number' : 'text'),
                 id:reference,
@@ -143,32 +146,15 @@ angular.module('betterpageMain')
     return {
         restrict: 'E',
         templateUrl: 'responseRequired.html',
-        scope: {},
-        compile: function compile(tElement, tAttrs) {
-            var reference = tAttrs.reference,
-            container = tElement.children().eq(0),
-            params = betterpageTextInputs[reference],
-            element = container.children().eq(0);
-            element.prop({
-                type:(reference === 'within' ? 'number' : 'text'),
-                id:reference,
-                required:(reference === 'within' || reference === 'details') ? false : true,
-                placeholder: params.t,
-                })
-            .attr(angular.extend({
-                name:reference,
-                'ng-model':'data.' + reference
-            },params.a));
-            container.prepend(
-                angular.element('<span>').addClass('input-group-addon').append(
-                    angular.element('<span>').addClass('glyphicon glyphicon-' + params.i)
-                )
-            );
-            if ('extra' in params) {
-                container.append(
-                    angular.element('<span>').addClass('input-group-addon').text(params.extra)
-                );
-            }
+        require: '^^betterpageMain',
+        scope:{},
+        link: function(scope, iElement, iAttrs, controller){
+            scope.data = controller.model.data;
+            iElement.find('button').on('click', function(){
+                scope.$apply(function(){
+                    scope.data.reply = !scope.data.reply;
+                });
+            });
         }
     };
 })
