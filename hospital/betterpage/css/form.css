@@ -1,0 +1,2 @@
+input[upper-case]::-webkit-input-placeholder {text-transform: none;}
+input[upper-case]:-ms-input-placeholder {text-transform: none;}

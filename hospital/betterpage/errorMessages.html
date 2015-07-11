@@ -1,0 +1,4 @@
+<div class="help-block has-error" ng-if="formItem.$touched && formItem.$dirty" ng-messages="formItem.$error">
+    <span ng-message="required"><em ng-bind="title"></em> is required</span>
+    <span ng-message="maxlength"><em ng-bind="title"></em> must be 1 to 3 characters long</span>
+</div>
