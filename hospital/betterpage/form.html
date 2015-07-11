@@ -1,65 +1,108 @@
-<form ng-submit="FormCtrl.send()" name="betterform" class="form-horizontal" novalidate>
-    <div class="row">
-        <form-input reference="ptpage"></form-input>
-    </div>
-
-    <fieldset>
-        <legend>To</legend>
-        <div class="row">
-            <form-input reference="no"></form-input>
-        </div>
-    </fieldset>
-
+<form ng-submit="FormCtrl.send()" name="betterform" novalidate>
     <div ng-if="PageCtrl.model.data.ptpage">
-        <fieldset >
-            <legend>From</legend>
-            <div class="row">
-                <form-input reference="caller" half></form-input>
-                <form-input reference="phone" half></form-input>
-            </div>
-            <div class="row">
-                <form-input reference="reply" half></form-input>
-                <form-input reference="within" half></form-input>
-            </div>
-        </fieldset>
-    
-        <fieldset>
-            <legend>Patient</legend>
-            <div class="row">
-                <form-input reference="patient" half></form-input>
-                <form-input reference="nhi" half></form-input>
-            </div>
-            <div class="row">
-                <form-input reference="ward" half></form-input>
-                <form-input reference="bed" half></form-input>
-            </div>
-        </fieldset>
-    
-        <fieldset>
-            <legend>Details</legend>
-            <div class="row">
-                <form-input reference="why"></form-input>
-            </div>
-            <div class="row">
-                <form-input reference="details"></form-input>
-            </div>
-        </fieldset>
     </div>
     
     <div ng-if="!PageCtrl.model.data.ptpage">
-        <fieldset>
-            <legend>Contents</legend>
-            <div class="row">
-                <form-input reference="contents"></form-input>
-            </div>
-            <div class="row">
-                <form-input reference="private"></form-input>
-            </div>
-        </fieldset>
     </div>
 
     <div class="form-group">
         <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
         <button id="reset" type="button" ng-click="FormCtrl.reset()">Reset</button>
+    </div>
+</form>
+
+<h1>BetterPage</h1>
+
+<form ng-submit="FormCtrl.send()" name="betterform" class="form-horizontal" novalidate>
+    <fieldset>
+        <legend>To</legend>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <select-input reference="ptpage"></select-input>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="no"></form-input>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>From</legend>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <text-input reference="caller"></form-input>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="phone"></form-input>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <div class="input-group btn-group">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-earphone"></span>
+                    </span>
+                    <button type="button" class="btn btn-block btn-default">Response required?</button>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="within"></form-input>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Patient</legend>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <text-input reference="patient"></form-input>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="nhi"></form-input>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <text-input reference="ward"></form-input>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="bed"></form-input>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Details</legend>
+        <div class="form-group">
+            <div class="col-xs-6">
+                <select-input reference="why"></select-input>
+            </div>
+            <div class="col-xs-6">
+                <text-input reference="details"></form-input>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Contents</legend>
+        <div class="form-group">
+            <div class="col-xs-12">
+                <text-input reference="contents"></form-input>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group">
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-primary btn-block">Send <span class="glyphicon glyphicon-send"></span>
+
+            </button>
+        </div>
+        <div class="col-xs-4">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" />Do not log this page</label>
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <button type="button" class="btn btn-default btn-block">Reset <span class="glyphicon glyphicon-refresh"></span>
+
+            </button>
+        </div>
     </div>
 </form>

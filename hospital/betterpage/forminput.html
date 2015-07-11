@@ -1,9 +1,0 @@
-<div class="form-group col-sm-{{12 * width}}" ng-class="{'has-error': formItem.$invalid && formItem.$dirty}">
-    <label class="control-label col-sm-{{ 2 / width }}" for="{{reference}}" ng-bind="title"></label>
-    <div class="col-sm-{{ 12 - ( 2 / width) }}">
-    </div>
-    <div class="help-block col-sm-{{12 * width}}" ng-if="formItem.$touched && formItem.$dirty" ng-messages="formItem.$error">
-        <span ng-message="required"><em ng-bind="title"></em> is required</span>
-        <span ng-message="maxlength"><em ng-bind="title"></em> must be 1 to 3 characters long</span>
-    </div>
-</div>

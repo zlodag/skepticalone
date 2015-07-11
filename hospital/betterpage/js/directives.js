@@ -29,10 +29,8 @@ angular.module('betterpageMain')
         link: function(scope, element, attrs, controllers) {
             scope.$watchCollection('PageCtrl.model.data', scope.PageCtrl.update);
         },
-        controller: ['$scope', 'betterpageChoices','betterpageReasons', function($scope, betterpageChoices, betterpageReasons) {
+        controller: ['$scope', function($scope) {
             var FormCtrl = this;
-            FormCtrl.choices = betterpageChoices;
-            FormCtrl.reasons = betterpageReasons;
             FormCtrl.reset = function(){
                 $scope.PageCtrl.model.resetItems();
                 $scope.betterform.$setUntouched();
@@ -55,49 +53,142 @@ angular.module('betterpageMain')
         controllerAs: 'FormCtrl'
     };
 })
+.directive('validLink', function(){
+    return {
+        restrict: 'A',
+        require: ['ngModel','^^betterpageMain'],
+        link: function(scope, iElement, iAttrs, controllers){
+            scope.$watch(function(){
+                return (controllers[0].$invalid && controllers[0].$touched);
+            },function(bool){
+                scope.displayError = bool;
+            })
+            scope.data = controllers[1].model.data;
+        }
+    };
+})
+.directive('textInput', ['betterpageTextInputs', function(betterpageTextInputs) {
+    return {
+        restrict: 'E',
+        templateUrl: 'textInput.html',
+        scope: {reference:'@'},
+        compile: function compile(tElement, tAttrs) {
+            var reference = tAttrs.reference,
+            container = tElement.children().eq(0),
+            params = betterpageTextInputs[reference],
+            element = container.children().eq(0);
+            element.prop({
+                type:(reference === 'within' ? 'number' : 'text'),
+                id:reference,
+                required:(reference === 'within' || reference === 'details') ? false : true,
+                placeholder: params.t,
+                })
+            .attr(angular.extend({
+                name:reference,
+                'ng-model':'data.' + reference
+            },params.a));
+            container.prepend(
+                angular.element('<span>').addClass('input-group-addon').append(
+                    angular.element('<span>').addClass('glyphicon glyphicon-' + params.i)
+                )
+            );
+            if ('extra' in params) {
+                container.append(
+                    angular.element('<span>').addClass('input-group-addon').text(params.extra)
+                );
+            }
+        }
+    };
+}])
+.directive('selectInput', ['betterpageReasons',function(betterpageReasons) {
+    var optionStrings = {
+        ptpage:'bool as label for (label,bool)',
+        why:'reason as reason group by extra.group for (reason,extra)'
+    }
+    return {
+        restrict: 'E',
+        templateUrl: 'selectInput.html',
+        scope: {reference:'@'},
+        compile: function compile(tElement, tAttrs) {
+            var reference = tAttrs.reference,
+            element = tElement.children().children().eq(0);
+            element.prop({
+                id: reference
+            })
+            .attr({
+                name: reference,
+                'ng-model':'data.'+reference,
+                'ng-options': optionStrings[reference] + ' in options'
+            });
+            if (reference === 'why') {
+                element.append(angular.element('<option>').val("").prop('selected',true).text('Reason for page'));
+            }
+            return function(scope, iElement, iAttrs, controllers) {
+                switch(iAttrs.reference) {
+                    case 'ptpage':
+                        scope.options = {
+                            "Page about a patient":true,
+                            "Page about something else":false
+                        };
+                        break;
+                    case 'why':
+                        scope.options = betterpageReasons;
+                        break;
+                }
+            }
+        }
+    };
+}])
+.directive('responseRequiredInput', function() {
+    return {
+        restrict: 'E',
+        templateUrl: 'responseRequired.html',
+        scope: {},
+        compile: function compile(tElement, tAttrs) {
+            var reference = tAttrs.reference,
+            container = tElement.children().eq(0),
+            params = betterpageTextInputs[reference],
+            element = container.children().eq(0);
+            element.prop({
+                type:(reference === 'within' ? 'number' : 'text'),
+                id:reference,
+                required:(reference === 'within' || reference === 'details') ? false : true,
+                placeholder: params.t,
+                })
+            .attr(angular.extend({
+                name:reference,
+                'ng-model':'data.' + reference
+            },params.a));
+            container.prepend(
+                angular.element('<span>').addClass('input-group-addon').append(
+                    angular.element('<span>').addClass('glyphicon glyphicon-' + params.i)
+                )
+            );
+            if ('extra' in params) {
+                container.append(
+                    angular.element('<span>').addClass('input-group-addon').text(params.extra)
+                );
+            }
+        }
+    };
+})
 .directive('formInput', function() {
-    var data = {
-                ptpage: {e: '<select ng-options="value as label for (label,value) in choices"></select>'},
-                no: {t: 'Pager', e: '<input required betterpage-no />'},
-                caller: {t: 'Name', e: '<input title-case ng-minlength="2" required />'},
-                phone: {t: 'Phone', e: '<input ng-pattern="/^[0-9]+$/" required />'},
-                reply: {t: 'Response required?', e: '<input type="checkbox" />'},
-                within: {t: 'within', e: '<input type="number" ng-required="data.reply" min="1" max="99" ng-pattern="/^[0-9]+$/" />'},
-                patient: {t: 'Name', e: '<input title-case ng-minlength="2" required />'},
-                nhi: {t: 'NHI', e: '<input upper-case ng-pattern="/^[A-Z]{3}[0-9]{4}$/" required />'},
-                ward: {t: 'Ward', e: '<input upper-case ng-maxlength="3" required />'},
-                bed: {t: 'Bed', e: '<input upper-case ng-maxlength="3" required />'},
-                why: {e: '<select ng-options="reason as reason group by extra.group for (reason,extra) in reasons" required><option value="" selected>Reason for page</option></select>'},
-                details: {e: '<input placeholder="Specify (optional)" />'},
-                contents: {e: '<textarea required></textarea>'},
-                'private': {t: 'Do not log this page', e: '<input type="checkbox"/>'}
-            };
     return {
         restrict: 'E',
         templateUrl: 'forminput.html',
         require: ['^^betterpageMain','^^betterpageForm'],
         scope: {reference:'@'},
         compile: function compile(tElement, tAttrs) {
-            var target = tElement.children().children().eq(1),
+            var target = tElement.children().eq(0),
             reference = tAttrs.reference,
             params = data[reference];
-            target.append(
-                angular.element(params.e)
-                .prop('id',reference)
-                .attr({
-                    name:reference,
-                    'class': 'form-control',
-                    'ng-model':'data[reference]'
-                })
-                .append(params.c)
-            );
             return function(scope, element, attrs, controllers) {
                 scope.data = controllers[0].model.data;
                 scope.reasons = controllers[1].reasons;
                 scope.choices = controllers[1].choices;
-                scope.formItem = element.children().children().eq(1).children().controller('ngModel');
-                scope.width = angular.isDefined(attrs.half) ? 1/2 : 1;
+                scope.formItem = element.children().children().eq(1).controller('ngModel');
                 scope.title = data[attrs.reference].t;
+                scope.icon = data[attrs.reference].i;
             };
         }
     };

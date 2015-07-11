@@ -113,8 +113,16 @@ angular.module('betterpageMain')
     "Custom":{beep: 1,group: "Other - specify below"}
 })
 .constant('betterpageCharLimit', 128)
-.constant('betterpageChoices', {
-        "Page about a patient":true,
-        "Page about something else":false
-    })
+.constant('betterpageTextInputs',{
+    no: {t: 'Pager', i:'phone', a: {'betterpage-no':''}},
+    caller: {t: 'Name', i:'user', a: {'title-case':'','ng-minlength':2}},
+    phone: {t: 'Phone', i:'phone-alt', a:{'ng-pattern':/^[0-9]+$/}},
+    within: {t: 'within', i:'time', a: {'ng-required':'data.reply', 'ng-pattern':/^[0-9]+$/,min:1,max:99}, extra:'minutes'},
+    patient: {t: 'Name', i:'user', a: {'title-case':'','ng-minlength':2}},
+    nhi: {t: 'NHI', i: 'tag', a: {'upper-case':'','ng-pattern':/^[A-Z]{3}[0-9]{4}$/}},
+    ward: {t: 'Ward', i:'home', a: {'upper-case':'','ng-maxlength':3}},
+    bed: {t: 'Bed', i:'bed', a: {'upper-case':'','ng-maxlength':3}},
+    details: {t: 'Specify (optional)', i: 'comment', a: {}},
+    contents: {t: 'Message', i:'comment', a: {}}
+})
 .constant('betterpageHeaders', ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']);
