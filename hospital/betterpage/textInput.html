@@ -1,3 +1,7 @@
 <div class="input-group" ng-class="{'has-error':displayError}">
+    <span class="input-group-addon">
+        <span class="glyphicon"></span>
+    </span>
     <input class="form-control" valid-link/>
 </div>
+<ng-messages for="error" class="has-error" ng-show="displayError"><ng-messages-include src="errorMessages.html"></ng-messages-include></ng-messages>

@@ -1,4 +1,13 @@
-<div class="help-block has-error" ng-if="formItem.$touched && formItem.$dirty" ng-messages="formItem.$error">
-    <span ng-message="required"><em ng-bind="title"></em> is required</span>
-    <span ng-message="maxlength"><em ng-bind="title"></em> must be 1 to 3 characters long</span>
+<div ng-if="title==='within'">
+    <ng-message class="help-block" when="number,pattern" >This field must contain only digits</ng-message>
+    <ng-message class="help-block" when="required" >This field is required</ng-message>
 </div>
+<ng-message class="help-block" when="required"><em ng-bind="title"></em> is required</ng-message>
+<ng-message class="help-block" when="allNumbers"><em>Pager numbers</em> must be integers separated by spaces</ng-message>
+<ng-message class="help-block" when="pagerNumbers"><em>Pager numbers</em> must be 20 followed by 3 digits</ng-message>
+<ng-message class="help-block" when="minlength"><em>Name</em> must be at least 2 characters long</ng-message>
+<ng-message class="help-block" when="max"><em>Response time</em> must be 30 minutes or less</ng-message>
+<ng-message class="help-block" when="min"><em>Response time</em> must be greater than 0</ng-message>
+<ng-message class="help-block" when="nhi"><em>NHI</em> must be valid</ng-message>
+<ng-message class="help-block" when="maxlength"><em ng-bind="title"></em> must be 1 to 3 characters long</ng-message>
+<ng-message class="help-block" when="pattern"><em ng-bind="title"></em> must contain only digits</ng-message>

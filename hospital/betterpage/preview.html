@@ -1,9 +1,9 @@
 <h4>Preview</h4>
 <dl>
-<dt>{{PageCtrl.model.data.no.length || 'No'}} recipient{{PageCtrl.model.data.no.length !== 1 ? 's' : ''}}</dt>
-<dd ng-repeat="number in PageCtrl.model.data.no track by $index" ng-bind="number"></dd>
+<dt>{{model.data.no.length || 'No'}} recipient{{model.data.no.length !== 1 ? 's' : ''}}</dt>
+<dd ng-repeat="number in model.data.no track by $index" ng-bind="number"></dd>
 <dt>Message</dt>
-<dd><samp ng-bind="PageCtrl.display"></samp></dd>
+<dd><samp ng-bind="display"></samp></dd>
 <dt>Characters</dt>
-<dd ng-bind="PageCtrl.display.length + '/' + PageCtrl.charLimit"></dd>
+<dd ng-bind="display.length + '/' + charLimit"></dd>
 </dl>

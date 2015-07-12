@@ -9,7 +9,7 @@
     .config(
         ['$compileProvider', '$locationProvider',
             function ($compileProvider, $locationProvider) {
-                $compileProvider.debugInfoEnabled(false);
+                $compileProvider.debugInfoEnabled(true);
                 $locationProvider.html5Mode({
                   enabled: true,
                   requireBase: false

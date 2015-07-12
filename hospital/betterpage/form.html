@@ -1,88 +1,47 @@
-<form ng-submit="FormCtrl.send()" name="betterform" novalidate>
-    <div ng-if="PageCtrl.model.data.ptpage">
-    </div>
-    
-    <div ng-if="!PageCtrl.model.data.ptpage">
-    </div>
-
+<fieldset>
+    <legend>To</legend>
     <div class="form-group">
-        <input id="submit" ng-disabled="betterform.$invalid || PageCtrl.overflow" type="submit" value="{{ PageCtrl.overflow ? 'Character limit exceeded' : 'Send' }}" />
-        <button id="reset" type="button" ng-click="FormCtrl.reset()">Reset</button>
+        <select-input reference="ptpage" class="col-xs-6"></select-input>
+        <text-input reference="no" class="col-xs-6"></text-input>
     </div>
-</form>
-
-<h1>BetterPage</h1>
-
-<form ng-submit="FormCtrl.send()" name="betterform" class="form-horizontal" novalidate>
-    <fieldset>
-        <legend>To</legend>
-        <div class="form-group">
-            <div class="col-xs-6">
-                <select-input reference="ptpage"></select-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="no"></form-input>
-            </div>
-        </div>
-    </fieldset>
+</fieldset>
+<div ng-if="model.data.ptpage">
     <fieldset>
         <legend>From</legend>
         <div class="form-group">
-            <div class="col-xs-6">
-                <text-input reference="caller"></form-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="phone"></form-input>
-            </div>
+            <text-input reference="caller" class="col-xs-6"></text-input>
+            <text-input reference="phone" class="col-xs-6"></text-input>
         </div>
         <div class="form-group">
-            <div class="col-xs-6">
-                <response-required-input></response-required-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="within"></form-input>
-            </div>
+            <response-required-input class="col-xs-6"></response-required-input>
+            <text-input reference="within" class="col-xs-6"></text-input>
         </div>
     </fieldset>
     <fieldset>
         <legend>Patient</legend>
         <div class="form-group">
-            <div class="col-xs-6">
-                <text-input reference="patient"></form-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="nhi"></form-input>
-            </div>
+            <text-input reference="patient" class="col-xs-6"></text-input>
+            <text-input reference="nhi" class="col-xs-6"></text-input>
         </div>
         <div class="form-group">
-            <div class="col-xs-6">
-                <text-input reference="ward"></form-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="bed"></form-input>
-            </div>
+            <text-input reference="ward" class="col-xs-6"></text-input>
+            <text-input reference="bed" class="col-xs-6"></text-input>
         </div>
     </fieldset>
     <fieldset>
         <legend>Details</legend>
         <div class="form-group">
-            <div class="col-xs-6">
-                <select-input reference="why"></select-input>
-            </div>
-            <div class="col-xs-6">
-                <text-input reference="details"></form-input>
-            </div>
+            <select-input reference="why" class="col-xs-6"></select-input>
+            <text-input reference="details" class="col-xs-6"></text-input>
         </div>
     </fieldset>
+</div>
+<div ng-if="!model.data.ptpage">
     <fieldset>
         <legend>Contents</legend>
         <div class="form-group">
-            <div class="col-xs-12">
-                <text-input reference="contents"></form-input>
-            </div>
+            <text-input reference="contents" class="col-xs-12"></text-input>
         </div>
     </fieldset>
-    <div class="form-group">
-        <button-panel></button-panel>
-    </div>
-</form>
+</div>
+<button-panel class="form-group"></button-panel>

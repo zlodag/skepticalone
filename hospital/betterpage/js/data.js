@@ -1,5 +1,16 @@
 angular.module('betterpageMain')
-.factory('betterpageModel', ['betterpageParams','betterpageSubmit', 'betterpageReasons',function betterpageModelFactory(betterpageParams,betterpageSubmit,betterpageReasons) {
+.factory('betterpageModel', ['betterpageParams','betterpageReasons','betterpageSubmit',function betterpageModelFactory(betterpageParams,betterpageReasons,betterpageSubmit) {
+        var initialData = {
+            ptpage:true
+        };
+        function resetItems() {
+            this.data = angular.extend({
+                ptpage:this.data.ptpage,
+                no:[],
+                reply:false,
+                private:false
+            },betterpageParams);
+        }
         function generateMsg() {
             var data = this.data;
             if (data.ptpage) {
@@ -14,23 +25,6 @@ angular.module('betterpageMain')
             } else {
                 return data.contents || '';
             }
-        }
-        function resetItems() {
-            var data = this.data;
-            data.no = [];
-            delete data.caller;
-            delete data.phone;
-            data.reply = false;
-            delete data.within;
-            delete data.patient;
-            delete data.nhi;
-            delete data.ward;
-            delete data.bed;
-            delete data.why;
-            delete data.details;
-            data.private = false;
-            delete data.contents;
-            angular.extend(data, betterpageParams);
         }
         function itemize() {
             var params = {
@@ -61,14 +55,11 @@ angular.module('betterpageMain')
             items.bp = items.ptpage ? (betterpageReasons[items.why].beep) : 1;
             return betterpageSubmit(items);
         }
-        var initialData = {
-            ptpage:true
-        };
         var model = {
-            data: angular.copy(initialData),
+            data: initialData,
             resetItems: resetItems,
-            itemize: itemize,
             generateMsg: generateMsg,
+            itemize: itemize,
             send: send
         };
         model.resetItems();
@@ -93,7 +84,7 @@ angular.module('betterpageMain')
             pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
             //Test feature
             if (confirm('Attempt to send this page via the intranet?')) {
-                var popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + items.no + '&msg=' + encodeURIComponent(items.msg), '_blank');
+                var popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + encodeURIComponent(items.no.join(';')) + '&msg=' + encodeURIComponent(items.msg), '_blank');
                 if (!popup) {alert('Please allow popups for this function to succeed');}
             }
             return $http.post(submiturl, items);
@@ -129,13 +120,12 @@ angular.module('betterpageMain')
 .value('betterpageTextInputs',{
     no: {t: 'Pager', i:'phone', a: {'betterpage-no':''}},
     caller: {t: 'Name', i:'user', a: {'title-case':'','ng-minlength':2}},
-    phone: {t: 'Phone', i:'phone-alt', a:{'ng-pattern':/^[0-9]+$/}},
-    within: {t: 'within', i:'time', a: {'ng-required':'data.reply', 'ng-pattern':/^[0-9]+$/,min:1,max:99}, extra:'minutes'},
+    phone: {t: 'Phone', i:'phone-alt', a:{'ng-pattern':/^[0-9]+$/},errors:[]},
+    within: {t: 'within', i:'time', a: {'ng-required':'model.data.reply', 'ng-pattern':/^[0-9]+$/,min:1,max:30}, extra:'minutes',errors:[]},
     patient: {t: 'Name', i:'user', a: {'title-case':'','ng-minlength':2}},
-    nhi: {t: 'NHI', i: 'tag', a: {'upper-case':'','ng-pattern':/^[A-Z]{3}[0-9]{4}$/}},
+    nhi: {t: 'NHI', i: 'tag', a: {'upper-case':'','nhi':''}},
     ward: {t: 'Ward', i:'home', a: {'upper-case':'','ng-maxlength':3}},
     bed: {t: 'Bed', i:'bed', a: {'upper-case':'','ng-maxlength':3}},
     details: {t: 'Specify (optional)', i: 'comment', a: {}},
     contents: {t: 'Message', i:'comment', a: {}}
-})
-.value('betterpageHeaders', ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']);
+});

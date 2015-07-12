@@ -1,12 +1,12 @@
 <div class="col-xs-4">
-    <button type="button" class="btn btn-primary btn-block">
-        Send <span class="glyphicon glyphicon-send"></span>
+    <button type="button" class="btn btn-primary btn-block" ng-if="showSend()" ng-disabled="overflow()" ng-click="send()">
+        <span ng-bind="overflow() ? 'Too long!' : 'Send'"></span> <span ng-show="canSend" class="glyphicon glyphicon-send"></span>
     </button>
 </div>
 <div class="col-xs-4">
-    <div class="checkbox">
+    <div class="checkbox" ng-hide="model.data.ptpage">
         <label>
-            <input type="checkbox" />Do not log this page</label>
+            <input type="checkbox" ng-model="model.data.private"/>Do not log this page</label>
     </div>
 </div>
 <div class="col-xs-4">

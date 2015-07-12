@@ -1,51 +1,37 @@
 angular.module('betterpageMain')
-.directive('betterpageMain', function() {
-    return {
-        restrict: 'A',
-        require:'betterpageMain',
-        link: function(scope, element, attrs, controller) {
-            scope.$watchCollection(function(){return controller.model.data;}, function(){
-                var items = controller.model.itemize();
-                controller.display = items.msg;
-                controller.overflow = (items.msg.length > controller.charLimit);
-            });
-        },
-        controller: ['betterpageModel','betterpageCharLimit',function(betterpageModel,betterpageCharLimit) {
-            this.model = betterpageModel;
-            this.display = '';
-            this.charLimit = betterpageCharLimit;
-            this.prevpage = {
-                no: [],
-                msg: '',
-                bp: null,
-                private: null
-            };
-        }],
-        controllerAs: 'PageCtrl'
-    };
-})
 .directive('betterpageForm', function() {
     return {
         restrict: 'E',
-        templateUrl: 'form.html'
+        templateUrl: 'form.html',
+        controller: ['$scope','betterpageModel','betterpageCharLimit',function($scope,betterpageModel,betterpageCharLimit){
+            $scope.model = betterpageModel;
+            $scope.charLimit = betterpageCharLimit;
+        }],
+        link: function(scope, iElement, iAttrs){
+            scope.$watchCollection('model.data',function(){
+                scope.display = scope.model.generateMsg();
+            });
+        },
     };
 })
 .directive('buttonPanel', function(){
     return {
         restrict: 'E',
         templateUrl: 'buttonPanel.html',
-        require: ['^^form','^^betterpageMain'],
-        link: function(scope, iElement, iAttrs, controllers){
-            var Form = controllers[0], PageCtrl = controllers[1];
+        require:'^^form',
+        scope:true,
+        link: function(scope, iElement, iAttrs, formCtrl){
+            scope.showSend = function(){return formCtrl.$valid;};
+            scope.overflow = function(){return (scope.display.length > scope.charLimit)};
             scope.reset = function(){
-                PageCtrl.model.resetItems();
-                //Form.$setUntouched();
-                //Form.$setPristine();
+                scope.model.resetItems();
+                formCtrl.$setUntouched();
+                formCtrl.$setPristine();
             };
             scope.send = function(){
-                PageCtrl.model.send().success(function(data, status, headers, config) {
+                scope.model.send().success(function(data, status, headers, config) {
                     if (data.ok) {
-                        PageCtrl.prevpage = config.data;
+                        scope.model.prevpage = config.data;
                         scope.reset();
                         /*
                         if (config.data.ptpage) {
@@ -55,21 +41,18 @@ angular.module('betterpageMain')
                     }
                 });
             };
-
         }
     };
 })
 .directive('validLink', ['betterpageModel',function(betterpageModel){
     return {
         restrict: 'A',
-        require: ['ngModel','^^betterpageMain'],
-        link: function(scope, iElement, iAttrs, controllers){
-            scope.$watch(function(){
-                return (controllers[0].$invalid && controllers[0].$touched);
-            },function(bool){
+        require: 'ngModel',
+        link: function(scope, iElement, iAttrs, ngModel){
+            scope.error = ngModel.$error;
+            scope.$watch(function(){return(ngModel.$invalid && ngModel.$touched);},function(bool){
                 scope.displayError = bool;
             })
-            scope.data = controllers[1].model.data;
         }
     };
 }])
@@ -77,16 +60,15 @@ angular.module('betterpageMain')
     return {
         restrict: 'E',
         templateUrl: 'textInput.html',
-        scope: {reference:'@'},
-        compile: function compile(tElement, tAttrs) {
+        scope: true,
+        compile: function (tElement, tAttrs) {
             var reference = tAttrs.reference,
             container = tElement.children().eq(0),
-            params = betterpageTextInputs[reference],
-            element = container.children().eq(0);
-            if (reference === 'within') {
-                container.attr('ng-show','data.reply');
-            }
-            element.prop({
+            params = betterpageTextInputs[reference];
+            if (reference === 'within') {container.attr('ng-show','model.data.reply');}
+            container.children().eq(0).children().addClass('glyphicon-' + params.i);
+            container.children().eq(1)
+            .prop({
                 type:(reference === 'within' ? 'number' : 'text'),
                 id:reference,
                 required:(reference === 'within' || reference === 'details') ? false : true,
@@ -94,18 +76,12 @@ angular.module('betterpageMain')
                 })
             .attr(angular.extend({
                 name:reference,
-                'ng-model':'data.' + reference
+                'ng-model':'model.data.' + reference
             },params.a));
-            container.prepend(
-                angular.element('<span>').addClass('input-group-addon').append(
-                    angular.element('<span>').addClass('glyphicon glyphicon-' + params.i)
-                )
-            );
-            if ('extra' in params) {
-                container.append(
-                    angular.element('<span>').addClass('input-group-addon').text(params.extra)
-                );
-            }
+            if ('extra' in params) {container.append(angular.element('<span>').addClass('input-group-addon').text(params.extra));}
+            return function(scope, iElement, iAttrs){
+                scope.title = params.t;
+            };
         }
     };
 }])
@@ -117,8 +93,8 @@ angular.module('betterpageMain')
     return {
         restrict: 'E',
         templateUrl: 'selectInput.html',
-        scope: {reference:'@'},
-        compile: function compile(tElement, tAttrs) {
+        scope: true,
+        compile: function (tElement, tAttrs) {
             var reference = tAttrs.reference,
             element = tElement.children().children().eq(0);
             element.prop({
@@ -126,13 +102,13 @@ angular.module('betterpageMain')
             })
             .attr({
                 name: reference,
-                'ng-model':'data.'+reference,
+                'ng-model':'model.data.'+reference,
                 'ng-options': optionStrings[reference] + ' in options'
             });
             if (reference === 'why') {
                 element.append(angular.element('<option>').val("").prop('selected',true).text('Reason for page'));
             }
-            return function(scope, iElement, iAttrs, controllers) {
+            return function(scope, iElement, iAttrs) {
                 switch(iAttrs.reference) {
                     case 'ptpage':
                         scope.options = {
@@ -151,38 +127,7 @@ angular.module('betterpageMain')
 .directive('responseRequiredInput', function() {
     return {
         restrict: 'E',
-        templateUrl: 'responseRequired.html',
-        require: '^^betterpageMain',
-        scope:{},
-        link: function(scope, iElement, iAttrs, controller){
-            scope.data = controller.model.data;
-            iElement.find('button').on('click', function(){
-                scope.$apply(function(){
-                    scope.data.reply = !scope.data.reply;
-                });
-            });
-        }
-    };
-})
-.directive('formInput', function() {
-    return {
-        restrict: 'E',
-        templateUrl: 'forminput.html',
-        require: ['^^betterpageMain','^^betterpageForm'],
-        scope: {reference:'@',width:'='},
-        compile: function compile(tElement, tAttrs) {
-            var target = tElement.children().eq(0),
-            reference = tAttrs.reference,
-            params = data[reference];
-            return function(scope, element, attrs, controllers) {
-                scope.data = controllers[0].model.data;
-                scope.reasons = controllers[1].reasons;
-                scope.choices = controllers[1].choices;
-                scope.formItem = element.children().children().eq(1).controller('ngModel');
-                scope.title = data[attrs.reference].t;
-                scope.icon = data[attrs.reference].i;
-            };
-        }
+        templateUrl: 'responseRequired.html'
     };
 })
 .directive('betterpagePreview', function() {
@@ -191,17 +136,18 @@ angular.module('betterpageMain')
         templateUrl: 'preview.html'
     };
 })
-.directive('betterpageOutcome', function() {
+.directive('betterpageOutcome', ['betterpageCharLimit',function(betterpageCharLimit) {
     return {
         restrict: 'E',
         templateUrl: 'outcome.html'
     };
-})
-.directive('betterpageLog', function() {
+}])
+.directive('betterpageLog',function() {
     return {
         restrict: 'E',
         templateUrl: 'pagelog.html',
-        controller: ['$http', 'betterpageModel','betterpageHeaders',function($http, betterpageModel, betterpageHeaders) {
+        scope: {},
+        controller: ['$http', 'betterpageModel',function($http, betterpageModel) {
             var LogCtrl = this;
             LogCtrl.reset = function() {
                 LogCtrl.rows = [];
@@ -233,7 +179,6 @@ angular.module('betterpageMain')
                 betterpageModel.data = data;
                 LogCtrl.active = false;
             };
-            LogCtrl.headers = betterpageHeaders;
         }],
         controllerAs: 'LogCtrl'
     };
@@ -244,7 +189,7 @@ angular.module('betterpageMain')
         require: 'ngModel',
         link: function(scope, element, attrs, controller) {
             controller.$formatters = [function(value){
-                return value.join(' ');
+                if(value) {return value.join(' ');}
             }];
             controller.$parsers.push(function(viewValue) {
                 var list = [];
@@ -300,6 +245,17 @@ angular.module('betterpageMain')
             controller.$parsers.push(function(str) {
                 return str.toUpperCase();
             });
+        }
+    };
+})
+.directive('nhi', function() {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, element, attrs, controller) {
+            controller.$validators.nhi = function(modelValue) {
+                return controller.$isEmpty(modelValue) || /^[A-Z]{3}[0-9]{4}$/.test(modelValue);
+            };
         }
     };
 });

@@ -5,30 +5,23 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>BetterPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-messages.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-messages.min.js"></script>
         <script src="js/betterpage.js"></script>
         <script src="js/data.js"></script>
         <script src="js/directives.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/form.css" />
     </head>
-    <body ng-app="betterpageMain" betterpage-main>
+    <body ng-app="betterpageMain">
         <div class="container">
-            <h2>BetterPage</h2>
-            <pre ng-bind="PageCtrl.model.data | json"></pre>
+            <h1>BetterPage</h1>
             <div class="row">
-                <div class="col-sm-6">
-                    <betterpage-form></betterpage-form>
-                </div>
-                <div class="col-sm-3">
-                    <betterpage-preview></betterpage-preview>
-                </div>
-                <div class="col-sm-3">
-                    <betterpage-outcome ng-if="PageCtrl.prevpage.msg"></betterpage-outcome>
-                </div>
+                <betterpage-form class="col-sm-6 form-horizontal" ng-form></betterpage-form>
+                <betterpage-preview class="col-sm-3"></betterpage-preview>
+                <betterpage-outcome ng-if="model.prevpage" class="col-sm-3"></betterpage-outcome>
             </div>
-            <betterpage-log></betterpage-log>
+            <betterpage-log class="form-inline"></betterpage-log>
         </div>
     </body>
 </html>
