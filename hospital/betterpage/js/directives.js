@@ -2,17 +2,19 @@ angular.module('betterpageMain')
 .directive('betterpageMain', function() {
     return {
         restrict: 'A',
+        require:'betterpageMain',
+        link: function(scope, element, attrs, controller) {
+            scope.$watchCollection(function(){return controller.model.data;}, function(){
+                var items = controller.model.itemize();
+                controller.display = items.msg;
+                controller.overflow = (items.msg.length > controller.charLimit);
+            });
+        },
         controller: ['betterpageModel','betterpageCharLimit',function(betterpageModel,betterpageCharLimit) {
-            var PageCtrl = this;
-            PageCtrl.model = betterpageModel;
-            PageCtrl.display = '';
-            PageCtrl.charLimit = betterpageCharLimit;
-            PageCtrl.update = function(){
-                var items = PageCtrl.model.itemize();
-                PageCtrl.display = items.msg;
-                PageCtrl.overflow = (items.msg.length > PageCtrl.charLimit);
-            };
-            PageCtrl.prevpage = {
+            this.model = betterpageModel;
+            this.display = '';
+            this.charLimit = betterpageCharLimit;
+            this.prevpage = {
                 no: [],
                 msg: '',
                 bp: null,
@@ -25,22 +27,26 @@ angular.module('betterpageMain')
 .directive('betterpageForm', function() {
     return {
         restrict: 'E',
-        templateUrl: 'form.html',
-        link: function(scope, element, attrs, controllers) {
-            scope.$watchCollection('PageCtrl.model.data', scope.PageCtrl.update);
-        },
-        controller: ['$scope', function($scope) {
-            var FormCtrl = this;
-            FormCtrl.reset = function(){
-                $scope.PageCtrl.model.resetItems();
-                $scope.betterform.$setUntouched();
-                $scope.betterform.$setPristine();
+        templateUrl: 'form.html'
+    };
+})
+.directive('buttonPanel', function(){
+    return {
+        restrict: 'E',
+        templateUrl: 'buttonPanel.html',
+        require: ['^^form','^^betterpageMain'],
+        link: function(scope, iElement, iAttrs, controllers){
+            var Form = controllers[0], PageCtrl = controllers[1];
+            scope.reset = function(){
+                PageCtrl.model.resetItems();
+                //Form.$setUntouched();
+                //Form.$setPristine();
             };
-            FormCtrl.send = function(){
-                $scope.PageCtrl.model.send().success(function(data, status, headers, config) {
+            scope.send = function(){
+                PageCtrl.model.send().success(function(data, status, headers, config) {
                     if (data.ok) {
-                        $scope.PageCtrl.prevpage = config.data;
-                        FormCtrl.reset();
+                        PageCtrl.prevpage = config.data;
+                        scope.reset();
                         /*
                         if (config.data.ptpage) {
                             alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
@@ -49,11 +55,11 @@ angular.module('betterpageMain')
                     }
                 });
             };
-        }],
-        controllerAs: 'FormCtrl'
+
+        }
     };
 })
-.directive('validLink', function(){
+.directive('validLink', ['betterpageModel',function(betterpageModel){
     return {
         restrict: 'A',
         require: ['ngModel','^^betterpageMain'],
@@ -66,7 +72,7 @@ angular.module('betterpageMain')
             scope.data = controllers[1].model.data;
         }
     };
-})
+}])
 .directive('textInput', ['betterpageTextInputs', function(betterpageTextInputs) {
     return {
         restrict: 'E',
@@ -163,7 +169,7 @@ angular.module('betterpageMain')
         restrict: 'E',
         templateUrl: 'forminput.html',
         require: ['^^betterpageMain','^^betterpageForm'],
-        scope: {reference:'@'},
+        scope: {reference:'@',width:'='},
         compile: function compile(tElement, tAttrs) {
             var target = tElement.children().eq(0),
             reference = tAttrs.reference,

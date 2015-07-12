@@ -16,11 +16,21 @@ angular.module('betterpageMain')
             }
         }
         function resetItems() {
-            this.data = angular.extend({
-                reply: false,
-                private: false,
-                ptpage: this.data.ptpage
-            }, betterpageParams);
+            var data = this.data;
+            data.no = [];
+            delete data.caller;
+            delete data.phone;
+            data.reply = false;
+            delete data.within;
+            delete data.patient;
+            delete data.nhi;
+            delete data.ward;
+            delete data.bed;
+            delete data.why;
+            delete data.details;
+            data.private = false;
+            delete data.contents;
+            angular.extend(data, betterpageParams);
         }
         function itemize() {
             var params = {
@@ -51,8 +61,11 @@ angular.module('betterpageMain')
             items.bp = items.ptpage ? (betterpageReasons[items.why].beep) : 1;
             return betterpageSubmit(items);
         }
+        var initialData = {
+            ptpage:true
+        };
         var model = {
-            data: {ptpage:true},
+            data: angular.copy(initialData),
             resetItems: resetItems,
             itemize: itemize,
             generateMsg: generateMsg,
@@ -86,7 +99,7 @@ angular.module('betterpageMain')
             return $http.post(submiturl, items);
         };
 }])
-.constant('betterpageReasons', {
+.value('betterpageReasons', {
     // 1: no clinical concern, 2: low 3: medium 4: high priority concern
     "ADDS 3":{beep: 2,group: "High ADDS - specify why"}, 
     "ADDS 4":{beep: 3,group: "High ADDS - specify why"}, 
@@ -112,8 +125,8 @@ angular.module('betterpageMain')
     "Review urgently!":{beep: 4,group: "Other - specify below"}, 
     "Custom":{beep: 1,group: "Other - specify below"}
 })
-.constant('betterpageCharLimit', 128)
-.constant('betterpageTextInputs',{
+.value('betterpageCharLimit', 128)
+.value('betterpageTextInputs',{
     no: {t: 'Pager', i:'phone', a: {'betterpage-no':''}},
     caller: {t: 'Name', i:'user', a: {'title-case':'','ng-minlength':2}},
     phone: {t: 'Phone', i:'phone-alt', a:{'ng-pattern':/^[0-9]+$/}},
@@ -125,4 +138,4 @@ angular.module('betterpageMain')
     details: {t: 'Specify (optional)', i: 'comment', a: {}},
     contents: {t: 'Message', i:'comment', a: {}}
 })
-.constant('betterpageHeaders', ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']);
+.value('betterpageHeaders', ['Timestamp','To','Caller','Phone','Within (mins)','Patient','NHI','Ward','Bed','Why','Details','']);

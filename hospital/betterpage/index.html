@@ -16,6 +16,7 @@
     <body ng-app="betterpageMain" betterpage-main>
         <div class="container">
             <h2>BetterPage</h2>
+            <pre ng-bind="PageCtrl.model.data | json"></pre>
             <div class="row">
                 <div class="col-sm-6">
                     <betterpage-form></betterpage-form>
