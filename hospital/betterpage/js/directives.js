@@ -215,7 +215,7 @@ angular.module('betterpageMain')
                 if (angular.isUndefined(modelValue)) {return;}
                 for (var i=0;i<modelValue.length;i++) {
                     var value = modelValue[i];
-                    if (typeof value !== 'number' || value < 20000 || value >= 30000) {return false;}
+                    if (typeof value !== 'number' || value < 20000 || value >= 21000) {return false;}
                 }
                 return true;
             };
