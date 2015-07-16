@@ -1,32 +1,29 @@
-angular.module('betterpageMain')
+angular.module('betterpage')
+.controller('betterpageController',['$scope','betterpageModel',function($scope,betterpageModel){
+    $scope.model = betterpageModel;
+    $scope.$watchCollection('model.data',function(){
+        $scope.model.generateMsg();
+    });
+}])
 .directive('betterpageForm', function() {
     return {
         restrict: 'E',
-        templateUrl: 'form.html',
-        controller: ['$scope','betterpageModel','betterpageCharLimit',function($scope,betterpageModel,betterpageCharLimit){
-            $scope.model = betterpageModel;
-            $scope.charLimit = betterpageCharLimit;
-        }],
-        link: function(scope, iElement, iAttrs){
-            scope.$watchCollection('model.data',function(){
-                scope.display = scope.model.generateMsg();
-            });
-        },
+        templateUrl: 'form.html'
     };
 })
-.directive('buttonPanel', function(){
+.directive('buttonPanel', ['betterpageCharLimit',function(betterpageCharLimit){
     return {
         restrict: 'E',
         templateUrl: 'buttonPanel.html',
         require:'^^form',
         scope:true,
-        link: function(scope, iElement, iAttrs, formCtrl){
-            scope.showSend = function(){return formCtrl.$valid;};
-            scope.overflow = function(){return (scope.display.length > scope.charLimit)};
+        link: function(scope, iElement, iAttrs, form){
+            scope.showSend = function(){return form.$valid;};
+            scope.overflow = function(){return (scope.model.msg.length > betterpageCharLimit)};
             scope.reset = function(){
                 scope.model.resetItems();
-                formCtrl.$setUntouched();
-                formCtrl.$setPristine();
+                form.$setUntouched();
+                form.$setPristine();
             };
             scope.send = function(){
                 scope.model.send().success(function(data, status, headers, config) {
@@ -43,105 +40,115 @@ angular.module('betterpageMain')
             };
         }
     };
-})
-.directive('validLink', ['betterpageModel',function(betterpageModel){
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function(scope, iElement, iAttrs, ngModel){
-            scope.error = ngModel.$error;
-            scope.$watch(function(){return(ngModel.$invalid && ngModel.$touched);},function(bool){
-                scope.displayError = bool;
-            })
-        }
-    };
 }])
-.directive('textInput', ['betterpageTextInputs', function(betterpageTextInputs) {
+.directive('customInput', ['betterpageCustomInputs','betterpageReasons', function(betterpageCustomInputs,betterpageReasons) {
     return {
         restrict: 'E',
-        templateUrl: 'textInput.html',
         scope: true,
         compile: function (tElement, tAttrs) {
             var reference = tAttrs.reference,
-            container = tElement.children().eq(0),
-            params = betterpageTextInputs[reference];
-            if (reference === 'within') {container.attr('ng-show','model.data.reply');}
-            container.children().eq(0).children().addClass('glyphicon-' + params.i);
-            container.children().eq(1)
-            .prop({
-                type:(reference === 'within' ? 'number' : 'text'),
-                id:reference,
-                required:(reference === 'within' || reference === 'details') ? false : true,
-                placeholder: params.t,
+            params = betterpageCustomInputs[reference],
+            container, input;
+            tElement.addClass('form-group');
+            switch(params.type) {
+                case 'text':
+                    container = angular.element('<div>');
+                    tElement.append(container);
+                    container.addClass('input-group').append(
+                        angular.element('<span>').addClass('input-group-addon').append(
+                            angular.element('<span>').addClass('glyphicon glyphicon-' + params.icon)
+                        )
+                    );
+                    if (reference === 'respond') {
+                        container.addClass('btn-group');
+                        input = '<button type="button" class="btn btn-block btn-default" ng-class="{active: model.data.reply}" ng-click="model.data.reply = !model.data.reply">Response required?</button>';
+                    } else {
+                        input = angular.element('<input>')
+                        .prop({
+                            type:'text',
+                            placeholder: params.title,
+                            })
+                        .attr(params.attr);
+                    }
+                    break;
+                case 'select':
+                    container = tElement;
+                    var optionStrings = {
+                        ptpage:'bool as label for (label,bool)',
+                        why:'reason as reason group by extra.group for (reason,extra)'
+                    };
+                    input = angular.element('<select>').attr('ng-options',optionStrings[reference] + ' in options');
+                    if (reference === 'why') {
+                        input.append('<option value="" selected>Reason for page</option>');
+                    }
+                    break;
+            }
+            container.append(input);
+            if (reference === 'within') {
+                input.prop('type','number');
+                container
+                    .attr('ng-show','model.data.reply')
+                    .append('<span class="input-group-addon">within</span>');
+            }
+            if (reference !== 'respond') {
+                input.prop({
+                    id:reference,
+                    required:(reference === 'within' || reference === 'details') ? false : true,
                 })
-            .attr(angular.extend({
-                name:reference,
-                'ng-model':'model.data.' + reference
-            },params.a));
-            if ('extra' in params) {container.append(angular.element('<span>').addClass('input-group-addon').text(params.extra));}
-            return function(scope, iElement, iAttrs){
-                scope.title = params.t;
-            };
+                .attr({
+                    name:reference,
+                    'ng-model':'model.data.' + reference,
+                    'class':'form-control'
+                });
+                var messages = angular.element('<ng-messages>').attr({for:'error','ng-show':'hasError'}).append(
+                    angular.element('<ng-messages-include>').attr('src','errorMessages.html')
+                );
+                tElement.append(messages);
+                return function(scope, iElement, iAttrs){
+                    var reference = iAttrs.reference,
+                    formRef = scope.form[reference];
+                    scope.title = params.title;
+                    scope.error = formRef.$error;
+                    scope.reference = reference;
+                    scope.$watch(function(){
+                        return(formRef.$invalid && formRef.$touched);
+                    },function(bool){
+                        scope.hasError = bool;
+                        if (bool) {iAttrs.$addClass('has-error');}
+                        else {iAttrs.$removeClass('has-error');}
+                    });
+                    switch(reference) {
+                        case 'ptpage':
+                            scope.options = {
+                                "Page about a patient":true,
+                                "Page about something else":false
+                            };
+                            break;
+                        case 'why':
+                            scope.options = betterpageReasons;
+                            break;
+                    }
+                };
+            }
         }
     };
 }])
-.directive('selectInput', ['betterpageReasons',function(betterpageReasons) {
-    var optionStrings = {
-        ptpage:'bool as label for (label,bool)',
-        why:'reason as reason group by extra.group for (reason,extra)'
-    }
+.directive('betterpagePreview', ['betterpageCharLimit',function(betterpageCharLimit) {
     return {
         restrict: 'E',
-        templateUrl: 'selectInput.html',
+        templateUrl: 'preview.html',
         scope: true,
-        compile: function (tElement, tAttrs) {
-            var reference = tAttrs.reference,
-            element = tElement.children().children().eq(0);
-            element.prop({
-                id: reference
-            })
-            .attr({
-                name: reference,
-                'ng-model':'model.data.'+reference,
-                'ng-options': optionStrings[reference] + ' in options'
-            });
-            if (reference === 'why') {
-                element.append(angular.element('<option>').val("").prop('selected',true).text('Reason for page'));
-            }
-            return function(scope, iElement, iAttrs) {
-                switch(iAttrs.reference) {
-                    case 'ptpage':
-                        scope.options = {
-                            "Page about a patient":true,
-                            "Page about something else":false
-                        };
-                        break;
-                    case 'why':
-                        scope.options = betterpageReasons;
-                        break;
-                }
-            }
+        link: function(scope) {
+            scope.charLimit = betterpageCharLimit;
         }
     };
 }])
-.directive('responseRequiredInput', function() {
-    return {
-        restrict: 'E',
-        templateUrl: 'responseRequired.html'
-    };
-})
-.directive('betterpagePreview', function() {
-    return {
-        restrict: 'E',
-        templateUrl: 'preview.html'
-    };
-})
-.directive('betterpageOutcome', ['betterpageCharLimit',function(betterpageCharLimit) {
+.directive('betterpageOutcome', function() {
     return {
         restrict: 'E',
         templateUrl: 'outcome.html'
     };
-}])
+})
 .directive('betterpageLog',function() {
     return {
         restrict: 'E',
@@ -215,7 +222,7 @@ angular.module('betterpageMain')
                 if (angular.isUndefined(modelValue)) {return;}
                 for (var i=0;i<modelValue.length;i++) {
                     var value = modelValue[i];
-                    if (typeof value !== 'number' || value < 20000 || value >= 30000) {return false;}
+                    if (typeof value !== 'number' || value < 20000 || value >= 21000) {return false;}
                 }
                 return true;
             };

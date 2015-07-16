@@ -1,47 +1,45 @@
 <fieldset>
     <legend>To</legend>
-    <div class="form-group">
-        <select-input reference="ptpage" class="col-xs-6"></select-input>
-        <text-input reference="no" class="col-xs-6"></text-input>
+    <div class="row">
+        <custom-input reference="no" class="col-sm-6"></custom-input>
+        <custom-input reference="ptpage" class="col-sm-6"></custom-input>
     </div>
 </fieldset>
 <div ng-if="model.data.ptpage">
     <fieldset>
         <legend>From</legend>
-        <div class="form-group">
-            <text-input reference="caller" class="col-xs-6"></text-input>
-            <text-input reference="phone" class="col-xs-6"></text-input>
+        <div class="row">
+            <custom-input reference="caller" class="col-sm-6"></custom-input>
+            <custom-input reference="phone" class="col-sm-6"></custom-input>
         </div>
-        <div class="form-group">
-            <response-required-input class="col-xs-6"></response-required-input>
-            <text-input reference="within" class="col-xs-6"></text-input>
+        <div class="row">
+            <custom-input reference="respond" class="col-sm-6"></custom-input>
+            <custom-input reference="within" class="col-sm-6"></custom-input>
         </div>
     </fieldset>
     <fieldset>
         <legend>Patient</legend>
-        <div class="form-group">
-            <text-input reference="patient" class="col-xs-6"></text-input>
-            <text-input reference="nhi" class="col-xs-6"></text-input>
+        <div class="row">
+            <custom-input reference="patient" class="col-sm-6"></custom-input>
+            <custom-input reference="nhi" class="col-sm-6"></custom-input>
         </div>
-        <div class="form-group">
-            <text-input reference="ward" class="col-xs-6"></text-input>
-            <text-input reference="bed" class="col-xs-6"></text-input>
+        <div class="row">
+            <custom-input reference="ward" class="col-sm-6"></custom-input>
+            <custom-input reference="bed" class="col-sm-6"></custom-input>
         </div>
     </fieldset>
     <fieldset>
         <legend>Details</legend>
-        <div class="form-group">
-            <select-input reference="why" class="col-xs-6"></select-input>
-            <text-input reference="details" class="col-xs-6"></text-input>
+        <div class="row">
+            <custom-input reference="why" class="col-sm-6"></custom-input>
+            <custom-input reference="details" class="col-sm-6"></custom-input>
         </div>
     </fieldset>
 </div>
 <div ng-if="!model.data.ptpage">
     <fieldset>
         <legend>Contents</legend>
-        <div class="form-group">
-            <text-input reference="contents" class="col-xs-12"></text-input>
-        </div>
+        <custom-input reference="contents"></custom-input>
     </fieldset>
 </div>
-<button-panel class="form-group"></button-panel>
+<button-panel class="row form-group"></button-panel>
