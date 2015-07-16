@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <title>BetterPage</title>
         <link rel="icon" type="image/x-icon" href="favicon.ico">
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
@@ -11,17 +11,17 @@
         <script src="js/data.js"></script>
         <script src="js/directives.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="css/form.css" />
+        <link rel="stylesheet" type="text/css" href="css/betterpage.css" />
     </head>
-    <body ng-app="betterpageMain">
-        <div class="container">
-            <h1>BetterPage</h1>
+    <body ng-app="betterpage">
+        <div class="container-fluid" ng-controller="betterpageController">
+            <h2>BetterPage</h2>
             <div class="row">
-                <betterpage-form class="col-md-6" ng-form></betterpage-form>
-                <betterpage-preview class="col-md-3"></betterpage-preview>
-                <betterpage-outcome ng-if="model.prevpage" class="col-md-3"></betterpage-outcome>
+                <betterpage-form class="col-sm-8" ng-form name="form"></betterpage-form>
+                <betterpage-preview class="col-sm-4 bg-info"></betterpage-preview>
+                <betterpage-outcome ng-if="model.prevpage" class="col-sm-4 bg-success"></betterpage-outcome>
             </div>
-            <betterpage-log class="form-inline"></betterpage-log>
+            <betterpage-log></betterpage-log>
         </div>
     </body>
 </html>

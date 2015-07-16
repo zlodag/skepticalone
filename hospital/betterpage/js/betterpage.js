@@ -1,11 +1,11 @@
 /**
- * @license BetterPage v1.0.0
+ * @license BetterPage v1.1.0
  * (c) 2015 Edward Ganly & Thomas Wong
  * 
  */
 (function() {
     "use strict";
-    angular.module('betterpageMain', ['ngMessages'])
+    angular.module('betterpage', ['ngMessages'])
     .config(
         ['$compileProvider', '$locationProvider',
             function ($compileProvider, $locationProvider) {

@@ -1,7 +1,8 @@
-<div ng-if="title==='within'">
+<div ng-if="reference==='within'">
     <ng-message class="help-block" when="number,pattern" >This field must contain only digits</ng-message>
     <ng-message class="help-block" when="required" >This field is required</ng-message>
 </div>
+<ng-message ng-if="reference==='why'" class="help-block" when="required"><em>Reason for page</em> is required</ng-message>
 <ng-message class="help-block" when="required"><em ng-bind="title"></em> is required</ng-message>
 <ng-message class="help-block" when="allNumbers"><em>Pager numbers</em> must be integers separated by spaces</ng-message>
 <ng-message class="help-block" when="pagerNumbers"><em>Pager numbers</em> must be 20 followed by 3 digits</ng-message>

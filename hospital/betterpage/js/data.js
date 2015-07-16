@@ -1,4 +1,4 @@
-angular.module('betterpageMain')
+angular.module('betterpage')
 .factory('betterpageModel', ['betterpageParams','betterpageReasons','betterpageSubmit',function betterpageModelFactory(betterpageParams,betterpageReasons,betterpageSubmit) {
         var initialData = {
             ptpage:true
@@ -14,7 +14,7 @@ angular.module('betterpageMain')
         function generateMsg() {
             var data = this.data;
             if (data.ptpage) {
-                return (data.phone || "") + 
+                this.msg = (data.phone || "") + 
                 (data.reply && data.within ? "<" + data.within + "m" : "") + 
                 (data.caller ? "(" + data.caller + ")" : "") + 
                 (data.nhi ? " " + data.nhi : "") + 
@@ -22,15 +22,19 @@ angular.module('betterpageMain')
                 ((data.ward || data.bed) ? "[" + (data.ward || "") + "-" + (data.bed || "") + "]" : "") + 
                 (data.why ? " " + data.why : "") + 
                 (data.details ? " (" + data.details + ")" : "");
+                this.bp = data.why ? betterpageReasons[data.why].beep : 1;
             } else {
-                return data.contents || '';
+                this.msg = data.contents || '';
+                this.bp = 1;
             }
         }
         function itemize() {
+            this.generateMsg();
             var params = {
                 no: this.data.no,
                 ptpage: this.data.ptpage,
-                msg: this.generateMsg()
+                msg: this.msg,
+                bp: this.bp,
             };
             if (this.data.ptpage) {
                 params.phone = this.data.phone;
@@ -51,9 +55,7 @@ angular.module('betterpageMain')
             return params;
         }
         function send() {
-            var items = this.itemize();
-            items.bp = items.ptpage ? (betterpageReasons[items.why].beep) : 1;
-            return betterpageSubmit(items);
+            return betterpageSubmit(this.itemize());
         }
         var model = {
             data: initialData,
@@ -63,6 +65,7 @@ angular.module('betterpageMain')
             send: send
         };
         model.resetItems();
+        model.generateMsg();
         return model;
     }])
 .factory('betterpageParams', ['$location', function betterpageParamsFactory($location) {
@@ -128,4 +131,21 @@ angular.module('betterpageMain')
     bed: {t: 'Bed', i:'bed', a: {'upper-case':'','ng-maxlength':3}},
     details: {t: 'Specify (optional)', i: 'comment', a: {}},
     contents: {t: 'Message', i:'comment', a: {}}
+})
+.value('betterpageCustomInputs',{
+    //text
+    no: {type:'text',title: 'Pager', icon:'phone', attr: {'betterpage-no':''}},
+    caller: {type:'text',title: 'Name', icon:'user', attr: {'title-case':'','ng-minlength':2}},
+    phone: {type:'text',title: 'Phone', icon:'phone-alt', attr:{'ng-pattern':/^[0-9]+$/}},
+    within: {type:'text',title: 'within', icon:'time', attr: {'ng-required':'model.data.reply', 'ng-pattern':/^[0-9]+$/,min:1,max:30}},
+    patient: {type:'text',title: 'Name', icon:'user', attr: {'title-case':'','ng-minlength':2}},
+    nhi: {type:'text',title: 'NHI', icon: 'tag', attr: {'upper-case':'','nhi':''}},
+    ward: {type:'text',title: 'Ward', icon:'home', attr: {'upper-case':'','ng-maxlength':3}},
+    bed: {type:'text',title: 'Bed', icon:'bed', attr: {'upper-case':'','ng-maxlength':3}},
+    details: {type:'text',title: 'Specify (optional)', icon: 'comment', attr: {}},
+    contents: {type:'text',title: 'Message', icon:'comment', attr: {}},
+    respond:{type:'text',icon:'earphone'},
+    //select
+    ptpage:{type:'select'},
+    why:{type:'select'}
 });

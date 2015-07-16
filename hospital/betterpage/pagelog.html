@@ -1,11 +1,16 @@
-<p>
-    Messages from last <input id="hours" class="form-control" type="number" ng-model="LogCtrl.hours" min="1" max="72" ng-pattern="/^[0-9]+$/" /> hours
+<h4>Log</h4>
+<p class="form-inline">
+    <label for="hours">Messages from last</label> <input id="hours" class="form-control" type="number" ng-model="LogCtrl.hours" min="1" max="72" ng-pattern="/^[0-9]+$/" /> <label for="hours">hours</label>
     <button class="btn btn-default" ng-click="LogCtrl.toggle()" ng-bind="LogCtrl.active ? 'Hide' : 'Show'" ng-disabled="!LogCtrl.fetched && !LogCtrl.hours"></button>
-    <span ng-show="LogCtrl.fetched">retrieved at {{LogCtrl.timestamp | date : 'dd/MM/yy HH:mm:ss'}} <button class="btn btn-default" ng-disabled="!LogCtrl.hours" ng-click="LogCtrl.refresh()">Refresh</button></span>
+    <span ng-show="LogCtrl.fetched"><label for="refresh">retrieved at {{LogCtrl.timestamp | date : 'dd/MM/yy HH:mm:ss'}}</label>
+    <button class="btn btn-default" id="refresh" ng-disabled="!LogCtrl.hours" ng-click="LogCtrl.refresh()">Refresh</button></span>
     <span ng-show="LogCtrl.active && LogCtrl.pending">Updating...</span>
 </p>
 <div ng-show="LogCtrl.active && LogCtrl.fetched">
-    <p ng-show="LogCtrl.rows.length"><label for="filter">Filter by:</label> <input id="filter" class="form-control" type="search" ng-model="LogCtrl.filterText" /></p>
+    <p ng-show="LogCtrl.rows.length" class="form-inline">
+        <label for="filter">Filter by</label>
+        <input id="filter" class="form-control" type="search" ng-model="LogCtrl.filterText" />
+    </p>
     <p ng-hide="LogCtrl.rows.length">No messages logged in last {{LogCtrl.requestHours}} hours</p>
     <p ng-show="LogCtrl.rows.length && !filtered.length">No messages match the filter</p>
     <div class="table-responsive">
