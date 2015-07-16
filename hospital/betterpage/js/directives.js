@@ -88,7 +88,7 @@ angular.module('betterpage')
                 input.prop('type','number');
                 container
                     .attr('ng-show','model.data.reply')
-                    .append('<span class="input-group-addon">within</span>');
+                    .append('<span class="input-group-addon">minutes</span>');
             }
             if (reference !== 'respond') {
                 input.prop({
