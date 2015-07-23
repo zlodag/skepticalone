@@ -1,9 +1,29 @@
 angular.module('betterpage')
-.controller('betterpageController',['$scope','betterpageModel',function($scope,betterpageModel){
+.controller('betterpageController',['$scope','betterpageModel','betterpageServer','betterpageQuiet',function($scope,betterpageModel,betterpageServer,betterpageQuiet){
     $scope.model = betterpageModel;
     $scope.$watchCollection('model.data',function(){
         $scope.model.generateMsg();
     });
+    $scope.reset = function(){
+        $scope.model.resetItems();
+        $scope.form.$setUntouched();
+        $scope.form.$setPristine();
+    };
+    $scope.send = function(){
+        var items = $scope.model.itemize();
+        betterpageServer.save(items, function(prevpage) {
+            $scope.model.prevpage = prevpage;
+            $scope.reset();
+        });
+        //This might fail due to CORS
+        betterpageQuiet.get({bp:items.bp,no:items.no.join(';'),msg:items.msg});
+        //Workaround with an intrusive popup:
+        if (confirm('Attempt to send this page via the intranet?')) {
+            var pageurl = 'http://10.134.0.150/cgi-bin/npcgi',
+            popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + encodeURIComponent(items.no.join(';')) + '&msg=' + encodeURIComponent(items.msg), '_blank');
+            if (!popup) {alert('Please allow popups for this function to succeed');}
+        }
+    };
 }])
 .directive('betterpageForm', function() {
     return {
@@ -15,29 +35,10 @@ angular.module('betterpage')
     return {
         restrict: 'E',
         templateUrl: 'buttonPanel.html',
-        require:'^^form',
         scope:true,
-        link: function(scope, iElement, iAttrs, form){
-            scope.showSend = function(){return form.$valid;};
+        link: function(scope, iElement, iAttrs){
+            scope.showSend = function(){return scope.form.$valid;};
             scope.overflow = function(){return (scope.model.msg.length > betterpageCharLimit)};
-            scope.reset = function(){
-                scope.model.resetItems();
-                form.$setUntouched();
-                form.$setPristine();
-            };
-            scope.send = function(){
-                scope.model.send().success(function(data, status, headers, config) {
-                    if (data.ok) {
-                        scope.model.prevpage = config.data;
-                        scope.reset();
-                        /*
-                        if (config.data.ptpage) {
-                            alert("If you requested a review of a patient, please ensure that the notes and chart are in the office.");
-                        }
-                        */
-                    }
-                });
-            };
         }
     };
 }])
@@ -154,7 +155,7 @@ angular.module('betterpage')
         restrict: 'E',
         templateUrl: 'pagelog.html',
         scope: {},
-        controller: ['$http', 'betterpageModel',function($http, betterpageModel) {
+        controller: ['betterpageModel','betterpageServer',function(betterpageModel,betterpageServer) {
             var LogCtrl = this;
             LogCtrl.reset = function() {
                 LogCtrl.rows = [];
@@ -166,20 +167,20 @@ angular.module('betterpage')
             };
             LogCtrl.reset();
             LogCtrl.refresh = function() {
-                    LogCtrl.pending = true;
-                    $http.get('pagelog_provider.php', {params: {hours: LogCtrl.hours}}).success(function(rows) {
-                        LogCtrl.rows = rows;
-                        LogCtrl.pending = false;
-                        LogCtrl.timestamp = new Date();
-                        LogCtrl.requestHours = angular.copy(LogCtrl.hours);
-                        LogCtrl.active = true;
-                    });
+                LogCtrl.timestamp = new Date();
+                LogCtrl.requestHours = angular.copy(LogCtrl.hours);
+                LogCtrl.active = true;
+                LogCtrl.pending = true;
+                betterpageServer.query({hours: LogCtrl.hours},function(rows){
+                    LogCtrl.rows = rows;
+                    LogCtrl.pending = false;
+                    LogCtrl.fetched = true;
+                });
             };
             LogCtrl.toggle = function() {
                 LogCtrl.active = !LogCtrl.active;
                 if (LogCtrl.active && !LogCtrl.fetched) {
                     LogCtrl.refresh();
-                    LogCtrl.fetched = true;
                 }
             };
             LogCtrl.copy = function(data) {

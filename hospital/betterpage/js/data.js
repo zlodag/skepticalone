@@ -1,5 +1,5 @@
 angular.module('betterpage')
-.factory('betterpageModel', ['betterpageParams','betterpageReasons','betterpageSubmit',function betterpageModelFactory(betterpageParams,betterpageReasons,betterpageSubmit) {
+.factory('betterpageModel', ['betterpageParams','betterpageReasons',function betterpageModelFactory(betterpageParams,betterpageReasons) {
         var initialData = {
             ptpage:true
         };
@@ -54,15 +54,11 @@ angular.module('betterpage')
             }
             return params;
         }
-        function send() {
-            return betterpageSubmit(this.itemize());
-        }
         var model = {
             data: initialData,
             resetItems: resetItems,
             generateMsg: generateMsg,
-            itemize: itemize,
-            send: send
+            itemize: itemize
         };
         model.resetItems();
         model.generateMsg();
@@ -81,17 +77,11 @@ angular.module('betterpage')
         if (within) {getParams.within = within;} else {delete getParams.within;}
         return getParams;
 }])
-.factory('betterpageSubmit', ['$http', function betterpageSubmitFactory($http) {
-        return function(items) {
-            var submiturl = './submit.php',
-            pageurl = 'http://10.134.0.150/cgi-bin/npcgi';
-            //Test feature
-            if (confirm('Attempt to send this page via the intranet?')) {
-                var popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + encodeURIComponent(items.no.join(';')) + '&msg=' + encodeURIComponent(items.msg), '_blank');
-                if (!popup) {alert('Please allow popups for this function to succeed');}
-            }
-            return $http.post(submiturl, items);
-        };
+.factory('betterpageServer', ['$resource', function($resource){
+    return $resource('server.php');
+}])
+.factory('betterpageQuiet', ['$resource', function($resource){
+    return $resource('http://10.134.0.150/cgi-bin/npcgi');
 }])
 .value('betterpageReasons', {
     // 1: no clinical concern, 2: low 3: medium 4: high priority concern

@@ -5,7 +5,7 @@
  */
 (function() {
     "use strict";
-    angular.module('betterpage', ['ngMessages'])
+    angular.module('betterpage', ['ngResource','ngMessages'])
     .config(
         ['$compileProvider', '$locationProvider',
             function ($compileProvider, $locationProvider) {
