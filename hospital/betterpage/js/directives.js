@@ -15,14 +15,7 @@ angular.module('betterpage')
             $scope.model.prevpage = prevpage;
             $scope.reset();
         });
-        //This might fail due to CORS
-        betterpageQuiet.get({bp:items.bp,no:items.no.join(';'),msg:items.msg});
-        //Workaround with an intrusive popup:
-        if (confirm('Attempt to send this page via the intranet?')) {
-            var pageurl = 'http://10.134.0.150/cgi-bin/npcgi',
-            popup = window.open(pageurl + '?bp=' + items.bp + '&no=' + encodeURIComponent(items.no.join(';')) + '&msg=' + encodeURIComponent(items.msg), '_blank');
-            if (!popup) {alert('Please allow popups for this function to succeed');}
-        }
+        betterpageQuiet.get({bp:items.bp,no:items.no.join(';'),msg:items.msg}); //This might fail due to CORS
     };
 }])
 .directive('betterpageForm', function() {
