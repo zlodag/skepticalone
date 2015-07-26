@@ -22,7 +22,8 @@ module.exports = function (grunt) {
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: '../betterpage/'
+    dist: '../betterpage'
+    //dist: 'dist'
   };
 
   // Define the configuration for all the tasks
@@ -345,7 +346,8 @@ module.exports = function (grunt) {
     // Replace Google CDN references
     cdnify: {
       dist: {
-        html: ['<%= yeoman.dist %>/*.html']
+        html: ['<%= yeoman.dist %>/*.html'],
+	bower: 'bower.json'
       }
     },
 
