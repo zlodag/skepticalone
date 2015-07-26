@@ -1,4 +1,0 @@
-input[upper-case]::-webkit-input-placeholder {text-transform: none;}
-input[upper-case]:-ms-input-placeholder {text-transform: none;}
-betterpage-top,betterpage-form,betterpage-preview,betterpage-outcome,betterpage-log,custom-input,text-input,select-input,response-required-input,button-panel {display:block;}
-#hours{display:inline-block;width:auto;vertical-align:middle}

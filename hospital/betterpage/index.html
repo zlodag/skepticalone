@@ -1,28 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <title>BetterPage</title>
-        <link rel="icon" type="image/x-icon" href="favicon.ico">
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-resource.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.1/angular-messages.min.js"></script>
-        <script src="js/betterpage.js"></script>
-        <script src="js/data.js"></script>
-        <script src="js/directives.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="css/betterpage.css" />
-    </head>
-    <body ng-app="betterpage">
-        <div class="container-fluid" ng-controller="betterpageController">
-            <h2>BetterPage</h2>
-            <div class="row">
-                <betterpage-form class="col-sm-8" ng-form name="form"></betterpage-form>
-                <betterpage-preview class="col-sm-4 bg-info"></betterpage-preview>
-                <betterpage-outcome ng-if="model.prevpage" class="col-sm-4 bg-success"></betterpage-outcome>
-            </div>
-            <betterpage-log></betterpage-log>
-        </div>
-    </body>
-</html>
+<!doctype html> <html> <head> <meta charset="utf-8"> <title>BetterPage</title> <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"> <!-- Place favicon.ico and apple-touch-icon.png in the root directory --> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> <link rel="stylesheet" href="styles/main.e6e3cb88.css"> </head> <body ng-app="betterpageApp"> <!--[if lte IE 8]>
+      <p>You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]--> <betterpage-main class="container-fluid"> <h2>BetterPage</h2> <div class="row"> <betterpage-form class="col-sm-8" ng-form name="form"></betterpage-form> <betterpage-preview class="col-sm-4 bg-info"></betterpage-preview> <betterpage-outcome ng-if="model.prevpage" class="col-sm-4 bg-success"></betterpage-outcome> </div> <betterpage-log></betterpage-log> </betterpage-main> <!-- bower:js --> <script src="bower_components/angular/angular.js"></script> <script src="bower_components/angular-messages/angular-messages.js"></script> <script src="bower_components/angular-resource/angular-resource.js"></script> <!-- endbower --> <script src="scripts/scripts.326c7019.js"></script> </body> </html>
