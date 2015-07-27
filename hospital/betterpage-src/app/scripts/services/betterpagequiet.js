@@ -9,5 +9,5 @@
  */
 angular.module('betterpageApp')
 .factory('betterpageQuiet', ['$resource', function($resource){
-    return $resource('http://10.134.0.150/cgi-bin/npcgi');
+    return $resource('http://netpager.waikato.health.govt.nz/cgi-bin/npcgi');
 }]);
