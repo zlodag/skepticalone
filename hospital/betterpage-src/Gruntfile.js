@@ -22,8 +22,8 @@ module.exports = function (grunt) {
   // Configurable paths for the application
   var appConfig = {
     app: require('./bower.json').appPath || 'app',
-    dist: '../betterpage'
-    //dist: 'dist'
+    //dist: '../betterpage'
+    dist: 'dist'
   };
 
   // Define the configuration for all the tasks
@@ -360,6 +360,7 @@ module.exports = function (grunt) {
           cwd: '<%= yeoman.app %>',
           dest: '<%= yeoman.dist %>',
           src: [
+            '*.php',
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
